@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := run
 
 fmt:
 	go fmt ./...
@@ -11,3 +11,6 @@ vet: fmt
 
 build: vet
 	go build raygo.go
+
+run: vet
+	go run raygo.go
