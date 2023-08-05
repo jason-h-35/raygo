@@ -1,14 +1,14 @@
 package core
 
 import (
-	"image/color"
-
+	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"image/color"
 )
 
-const screenWidth = 800
-const screenHeight = 450
-const framesPerSecond = 60
+const screenWidth = 1920
+const screenHeight = 1080
+const framesPerSecond = 120
 
 func MouseInput() {
 	var buttonColors map[int32]color.RGBA = map[int32]color.RGBA{
@@ -79,7 +79,7 @@ func Camera3DMode() {
 }
 
 func BunnyMark() {
-	const MaxBunnies = 50000
+	const MaxBunnies = 500000
 	const MaxBatchElements = 8192
 	type Bunny struct {
 		position rl.Vector2
@@ -88,10 +88,10 @@ func BunnyMark() {
 	}
 	rl.InitWindow(screenWidth, screenHeight, "raylib example - bunnymark")
 	defer rl.CloseWindow()
-	texBunny := rl.LoadTexture("blah.png")
+	texBunny := rl.LoadTexture("rabbitv3.png")
 	bunnies := make([]Bunny, MaxBunnies)
 	bunniesCount := 0
-	rl.SetTargetFPS(60)
+	rl.SetTargetFPS(framesPerSecond)
 	for !rl.WindowShouldClose() {
 		if rl.IsMouseButtonDown(rl.MouseLeftButton) {
 			for i := 0; i < 100; i++ {
@@ -99,7 +99,7 @@ func BunnyMark() {
 					bunnies[bunniesCount].position = rl.GetMousePosition()
 					bunnies[bunniesCount].speed.X = float32(rl.GetRandomValue(-250, 250) / 60)
 					bunnies[bunniesCount].speed.Y = float32(rl.GetRandomValue(-250, 250) / 60)
-					bunnies[bunniesCount].color = rl.NewColor(uint8(rl.GetRandomValue(50, 240)), uint8(rl.GetRandomValue(80, 240)), uint8(rl.GetRandomValue(100, 240)), 0)
+					bunnies[bunniesCount].color = rl.NewColor(uint8(rl.GetRandomValue(50, 240)), uint8(rl.GetRandomValue(80, 240)), uint8(rl.GetRandomValue(100, 240)), 255)
 					bunniesCount += 1
 				}
 			}
@@ -117,7 +117,7 @@ func BunnyMark() {
 			}
 			if ((bunnies[i].position.X + float32(texBunny.Width/2)) > float32(rl.GetScreenWidth())) ||
 				((bunnies[i].position.X + float32(texBunny.Width/2)) < 0) {
-				bunnies[i].speed.X *= -1
+				bunnies[i].speed.Y *= -1
 			}
 		}
 		// Draw
@@ -130,9 +130,10 @@ func BunnyMark() {
 			}
 
 			rl.DrawRectangle(0, 0, screenWidth, 40, rl.Black)
-			// rl.DrawText()
+			rl.DrawText(fmt.Sprintf("bunnies: %v", bunniesCount), 120, 10, 20, rl.Green)
+			rl.DrawText(fmt.Sprintf("batched draw calls: %v", 1+bunniesCount/MaxBatchElements), 320, 10, 20, rl.Maroon)
 			rl.DrawFPS(10, 10)
 		}()
-		rl.UnloadTexture(texBunny)
 	}
+	rl.UnloadTexture(texBunny)
 }
