@@ -77,3 +77,38 @@ func Camera3DMode() {
 		}()
 	}
 }
+
+func BunnyMark() {
+	const MaxBunnies = 50000
+	const MaxBatchElements = 8192
+	type Bunny struct {
+		position rl.Vector2
+		speed    rl.Vector2
+		color    rl.Color
+	}
+	rl.InitWindow(screenWidth, screenHeight, "raylib example - bunnymark")
+	texBunny := rl.LoadTexture("blah.png")
+	bunnies := make([]Bunny, MaxBunnies)
+	bunniesCount := 0
+	rl.SetTargetFPS(60)
+	for !rl.WindowShouldClose() {
+		if rl.IsMouseButtonDown(rl.MouseLeftButton) {
+			for i := 0; i < 100; i++ {
+				if bunniesCount < MaxBunnies {
+					bunnies[bunniesCount].position = rl.GetMousePosition()
+					bunnies[bunniesCount].speed.X = float32(rl.GetRandomValue(-250, 250) / 60)
+					bunnies[bunniesCount].speed.Y = float32(rl.GetRandomValue(-250, 250) / 60)
+					bunnies[bunniesCount].color = rl.NewColor(uint8(rl.GetRandomValue(50, 240)), uint8(rl.GetRandomValue(80, 240)), uint8(rl.GetRandomValue(100, 240)), 0)
+					bunniesCount += 1
+				}
+			}
+		}
+
+		// Update Bunnies
+		for i:=0; i < bunniesCount; i++ {
+			bunnies[i].position.X += bunnies[i].speed.X
+			bunnies[i].position.Y += bunnies[i].speed.Y
+			if bunnies[i].position.X + texBu
+		}
+	}
+}
