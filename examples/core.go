@@ -88,18 +88,27 @@ func BunnyMark() {
 	}
 	rl.InitWindow(screenWidth, screenHeight, "raylib example - bunnymark")
 	defer rl.CloseWindow()
-	texBunny := rl.LoadTexture("assets/roach_american.png")
+	paths := []string{"assets/roach_american.png", "assets/roach_missoula.png", "assets/roach_oriental.png"}
+	var texBunnies []rl.Texture2D
+	for _, path := range paths {
+		texBunnies = append(texBunnies, rl.LoadTexture(path))
+	}
+
 	bunnies := make([]Bunny, MaxBunnies)
 	bunniesCount := 0
 	rl.SetTargetFPS(framesPerSecond)
 	for !rl.WindowShouldClose() {
 		if rl.IsMouseButtonDown(rl.MouseLeftButton) {
-			for i := 0; i < 100; i++ {
+			spawnedPerFrame := 100
+			for i := 0; i < spawnedPerFrame; i++ {
 				if bunniesCount < MaxBunnies {
 					bunnies[bunniesCount].position = rl.GetMousePosition()
 					bunnies[bunniesCount].speed.X = float32(rl.GetRandomValue(-250, 250) / 60)
 					bunnies[bunniesCount].speed.Y = float32(rl.GetRandomValue(-250, 250) / 60)
-					bunnies[bunniesCount].color = rl.NewColor(uint8(rl.GetRandomValue(50, 240)), uint8(rl.GetRandomValue(80, 240)), uint8(rl.GetRandomValue(100, 240)), 255)
+					bunnies[bunniesCount].color = rl.NewColor(
+						uint8(rl.GetRandomValue(50, 240)),
+						uint8(rl.GetRandomValue(80, 240)),
+						uint8(rl.GetRandomValue(100, 240)), 255)
 					bunniesCount += 1
 				}
 			}
@@ -107,10 +116,9 @@ func BunnyMark() {
 
 		// Update Bunnies
 		for i := 0; i < bunniesCount; i++ {
-			// move at speed
-			bunnies[i].position.X += bunnies[i].speed.X
-			bunnies[i].position.Y += bunnies[i].speed.Y
-			// flip on collide
+			bunnies[i].position = rl.Vector2Add(bunnies[i].position, bunnies[i].speed) // move bunny position
+			texBunny := texBunnies[0]                                                  // assume tex's have the same dimensions for now.
+			// when position exceeds boundary, change direction of speed for a bounce effect
 			if ((bunnies[i].position.X + float32(texBunny.Width/2)) > float32(rl.GetScreenWidth())) ||
 				((bunnies[i].position.X + float32(texBunny.Width/2)) < 0) {
 				bunnies[i].speed.X *= -1
@@ -126,7 +134,8 @@ func BunnyMark() {
 			defer rl.EndDrawing()
 			rl.ClearBackground(rl.RayWhite)
 			for i := 0; i < bunniesCount; i++ {
-				rl.DrawTexture(texBunny, int32(bunnies[i].position.X), int32(bunnies[i].position.Y), bunnies[i].color)
+				rl.DrawTexture(texBunnies[i%3],
+					int32(bunnies[i].position.X), int32(bunnies[i].position.Y), bunnies[i].color)
 			}
 
 			rl.DrawRectangle(0, 0, screenWidth, 40, rl.Black)
@@ -135,5 +144,7 @@ func BunnyMark() {
 			rl.DrawFPS(10, 10)
 		}()
 	}
-	rl.UnloadTexture(texBunny)
+	for _, tex := range texBunnies {
+		rl.UnloadTexture(tex)
+	}
 }
