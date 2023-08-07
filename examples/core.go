@@ -88,7 +88,7 @@ func BunnyMark() {
 	}
 	rl.InitWindow(screenWidth, screenHeight, "raylib example - bunnymark")
 	defer rl.CloseWindow()
-	texBunny := rl.LoadTexture("assets/rabbitv3.png")
+	texBunny := rl.LoadTexture("assets/roach_american.png")
 	bunnies := make([]Bunny, MaxBunnies)
 	bunniesCount := 0
 	rl.SetTargetFPS(framesPerSecond)
