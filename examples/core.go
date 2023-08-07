@@ -85,6 +85,7 @@ func BunnyMark() {
 		position rl.Vector2
 		speed    rl.Vector2
 		color    rl.Color
+		texture  *rl.Texture2D
 	}
 	rl.InitWindow(screenWidth, screenHeight, "raylib example - bunnymark")
 	defer rl.CloseWindow()
@@ -109,6 +110,7 @@ func BunnyMark() {
 						uint8(rl.GetRandomValue(50, 240)),
 						uint8(rl.GetRandomValue(80, 240)),
 						uint8(rl.GetRandomValue(100, 240)), 255)
+					bunnies[bunniesCount].texture = &texBunnies[i%3]
 					bunniesCount += 1
 				}
 			}
@@ -134,7 +136,7 @@ func BunnyMark() {
 			defer rl.EndDrawing()
 			rl.ClearBackground(rl.RayWhite)
 			for i := 0; i < bunniesCount; i++ {
-				rl.DrawTexture(texBunnies[i%3],
+				rl.DrawTexture(*bunnies[i].texture,
 					int32(bunnies[i].position.X), int32(bunnies[i].position.Y), bunnies[i].color)
 			}
 
