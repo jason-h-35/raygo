@@ -154,5 +154,5 @@ func BunnyMark() {
 func FPSCamera() {
 	const MaxColumns = 20
 	rl.InitWindow(screenWidth, screenHeight, "raylib example - FPS Camera")
-	Camera := rl.NewCamera3D
+	//Camera := rl.NewCamera3D
 }
