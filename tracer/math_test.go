@@ -31,3 +31,19 @@ func Test_Vector(t *testing.T) {
 		t.Errorf("expected IsVector() == true for both bare struct and New method.")
 	}
 }
+
+func Test_Equals(t *testing.T) {
+	same1 := NewTuple(1, 2, 3, 0)
+	same2 := Vector(1, 2, 3)
+	diff := Point(1, 2, 3)
+	zero := NewTuple(0, 0, 0, 0)
+	if !same1.Equals(same2) || !same2.Equals(same1) {
+		t.Errorf("expected %v Equals %v.", same1, same2)
+	}
+	if same2.Equals(diff) {
+		t.Errorf("expected %v Not Equals %v.", same2, diff)
+	}
+	if zero.Equals(same1) || zero.Equals(same2) || zero.Equals(diff) {
+		t.Errorf("zero tuple shouldn't equal %v, %v, or %v.", same1, same2, diff)
+	}
+}
