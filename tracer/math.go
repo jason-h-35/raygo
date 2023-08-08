@@ -7,6 +7,8 @@ package tracer
 // 	rl "github.com/gen2brain/raylib-go/raylib"
 // )
 
+var eps float32 = 1.e-5
+
 type Tuple struct {
 	X float32
 	Y float32
@@ -38,4 +40,27 @@ func (t Tuple) IsPoint() bool {
 		return true
 	}
 	return false
+}
+
+func abs(x float32) float32 {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func (t1 Tuple) Equals(t2 Tuple) bool {
+	if abs(t1.X-t2.X) > eps {
+		return false
+	}
+	if abs(t1.X-t2.X) > eps {
+		return false
+	}
+	if abs(t1.X-t2.X) > eps {
+		return false
+	}
+	if t1.W != t2.W {
+		return false
+	}
+	return true
 }
