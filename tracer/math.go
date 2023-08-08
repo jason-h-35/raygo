@@ -17,15 +17,18 @@ type Tuple struct {
 }
 
 func NewTuple(x float32, y float32, z float32, w int) Tuple {
-	return Tuple{x, y, z, w}
+	if w == 0 || w == 1 {
+		return Tuple{x, y, z, w}
+	}
+	panic("Tuple must be w = 0 or w = 1")
 }
 
 func Point(x, y, z float32) Tuple {
-	return Tuple{x, y, z, 1}
+	return NewTuple(x, y, z, 1)
 }
 
 func Vector(x, y, z float32) Tuple {
-	return Tuple{x, y, z, 0}
+	return NewTuple(x, y, z, 0)
 }
 
 func (t Tuple) IsVector() bool {
