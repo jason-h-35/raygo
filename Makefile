@@ -9,6 +9,9 @@ lint: fmt
 vet: fmt
 	go vet ./...
 
+test: vet
+	go test ./...
+
 build: vet
 	go build raygo.go
 
