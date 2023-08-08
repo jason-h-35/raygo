@@ -1,9 +1,10 @@
-package core
+package examples
 
 import (
 	"fmt"
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 const screenWidth = 1920
@@ -115,7 +116,6 @@ func BunnyMark() {
 				}
 			}
 		}
-
 		// Update Bunnies
 		for i := 0; i < bunniesCount; i++ {
 			bunnies[i].position = rl.Vector2Add(bunnies[i].position, bunnies[i].speed) // move bunny position
@@ -149,4 +149,10 @@ func BunnyMark() {
 	for _, tex := range texBunnies {
 		rl.UnloadTexture(tex)
 	}
+}
+
+func FPSCamera() {
+	const MaxColumns = 20
+	rl.InitWindow(screenWidth, screenHeight, "raylib example - FPS Camera")
+	Camera := rl.NewCamera3D
 }
