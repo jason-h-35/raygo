@@ -9,6 +9,10 @@ lint: fmt
 vet: fmt
 	go vet ./...
 
+cover: fmt
+	go test -v -cover -coverprofile=c.out ./...
+	go tool cover -html=c.out
+
 test: vet
 	go test ./...
 
