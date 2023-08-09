@@ -88,3 +88,14 @@ func (t1 Tuple) Plus(t2 Tuple) Tuple {
 func (t1 Tuple) Minus(t2 Tuple) Tuple {
 	return t1.Plus(Neg(t2))
 }
+
+func (t Tuple) Times(f float32) Tuple {
+	return NewTuple(f*t.X, f*t.Y, f*t.Z, t.W)
+}
+
+func (t Tuple) Divide(f float32) Tuple {
+	if f == 0.0 {
+		panic("divide by zero")
+	}
+	return t.Times(1.0 / f)
+}
