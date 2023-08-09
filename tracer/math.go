@@ -56,10 +56,10 @@ func (t1 Tuple) Equals(t2 Tuple) bool {
 	if abs(t1.X-t2.X) > eps {
 		return false
 	}
-	if abs(t1.X-t2.X) > eps {
+	if abs(t1.Y-t2.Y) > eps {
 		return false
 	}
-	if abs(t1.X-t2.X) > eps {
+	if abs(t1.Z-t2.Z) > eps {
 		return false
 	}
 	if t1.W != t2.W {
