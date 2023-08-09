@@ -68,6 +68,10 @@ func (t1 Tuple) Equals(t2 Tuple) bool {
 	return true
 }
 
+func Neg(t Tuple) Tuple {
+	return NewTuple(-t.X, -t.Y, -t.Z, t.W)
+}
+
 func (t1 Tuple) Plus(t2 Tuple) Tuple {
 	w := t1.W + t2.W
 	if w == 0 || w == 1 {
@@ -79,4 +83,8 @@ func (t1 Tuple) Plus(t2 Tuple) Tuple {
 		)
 	}
 	panic("w is not 0 or 1")
+}
+
+func (t1 Tuple) Minus(t2 Tuple) Tuple {
+	return t1.Plus(Neg(t2))
 }
