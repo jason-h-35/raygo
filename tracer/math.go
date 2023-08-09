@@ -67,3 +67,16 @@ func (t1 Tuple) Equals(t2 Tuple) bool {
 	}
 	return true
 }
+
+func (t1 Tuple) Plus(t2 Tuple) Tuple {
+	w := t1.W + t2.W
+	if w == 0 || w == 1 {
+		return NewTuple(
+			t1.X+t2.X,
+			t1.Y+t2.Y,
+			t1.Z+t2.Z,
+			w,
+		)
+	}
+	panic("w is not 0 or 1")
+}
