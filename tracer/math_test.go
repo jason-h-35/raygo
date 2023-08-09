@@ -17,7 +17,11 @@ func Test_Point(t *testing.T) {
 		t.Errorf("expected: %v. got: %v", expect, got)
 	}
 	if !got.IsPoint() || !expect.IsPoint() {
-		t.Errorf("expected IsPoint() == true for both bare struct and New method.")
+		t.Errorf("expected IsPoint() to be true for both bare struct and New method.")
+	}
+	notPoint := Vector(1, 1, 1)
+	if notPoint.IsPoint() {
+		t.Errorf("expected IsPoint() to be false for %v", notPoint)
 	}
 }
 
@@ -29,6 +33,10 @@ func Test_Vector(t *testing.T) {
 	}
 	if !got.IsVector() || !expect.IsVector() {
 		t.Errorf("expected IsVector() == true for both bare struct and New method.")
+	}
+	notVector := Point(1, 1, 1)
+	if notVector.IsVector() {
+		t.Errorf("expected IsVector() to be false for %v", notVector)
 	}
 }
 
