@@ -37,6 +37,18 @@ func Test_Equals(t *testing.T) {
 	same2 := Vector(1, 2, 3)
 	diff := Point(1, 2, 3)
 	zero := NewTuple(0, 0, 0, 0)
+	if Point(1, 2, 3).Equals(Point(2, 2, 3)) {
+		t.Errorf("Tuples should be unequal because X")
+	}
+	if Point(1, 2, 3).Equals(Point(1, 1, 3)) {
+		t.Errorf("Tuples should be unequal because Y")
+	}
+	if Point(1, 2, 3).Equals(Point(1, 2, 2)) {
+		t.Errorf("Tuples should be unequal because Z")
+	}
+	if Point(1, 2, 3).Equals(Vector(1, 2, 3)) {
+		t.Errorf("Tuples should be unequal because  W")
+	}
 	if !same1.Equals(same2) || !same2.Equals(same1) {
 		t.Errorf("expected %v Equals %v", same1, same2)
 	}
