@@ -25,7 +25,7 @@ func tick(env Environment, proj Projectile) Projectile {
 func main() {
 	p := Projectile{
 		position: tracer.Point(0, 1, 0),
-		velocity: tracer.Vector(1, 1, 0).Normalized(),
+		velocity: tracer.Vector(0, 1, 0).Normalized(),
 	}
 	e := Environment{
 		gravity: tracer.Vector(0, -0.1, 0),
@@ -33,6 +33,6 @@ func main() {
 	}
 	for p.position.Y >= 0 {
 		p = tick(e, p)
-		fmt.Printf("%v", p.position)
+		fmt.Printf("%v\n", p.position)
 	}
 }
