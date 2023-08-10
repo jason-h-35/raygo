@@ -7,7 +7,7 @@ package tracer
 // 	rl "github.com/gen2brain/raylib-go/raylib"
 // )
 
-var eps float32 = 1.e-5
+const eps = 1.e-5
 
 type Tuple struct {
 	X float32
