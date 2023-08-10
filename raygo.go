@@ -31,7 +31,7 @@ func main() {
 		gravity: tracer.Vector(0, -0.1, 0),
 		wind:    tracer.Vector(-0.01, 0, 0),
 	}
-	for p.position.Y <= 0 {
+	for p.position.Y >= 0 {
 		p = tick(e, p)
 		fmt.Printf("%v", p.position)
 	}
