@@ -148,7 +148,7 @@ func Test_Divide(t *testing.T) {
 	}
 }
 
-func Test_Divide_ByZero(t *testing.T) {
+func Test_Divide_Panic(t *testing.T) {
 	defer func() { _ = recover() }()
 	t1 := NewTuple(1, -2, 3, -4)
 	_ = t1.Divide(0.0)
