@@ -103,7 +103,7 @@ func (t1 Tuple) Dot(t2 Tuple) float64 {
 	if !t1.IsVector() || !t2.IsVector() {
 		panic("t1.Dot cannot operate on non-vectors.")
 	}
-	return t1.X + t2.X + t1.Y + t2.Y + t1.Z + t2.Z
+	return t1.X*t2.X + t1.Y*t2.Y + t1.Z*t2.Z
 }
 
 func (t1 Tuple) Cross(t2 Tuple) Tuple {
