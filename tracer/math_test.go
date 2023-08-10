@@ -84,3 +84,37 @@ func Test_Plus(t *testing.T) {
 		t.Errorf("expected a Vector Plus a Vector would be a Vector: %v", test3)
 	}
 }
+
+func Test_Minus_Method(t *testing.T) {
+	// Subtracting two points
+	p1 := Point(3, 2, 1)
+	p2 := Point(5, 6, 7)
+	result2p := p1.Minus(p2)
+	expect2p := Vector(-2, -4, -6)
+	if !result2p.Equals(expect2p) {
+		t.Errorf("%v Minus %v should be %v, but was %v", p1, p2, expect2p, result2p)
+	}
+	// Subtracting a vector from a point
+	v2 := Vector(5, 6, 7)
+	resultvp := p1.Minus(v2)
+	expectvp := Point(-2, -4, -6)
+	if !resultvp.Equals(expectvp) {
+		t.Errorf("%v Minus %v should be %v, but was %v", p1, v2, expectvp, resultvp)
+	}
+	// Subtracting a vector from a vector
+	v1 := Vector(3, 2, 1)
+	result2v := v1.Minus(v2)
+	expect2v := Vector(-2, -4, -6)
+	if !result2v.Equals(expect2v) {
+		t.Errorf("%v Minus %v should be %v, but was %v", v1, v2, expect2v, result2v)
+	}
+}
+
+func Test_Minus_Func(t *testing.T) {
+	t1 := NewTuple(1, -2, 3, -4)
+	result := Minus(t1)
+	expect := NewTuple(-1, 2, -3, 4)
+	if !result.Equals(expect) {
+		t.Errorf("Minus %v should be %v, but was %v", t1, expect, result)
+	}
+}
