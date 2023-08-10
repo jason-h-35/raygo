@@ -1,6 +1,9 @@
 package tracer
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
 
 func Test_NewTuple(t *testing.T) {
 	expect := Tuple{X: 4.3, Y: -4.2, Z: 3.1, W: 1}
@@ -150,4 +153,25 @@ func Test_Divide_ByZero(t *testing.T) {
 	t1 := NewTuple(1, -2, 3, -4)
 	_ = t1.Divide(0.0)
 	t.Errorf("Dividing %v by zero scalar did not panic", t1)
+}
+
+func Test_Length(t *testing.T) {
+	tuples := []Tuple{
+		Vector(1, 0, 0),
+		Vector(0, 1, 0),
+		Vector(0, 0, 1),
+		Vector(1, 2, 3),
+		Vector(-1, -2, -3),
+	}
+
+	lengths := []float64{
+		1.0, 1.0, 1.0, math.Sqrt(14.0), math.Sqrt(14.0),
+	}
+
+	for ix, tup := range tuples {
+		if tup.Length() != lengths[ix] {
+			t.Errorf("Length of %v should be %v, but was %v", tup, lengths[ix], tup.Length())
+		}
+	}
+
 }
