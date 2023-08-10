@@ -222,3 +222,16 @@ func Test_Dot_Panic(t *testing.T) {
 	_ = p.Dot(v)
 	t.Errorf("%v Dot %v did not panic", p, v)
 }
+
+func Test_Cross(t *testing.T) {
+	v1 := Vector(1, 2, 3)
+	v2 := Vector(2, 3, 4)
+	expect1 := Vector(-1, 2, -1)
+	if v1.Cross(v2) != expect1 {
+		t.Errorf("%v Cross %v should be %v, but was %v", v1, v2, expect1, v1.Cross(v2))
+	}
+	expect2 := Vector(1, -2, 1)
+	if v2.Cross(v1) != expect2 {
+		t.Errorf("%v Cross %v should be %v, but was %v", v2, v1, expect2, v2.Cross(v1))
+	}
+}
