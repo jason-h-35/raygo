@@ -173,5 +173,6 @@ func Test_Length(t *testing.T) {
 			t.Errorf("Length of %v should be %v, but was %v", tup, lengths[ix], tup.Length())
 		}
 	}
+}
 
 }
