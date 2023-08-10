@@ -235,3 +235,11 @@ func Test_Cross(t *testing.T) {
 		t.Errorf("%v Cross %v should be %v, but was %v", v2, v1, expect2, v2.Cross(v1))
 	}
 }
+
+func Test_Cross_Panic(t *testing.T) {
+	defer func() { _ = recover() }()
+	p := Point(1, 2, 3)
+	v := Vector(4, 5, 6)
+	_ = p.Cross(v)
+	t.Errorf("%v Cross %v did not panic", p, v)
+}
