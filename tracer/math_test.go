@@ -175,4 +175,21 @@ func Test_Length(t *testing.T) {
 	}
 }
 
+func Test_Normalized(t *testing.T) {
+	tuples := []Tuple{
+		Vector(4, 0, 0),
+		Vector(1, 2, 3),
+	}
+	normalized := []Tuple{
+		Vector(1, 0, 0),
+		Vector(math.Sqrt(14), 2*math.Sqrt(14), 3*math.Sqrt(14)),
+	}
+	for ix, tup := range tuples {
+		if tup.Normalized() != normalized[ix] {
+			t.Errorf("%v Normalized should be %v, but was %v", tup, normalized[ix], tup.Normalized())
+		}
+		if tup.Normalized().Length()-1 > eps {
+			t.Errorf("%v Normalized should have Length of 1, but was %v", tup, tup.Normalized().Length())
+		}
+	}
 }
