@@ -209,4 +209,16 @@ func Test_Dot(t *testing.T) {
 	if result != expect {
 		t.Errorf("%v Dot %v should be %v, but was %v", t1, t2, expect, result)
 	}
+	if t1.Dot(t2) != t2.Dot(t1) {
+		t.Errorf("%v Dot %v and %v Dot %v should be equal but are instead %v and %v",
+			t1, t2, t2, t1, t1.Dot(t2), t2.Dot(t1))
+	}
+}
+
+func Test_Dot_Panic(t *testing.T) {
+	defer func() { _ = recover() }()
+	p := Point(1, 2, 3)
+	v := Vector(4, 5, 6)
+	_ = p.Dot(v)
+	t.Errorf("%v Dot %v did not panic", p, v)
 }
