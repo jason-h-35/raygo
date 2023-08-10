@@ -10,21 +10,21 @@ package tracer
 const eps = 1.e-5
 
 type Tuple struct {
-	X float32
-	Y float32
-	Z float32
-	W float32
+	X float64
+	Y float64
+	Z float64
+	W float64
 }
 
-func NewTuple(x float32, y float32, z float32, w float32) Tuple {
+func NewTuple(x float64, y float64, z float64, w float64) Tuple {
 	return Tuple{x, y, z, w}
 }
 
-func Point(x, y, z float32) Tuple {
+func Point(x, y, z float64) Tuple {
 	return NewTuple(x, y, z, 1)
 }
 
-func Vector(x, y, z float32) Tuple {
+func Vector(x, y, z float64) Tuple {
 	return NewTuple(x, y, z, 0)
 }
 
@@ -42,7 +42,7 @@ func (t Tuple) IsPoint() bool {
 	return false
 }
 
-func abs(x float32) float32 {
+func abs(x float64) float64 {
 	if x < 0 {
 		return -x
 	}
@@ -80,11 +80,11 @@ func (t1 Tuple) Minus(t2 Tuple) Tuple {
 	return t1.Plus(Minus(t2))
 }
 
-func (t Tuple) Times(f float32) Tuple {
+func (t Tuple) Times(f float64) Tuple {
 	return NewTuple(f*t.X, f*t.Y, f*t.Z, f*t.W)
 }
 
-func (t Tuple) Divide(f float32) Tuple {
+func (t Tuple) Divide(f float64) Tuple {
 	if abs(f) < eps {
 		panic("divisor too close to 0.0")
 	}
