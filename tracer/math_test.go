@@ -193,3 +193,13 @@ func Test_Normalized(t *testing.T) {
 		}
 	}
 }
+
+func Test_Dot(t *testing.T) {
+	t1 := Vector(1, 2, 3)
+	t2 := Vector(2, 3, 4)
+	result := t1.Dot(t2)
+	expect := 20.0
+	if result != expect {
+		t.Errorf("%v Dot %v should be %v, but was %v", t1, t2, expect, result)
+	}
+}
