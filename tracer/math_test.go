@@ -144,3 +144,10 @@ func Test_Divide(t *testing.T) {
 		t.Errorf("%v Divide %v should be %v, but was %v", t1, div, expect, result)
 	}
 }
+
+func Test_Divide_ByZero(t *testing.T) {
+	defer func() { _ = recover() }()
+	t1 := NewTuple(1, -2, 3, -4)
+	_ = t1.Divide(0.0)
+	t.Errorf("Dividing %v by zero scalar did not panic", t1)
+}
