@@ -182,7 +182,7 @@ func Test_Normalized(t *testing.T) {
 	}
 	normalized := []Tuple{
 		Vector(1, 0, 0),
-		Vector(math.Sqrt(14), 2*math.Sqrt(14), 3*math.Sqrt(14)),
+		Vector(1, 2, 3).Divide(math.Sqrt(14)),
 	}
 	for ix, tup := range tuples {
 		if tup.Normalized() != normalized[ix] {
