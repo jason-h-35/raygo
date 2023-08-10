@@ -65,15 +65,15 @@ func (t1 Tuple) Equals(t2 Tuple) bool {
 	return true
 }
 
-func Minus(t Tuple) Tuple {
-	return t.Times(-1)
-}
-
 func (t1 Tuple) Plus(t2 Tuple) Tuple {
 	return NewTuple(
 		t1.X+t2.X, t1.Y+t2.Y,
 		t1.Z+t2.Z, t1.W+t2.W,
 	)
+}
+
+func Minus(t Tuple) Tuple {
+	return t.Times(-1)
 }
 
 func (t1 Tuple) Minus(t2 Tuple) Tuple {
