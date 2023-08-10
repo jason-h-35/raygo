@@ -93,6 +93,9 @@ func (t Tuple) Length() float64 {
 }
 
 func (t Tuple) Normalized() Tuple {
+	if t.Length() < eps {
+		panic("divisor too close to 0.0")
+	}
 	return t.Times(1 / t.Length())
 }
 
