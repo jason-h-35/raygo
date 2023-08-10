@@ -194,6 +194,13 @@ func Test_Normalized(t *testing.T) {
 	}
 }
 
+func Test_Normalized_Panic(t *testing.T) {
+	defer func() { _ = recover() }()
+	t1 := NewTuple(0, 0, 0, 0)
+	_ = t1.Normalized()
+	t.Errorf("Normalizing %v did not panic", t1)
+}
+
 func Test_Dot(t *testing.T) {
 	t1 := Vector(1, 2, 3)
 	t2 := Vector(2, 3, 4)
