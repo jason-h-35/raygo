@@ -118,3 +118,29 @@ func Test_Minus_Func(t *testing.T) {
 		t.Errorf("Minus %v should be %v, but was %v", t1, expect, result)
 	}
 }
+
+func Test_Times(t *testing.T) {
+	t1 := NewTuple(1, -2, 3, -4)
+	f1 := 3.5
+	result1 := t1.Times(f1)
+	expect1 := NewTuple(3.5, -7, 10.5, -14)
+	if !result1.Equals(expect1) {
+		t.Errorf("%v Times %v should be %v, but was %v", t1, f1, expect1, result1)
+	}
+	f2 := 0.5
+	result2 := t1.Times(f2)
+	expect2 := NewTuple(0.5, -1, 1.5, -2)
+	if !result2.Equals(expect2) {
+		t.Errorf("%v Times %v should be %v, but was %v", t1, f2, expect2, result2)
+	}
+}
+
+func Test_Divide(t *testing.T) {
+	t1 := NewTuple(1, -2, 3, -4)
+	div := 2.0
+	result := t1.Divide(div)
+	expect := NewTuple(0.5, -1, 1.5, -2)
+	if !result.Equals(expect) {
+		t.Errorf("%v Divide %v should be %v, but was %v", t1, div, expect, result)
+	}
+}
