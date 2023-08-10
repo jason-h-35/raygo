@@ -13,14 +13,11 @@ type Tuple struct {
 	X float32
 	Y float32
 	Z float32
-	W int
+	W float32
 }
 
-func NewTuple(x float32, y float32, z float32, w int) Tuple {
-	if w == 0 || w == 1 {
-		return Tuple{x, y, z, w}
-	}
-	panic("Tuple must be w = 0 or w = 1")
+func NewTuple(x float32, y float32, z float32, w float32) Tuple {
+	return Tuple{x, y, z, w}
 }
 
 func Point(x, y, z float32) Tuple {
@@ -68,34 +65,28 @@ func (t1 Tuple) Equals(t2 Tuple) bool {
 	return true
 }
 
-func Neg(t Tuple) Tuple {
-	return NewTuple(-t.X, -t.Y, -t.Z, t.W)
+func Minus(t Tuple) Tuple {
+	return t.Times(-1)
 }
 
 func (t1 Tuple) Plus(t2 Tuple) Tuple {
-	w := t1.W + t2.W
-	if w == 0 || w == 1 {
-		return NewTuple(
-			t1.X+t2.X,
-			t1.Y+t2.Y,
-			t1.Z+t2.Z,
-			w,
-		)
-	}
-	panic("w is not 0 or 1")
+	return NewTuple(
+		t1.X+t2.X, t1.Y+t2.Y,
+		t1.Z+t2.Z, t1.W+t2.W,
+	)
 }
 
 func (t1 Tuple) Minus(t2 Tuple) Tuple {
-	return t1.Plus(Neg(t2))
+	return t1.Plus(Minus(t2))
 }
 
 func (t Tuple) Times(f float32) Tuple {
-	return NewTuple(f*t.X, f*t.Y, f*t.Z, t.W)
+	return NewTuple(f*t.X, f*t.Y, f*t.Z, f*t.W)
 }
 
 func (t Tuple) Divide(f float32) Tuple {
-	if f == 0.0 {
-		panic("divide by zero")
+	if abs(f) < eps {
+		panic("divisor too close to 0.0")
 	}
-	return t.Times(1.0 / f)
+	return t.Times(1 / f)
 }
