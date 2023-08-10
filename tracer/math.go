@@ -1,11 +1,8 @@
 package tracer
 
-//  import (
-// 	"fmt"
-// 	"image/color"
-//
-// 	rl "github.com/gen2brain/raylib-go/raylib"
-// )
+import (
+	"math"
+)
 
 const eps = 1.e-5
 
@@ -89,4 +86,12 @@ func (t Tuple) Divide(f float64) Tuple {
 		panic("divisor too close to 0.0")
 	}
 	return t.Times(1 / f)
+}
+
+func (t Tuple) Length() float64 {
+	return math.Sqrt(t.X*t.X + t.Y*t.Y + t.Z*t.Z + t.W*t.W)
+}
+
+func (t Tuple) Normalized() Tuple {
+	return t.Times(1 / t.Length())
 }
