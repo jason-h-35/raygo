@@ -1,4 +1,4 @@
-package tracer
+package canvas
 
 import (
 	"testing"
