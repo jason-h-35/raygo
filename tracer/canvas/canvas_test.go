@@ -5,10 +5,23 @@ import (
 )
 
 func Test_Equals(t *testing.T) {
-	c1 := NewColor(1.0/3, 1.0/3, 1.0/3)
-	c2 := NewColor(0.333333, 0.333333, 0.333333)
-	if !c1.Equals(c2) {
-		t.Errorf("%v Equal %v should be true, but was false", c1, c2)
+	x, y := 1.0/3, 0.333333
+	c := NewColor(x, x, x)
+	cEq := NewColor(y, y, y)
+	cX := NewColor(0, x, x)
+	cY := NewColor(x, 0, x)
+	cZ := NewColor(x, x, 0)
+	if !c.Equals(cEq) {
+		t.Errorf("%v should Equal %v", c, cEq)
+	}
+	if c.Equals(cX) {
+		t.Errorf("%v should not Equal %v", c, cX)
+	}
+	if c.Equals(cY) {
+		t.Errorf("%v should not Equal %v", c, cY)
+	}
+	if c.Equals(cZ) {
+		t.Errorf("%v should not Equal %v", c, cZ)
 	}
 }
 
