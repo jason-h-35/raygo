@@ -115,7 +115,7 @@ func Test_Minus_Method(t *testing.T) {
 
 func Test_Minus_Func(t *testing.T) {
 	t1 := NewTuple(1, -2, 3, -4)
-	result := Minus(t1)
+	result := NewTuple(0, 0, 0, 0).Minus(t1)
 	expect := NewTuple(-1, 2, -3, 4)
 	if !result.Equals(expect) {
 		t.Errorf("Minus %v should be %v, but was %v", t1, expect, result)
