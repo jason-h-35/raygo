@@ -69,12 +69,11 @@ func (t1 Tuple) Plus(t2 Tuple) Tuple {
 	)
 }
 
-func Minus(t Tuple) Tuple {
-	return t.Times(-1)
-}
-
 func (t1 Tuple) Minus(t2 Tuple) Tuple {
-	return t1.Plus(Minus(t2))
+	return NewTuple(
+		t1.X-t2.X, t1.Y-t2.Y,
+		t1.Z-t2.Z, t1.W-t2.W,
+	)
 }
 
 func (t Tuple) Times(f float64) Tuple {
