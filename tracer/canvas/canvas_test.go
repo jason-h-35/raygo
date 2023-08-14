@@ -5,7 +5,7 @@ import (
 )
 
 func Test_Equals(t *testing.T) {
-	c1 := NewColor(1/3, 1/3, 1/3)
+	c1 := NewColor(1.0/3, 1.0/3, 1.0/3)
 	c2 := NewColor(0.333333, 0.333333, 0.333333)
 	if !c1.Equals(c2) {
 		t.Errorf("%v Equal %v should be true, but was false", c1, c2)
@@ -24,7 +24,7 @@ func Test_Plus(t *testing.T) {
 
 func Test_Minus(t *testing.T) {
 	c1 := NewColor(0.9, 0.6, 0.75)
-	c2 := NewColor(0.9, 0.6, 0.75)
+	c2 := NewColor(0.7, 0.1, 0.25)
 	expect := NewColor(0.2, 0.5, 0.5)
 	result := c1.Minus(c2)
 	if !expect.Equals(result) {

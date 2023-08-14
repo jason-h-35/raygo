@@ -41,11 +41,11 @@ func (c1 Color) Equals(c2 Color) bool {
 }
 
 func (c1 Color) Plus(c2 Color) Color {
-	return NewColor(c1.R+c1.R, c1.G+c2.G, c1.B+c2.B)
+	return NewColor(c1.R+c2.R, c1.G+c2.G, c1.B+c2.B)
 }
 
 func (c1 Color) Minus(c2 Color) Color {
-	return NewColor(c1.R-c1.R, c1.G-c2.G, c1.B-c2.B)
+	return NewColor(c1.R-c2.R, c1.G-c2.G, c1.B-c2.B)
 }
 
 func (c Color) Times(f float64) Color {
@@ -53,5 +53,5 @@ func (c Color) Times(f float64) Color {
 }
 
 func (c1 Color) Hadamard(c2 Color) Color {
-	return NewColor(c1.R*c1.R, c1.G*c2.G, c1.B*c2.B)
+	return NewColor(c1.R*c2.R, c1.G*c2.G, c1.B*c2.B)
 }
