@@ -36,14 +36,30 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 	return canvas.image[x][y]
 }
 
-func (c *Canvas) ToPPM() string {
-	colorRepMax := 255.0
-	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", c.Width, c.Height, colorMax)
+func (c *Canvas) ToPPM(maxColorVal int) string {
+	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", c.Width(), c.Height(), maxColorVal)
+	maxColorValf := float64(maxColorVal)
 	var b strings.Builder
+	b.WriteString(ppmHeader)
 	for _, row := range c.image {
-		for _, color := range row {
-			colorRep := string(int(math.Round(color.Times(colorRepMax))))
-			b.WriteString(colorRep)
+		for _, pix := range row {
+			R := int(math.Round(maxColorValf * pix.R)) // multiply by maxColorVal and round to nearest int
+			b.WriteString(fmt.Sprint(R))               // put into builder
+			b.WriteRune('\n')
+		}
+	}
+	for _, row := range c.image {
+		for _, pix := range row {
+			G := int(math.Round(maxColorValf * pix.G))
+			b.WriteString(fmt.Sprint(G))
+			b.WriteRune('\n')
+		}
+	}
+	for _, row := range c.image {
+		for _, pix := range row {
+			B := int(math.Round(maxColorValf * pix.B)) // multiply by maxColorVal and round to nearest int
+			b.WriteString(fmt.Sprint(B))               // put into builder
+			b.WriteRune('\n')
 		}
 	}
 	b.WriteRune('\n')
