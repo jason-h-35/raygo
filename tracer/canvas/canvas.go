@@ -5,8 +5,11 @@ type Canvas struct {
 }
 
 func NewCanvas(width, height int) Canvas {
-	c := Canvas{}
-	return c
+	image := make([][]Color, width)
+	for i := range image {
+		image[i] = make([]Color, height)
+	}
+	return Canvas{image}
 }
 
 func (c *Canvas) WritePixel(x int, y int, color Color) {
