@@ -33,8 +33,7 @@ func (c *Canvas) WritePixel(x int, y int, color Color) {
 }
 
 func (c *Canvas) ReadPixel(x, y int) Color {
-	canvas := *c
-	return canvas.image[x][y]
+	return c.image[x][y]
 }
 
 func (c *Canvas) PPMStr(maxColorVal int) string {

@@ -25,7 +25,7 @@ func tick(env Environment, proj Projectile) Projectile {
 func main() {
 	p := Projectile{
 		position: tracer.Point(0, 1, 0),
-		velocity: tracer.Vector(0, 1, 0).Normalized(),
+		velocity: tracer.Vector(1, 1.8, 0).Normalized().Times(11.25),
 	}
 	e := Environment{
 		gravity: tracer.Vector(0, -0.1, 0),
