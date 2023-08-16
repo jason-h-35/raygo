@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/jason-h-35/raygo/tracer"
+	"github.com/jason-h-35/raygo/tracer/canvas"
 )
 
 type Projectile struct {
@@ -31,8 +33,10 @@ func main() {
 		gravity: tracer.Vector(0, -0.1, 0),
 		wind:    tracer.Vector(-0.01, 0, 0),
 	}
+	c := canvas.NewCanvas(900, 550)
 	for p.position.Y >= 0 {
 		p = tick(e, p)
+		c.WritePixel(int(math.Round(p.position.X)), int(math.Round(p.position.Y)), canvas.White)
 		fmt.Printf("%v\n", p.position)
 	}
 }
