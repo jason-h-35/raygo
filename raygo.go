@@ -39,4 +39,9 @@ func main() {
 		c.WritePixel(int(math.Round(p.position.X)), int(math.Round(p.position.Y)), canvas.White)
 		fmt.Printf("%v\n", p.position)
 	}
+	bytesWritten, err := c.PPMFile(255, "/home/jason/out.ppm")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(bytesWritten)
 }

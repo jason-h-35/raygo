@@ -44,13 +44,17 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 }
 
 func (c *Canvas) PPMStr(maxColorVal int) string {
-	// TODO: test it
-	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", c.Width(), c.Height(), maxColorVal)
+	// TODO: test it because it's broken!!!
+	width, height := c.Width(), c.Height()
+	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", width, height, maxColorVal)
 	maxColorValf := float64(maxColorVal)
 	colorFunc := func(pixcolor float64) int {
 		return int(math.Round(maxColorValf * pixcolor))
 	}
-	var ppmData map[rune][]int
+	ppmData := map[rune][]int{}
+	for _, v := range []rune{'R', 'G', 'B'} {
+		ppmData[v] = make([]int, width*height)
+	}
 	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
 	for _, row := range c.image {
 		for _, pix := range row {
@@ -60,7 +64,7 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 		}
 	}
 	// string join into the string to be written for each of R,G,B
-	var ppmString map[rune]string
+	ppmString := map[rune]string{}
 	for k := range ppmData {
 		ppmString[k] = strings.Trim(fmt.Sprint(ppmData[k]), "[]") + "\n"
 	}
@@ -76,6 +80,7 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 func (c *Canvas) PPMFile(maxColorVal int, writePath string) (int, error) {
 	ppmStr := c.PPMStr(maxColorVal)
 	file, fileErr := os.Create("writepath")
+	defer file.Close()
 	if fileErr != nil {
 		fmt.Println(fileErr)
 		return 0, fileErr
