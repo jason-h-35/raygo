@@ -2,6 +2,7 @@ package canvas
 
 import (
 	"fmt"
+	"errors"
 	"math"
 	"os"
 	"strings"
@@ -27,9 +28,15 @@ func (c *Canvas) Height() int {
 	return len(c.image[0]) // how to check if all sub-arrays are the same length?
 }
 
-func (c *Canvas) WritePixel(x int, y int, color Color) {
-	canvas := *c
-	canvas.image[x][y] = color
+func (c *Canvas) WritePixel(x int, y int, color Color) error {
+	if !(0 <= x && x < c.Width()) {
+		return errors.New("x out of range")
+	}
+	if !(0 <= y && y < c.Height()) {
+		return errors.New("y out of range")
+	}
+	c.image[x][y] = color
+	return nil
 }
 
 func (c *Canvas) ReadPixel(x, y int) Color {
