@@ -36,9 +36,8 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 	return canvas.image[x][y]
 }
 
-func (c *Canvas) ToPPM(maxColorVal int) string {
+func (c *Canvas) PPMStr(maxColorVal int) string {
 	// TODO: test it
-	// TODO: actually write out the PPM file
 	// TODO: feels repetitive. factor into bigger for-loop or maybe anon func()?
 	// TODO: feels like combining calculation and an action. split it?
 	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", c.Width(), c.Height(), maxColorVal)
@@ -68,4 +67,14 @@ func (c *Canvas) ToPPM(maxColorVal int) string {
 	}
 	b.WriteRune('\n')
 	return b.String()
+}
+
+func (c *Canvas) PPMFile(maxColorVal int, writePath string) (int, error) {
+	ppmStr := c.PPMStr(maxColorVal)
+	file, fileErr := os.Create("writepath")
+	if fileErr != nil {
+		fmt.Println(fileErr)
+		return 0, fileErr
+	}
+	return fmt.Fprintf(file, "%v", ppmStr)
 }
