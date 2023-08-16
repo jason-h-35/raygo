@@ -1,8 +1,8 @@
 package canvas
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"math"
 	"os"
 	"strings"
