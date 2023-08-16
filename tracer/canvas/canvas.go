@@ -43,24 +43,21 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 	return c.image[x][y]
 }
 
+func ppmRange(intensity float64, maximum int) int {
+	return int(math.Round(float64(maximum) * intensity))
+}
+
 func (c *Canvas) PPMStr(maxColorVal int) string {
 	// TODO: test it because it's broken!!!
 	width, height := c.Width(), c.Height()
 	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", width, height, maxColorVal)
-	maxColorValf := float64(maxColorVal)
-	colorFunc := func(pixcolor float64) int {
-		return int(math.Round(maxColorValf * pixcolor))
-	}
 	ppmData := map[rune][]int{}
-	for _, v := range []rune{'R', 'G', 'B'} {
-		ppmData[v] = make([]int, width*height)
-	}
 	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
 	for _, row := range c.image {
 		for _, pix := range row {
-			ppmData['R'] = append(ppmData['R'], colorFunc(pix.R))
-			ppmData['G'] = append(ppmData['G'], colorFunc(pix.G))
-			ppmData['B'] = append(ppmData['B'], colorFunc(pix.B))
+			ppmData['R'] = append(ppmData['R'], ppmRange(pix.R, maxColorVal))
+			ppmData['G'] = append(ppmData['G'], ppmRange(pix.G, maxColorVal))
+			ppmData['B'] = append(ppmData['B'], ppmRange(pix.B, maxColorVal))
 		}
 	}
 	// string join into the string to be written for each of R,G,B
