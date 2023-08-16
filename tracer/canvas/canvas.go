@@ -63,14 +63,17 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 	// string join into the string to be written for each of R,G,B
 	ppmString := map[rune]string{}
 	for k := range ppmData {
-		ppmString[k] = strings.Trim(fmt.Sprint(ppmData[k]), "[]") + "\n"
+		ppmString[k] = strings.Trim(fmt.Sprint(ppmData[k]), "[]")
 	}
 	// concat it all and return
 	var b strings.Builder
 	b.WriteString(ppmHeader)
 	b.WriteString(ppmString['R'])
+	b.WriteRune('\n')
 	b.WriteString(ppmString['G'])
+	b.WriteRune('\n')
 	b.WriteString(ppmString['B'])
+	b.WriteRune('\n')
 	return b.String()
 }
 
