@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math"
+	// "math"
 
 	"github.com/jason-h-35/raygo/tracer"
 	"github.com/jason-h-35/raygo/tracer/canvas"
@@ -30,15 +30,20 @@ func main() {
 		velocity: tracer.Vector(1, 1.8, 0).Normalized().Times(11.25),
 	}
 	e := Environment{
-		gravity: tracer.Vector(0, -0.1, 0),
+		gravity: tracer.Vector(0, -1.0, 0),
 		wind:    tracer.Vector(-0.01, 0, 0),
 	}
 	c := canvas.NewCanvas(900, 550)
+	count := 0
 	for p.position.Y >= 0 {
+		count += 1
 		p = tick(e, p)
-		c.WritePixel(int(math.Round(p.position.X)), int(math.Round(p.position.Y)), canvas.White)
+		// c.WritePixel(int(math.Round(p.position.X)), int(math.Round(p.position.Y)), canvas.White)
+		c.WritePixel(count, count, canvas.White)
 		fmt.Printf("%v\n", p.position)
 	}
+	c.WritePixel(0, 0, canvas.White)
+	fmt.Printf("%v\n", c.PPMStr(255))
 	bytesWritten, err := c.PPMFile(255, "/home/jason/out.ppm")
 	if err != nil {
 		fmt.Println(err)

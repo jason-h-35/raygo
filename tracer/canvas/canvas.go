@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -43,36 +44,45 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 	return c.image[x][y]
 }
 
-func ppmRange(intensity float64, maximum int) int {
-	return int(math.Round(float64(maximum) * intensity))
+func (c Color) ppmRange(maximum int) Color {
+	// TODO: handle values outside of 0.0 and 1.0 color min and max
+	c = c.Times(float64(maximum))
+	return NewColor(
+		math.Round(c.R),
+		math.Round(c.G),
+		math.Round(c.B),
+	)
+}
+
+func (c Color) asInts() (int, int, int) {
+	return int(c.R), int(c.G), int(c.B)
 }
 
 func (c *Canvas) PPMStr(maxColorVal int) string {
 	// TODO: test it because it's broken!!!
 	width, height := c.Width(), c.Height()
 	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", width, height, maxColorVal)
-	ppmData := map[rune][]int{}
+	lenCount, lenMax := 0, 67
+	var b strings.Builder
+	b.WriteString(ppmHeader)
 	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
 	for _, row := range c.image {
 		for _, pix := range row {
-			ppmData['R'] = append(ppmData['R'], ppmRange(pix.R, maxColorVal))
-			ppmData['G'] = append(ppmData['G'], ppmRange(pix.G, maxColorVal))
-			ppmData['B'] = append(ppmData['B'], ppmRange(pix.B, maxColorVal))
+			R, G, B := pix.ppmRange(maxColorVal).asInts()
+			Rs, Gs, Bs := strconv.Itoa(R), strconv.Itoa(G), strconv.Itoa(B)
+			b.WriteString(Rs)
+			b.WriteRune(' ')
+			b.WriteString(Gs)
+			b.WriteRune(' ')
+			b.WriteString(Bs)
+			b.WriteRune(' ')
+			lenCount += len(Rs) + len(Gs) + len(Bs) + 3
+			if lenCount > lenMax {
+				b.WriteRune('\n')
+				lenCount = 0
+			}
 		}
 	}
-	// string join into the string to be written for each of R,G,B
-	ppmString := map[rune]string{}
-	for k := range ppmData {
-		ppmString[k] = strings.Trim(fmt.Sprint(ppmData[k]), "[]")
-	}
-	// concat it all and return
-	var b strings.Builder
-	b.WriteString(ppmHeader)
-	b.WriteString(ppmString['R'])
-	b.WriteRune('\n')
-	b.WriteString(ppmString['G'])
-	b.WriteRune('\n')
-	b.WriteString(ppmString['B'])
 	b.WriteRune('\n')
 	return b.String()
 }
