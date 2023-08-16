@@ -38,34 +38,31 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 
 func (c *Canvas) PPMStr(maxColorVal int) string {
 	// TODO: test it
-	// TODO: feels repetitive. factor into bigger for-loop or maybe anon func()?
-	// TODO: feels like combining calculation and an action. split it?
 	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", c.Width(), c.Height(), maxColorVal)
 	maxColorValf := float64(maxColorVal)
+	colorFunc := func(pixcolor float64) int {
+		return int(math.Round(maxColorValf*pixcolor))
+	}
+	var ppmData map[rune][]int
+	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
+	for _, row := range c.image {
+		for _, pix := range row {
+			ppmData['R'] = append(ppmData['R'], colorFunc(pix.R))
+			ppmData['G'] = append(ppmData['G'], colorFunc(pix.G))
+			ppmData['B'] = append(ppmData['B'], colorFunc(pix.B))
+		}
+	}
+	// string join into the string to be written for each of R,G,B
+	var ppmString map[rune]string
+	for k := range ppmData {
+		ppmString[k] = strings.Trim(fmt.Sprint(ppmData[k]), "[]") + "\n"
+	}
+	// concat it all and return
 	var b strings.Builder
 	b.WriteString(ppmHeader)
-	for _, row := range c.image {
-		for _, pix := range row {
-			R := int(math.Round(maxColorValf * pix.R)) // multiply by maxColorVal and round to nearest int
-			b.WriteString(fmt.Sprint(R))               // put into builder
-			b.WriteRune('\n')
-		}
-	}
-	for _, row := range c.image {
-		for _, pix := range row {
-			G := int(math.Round(maxColorValf * pix.G))
-			b.WriteString(fmt.Sprint(G))
-			b.WriteRune('\n')
-		}
-	}
-	for _, row := range c.image {
-		for _, pix := range row {
-			B := int(math.Round(maxColorValf * pix.B)) // multiply by maxColorVal and round to nearest int
-			b.WriteString(fmt.Sprint(B))               // put into builder
-			b.WriteRune('\n')
-		}
-	}
-	b.WriteRune('\n')
+	b.WriteString(ppmString['R'])
+	b.WriteString(ppmString['G'])
+	b.WriteString(ppmString['B'])
 	return b.String()
 }
 
