@@ -79,7 +79,7 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 
 func (c *Canvas) PPMFile(maxColorVal int, writePath string) (int, error) {
 	ppmStr := c.PPMStr(maxColorVal)
-	file, fileErr := os.Create("writepath")
+	file, fileErr := os.Create(writePath)
 	defer file.Close()
 	if fileErr != nil {
 		fmt.Println(fileErr)
