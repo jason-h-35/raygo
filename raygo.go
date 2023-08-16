@@ -24,7 +24,7 @@ func tick(env Environment, proj Projectile) Projectile {
 	return Projectile{position, velocity}
 }
 
-func main() {
+func blah() {
 	p := Projectile{
 		position: tracer.Point(0, 1, 0),
 		velocity: tracer.Vector(1, 1.8, 0).Normalized().Times(11.25),
@@ -35,10 +35,13 @@ func main() {
 	}
 	c := canvas.NewCanvas(900, 550)
 	count := 0
-	for p.position.Y >= 0 {
+	// for p.position.Y >= 0 {
+	for count != 1000 {
 		count += 1
 		p = tick(e, p)
 		// c.WritePixel(int(math.Round(p.position.X)), int(math.Round(p.position.Y)), canvas.White)
+		c.WritePixel(0, count, canvas.White)
+		c.WritePixel(count, 0, canvas.White)
 		c.WritePixel(count, count, canvas.White)
 		fmt.Printf("%v\n", p.position)
 	}
@@ -49,4 +52,21 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(bytesWritten)
+	fmt.Println(count)
+}
+
+func main() {
+	c := canvas.NewCanvas(1000, 1000)
+	count := 0
+	for count != 1000 {
+		c.WritePixel(0, count, canvas.White)
+		c.WritePixel(count, 0, canvas.White)
+		c.WritePixel(count, count, canvas.White)
+		count++
+	}
+	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(bytes)
 }
