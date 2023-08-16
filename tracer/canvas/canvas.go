@@ -3,6 +3,7 @@ package canvas
 import (
 	"fmt"
 	"math"
+	"os"
 	"strings"
 )
 
@@ -41,7 +42,7 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", c.Width(), c.Height(), maxColorVal)
 	maxColorValf := float64(maxColorVal)
 	colorFunc := func(pixcolor float64) int {
-		return int(math.Round(maxColorValf*pixcolor))
+		return int(math.Round(maxColorValf * pixcolor))
 	}
 	var ppmData map[rune][]int
 	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
