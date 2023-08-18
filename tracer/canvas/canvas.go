@@ -10,7 +10,7 @@ import (
 )
 
 type Canvas struct {
-	image [][]Color
+	Image [][]Color
 }
 
 func NewCanvas(width, height int) Canvas {
@@ -22,11 +22,11 @@ func NewCanvas(width, height int) Canvas {
 }
 
 func (c *Canvas) Width() int {
-	return len(c.image)
+	return len(c.Image)
 }
 
 func (c *Canvas) Height() int {
-	return len(c.image[0]) // how to check if all sub-arrays are the same length?
+	return len(c.Image[0]) // how to check if all sub-arrays are the same length?
 }
 
 func (c *Canvas) WritePixel(x int, y int, color Color) error {
@@ -36,12 +36,12 @@ func (c *Canvas) WritePixel(x int, y int, color Color) error {
 	if !(0 <= y && y < c.Height()) {
 		return errors.New("y out of range")
 	}
-	c.image[x][y] = color
+	c.Image[x][y] = color
 	return nil
 }
 
 func (c *Canvas) ReadPixel(x, y int) Color {
-	return c.image[x][y]
+	return c.Image[x][y]
 }
 
 func (c Color) ppmRange(maximum int) Color {
@@ -66,7 +66,7 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 	var b strings.Builder
 	b.WriteString(ppmHeader)
 	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
-	for _, row := range c.image {
+	for _, row := range c.Image {
 		for _, pix := range row {
 			R, G, B := pix.ppmRange(maxColorVal).asInts()
 			Rs, Gs, Bs := strconv.Itoa(R), strconv.Itoa(G), strconv.Itoa(B)

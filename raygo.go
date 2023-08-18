@@ -19,8 +19,8 @@ type Environment struct {
 }
 
 func tick(env Environment, proj Projectile) Projectile {
-	position := proj.position.Plus(proj.velocity)
-	velocity := proj.velocity.Plus(env.gravity).Plus(env.wind)
+	position := proj.position.Plus(proj.velocity.Divide(5))
+	velocity := proj.velocity.Plus(env.gravity.Plus(env.wind).Divide(5))
 	return Projectile{position, velocity}
 }
 
