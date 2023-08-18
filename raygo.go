@@ -26,23 +26,30 @@ func tick(env Environment, proj Projectile) Projectile {
 
 func main() {
 	p := Projectile{
-		position: tracer.Point(0, 200, 0),
-		velocity: tracer.Vector(0, 0, 0),
+		position: tracer.Point(0, 1, 0),
+		velocity: tracer.Vector(1, 1.8, 0).Normalized().Times(11.25),
 	}
 	e := Environment{
-		gravity: tracer.Vector(0, -1, 0),
+		gravity: tracer.Vector(0, -0.2, 0),
 		wind:    tracer.Vector(-0.01, 0, 0),
 	}
-	c := canvas.NewCanvas(900, 550)
+	c := canvas.NewCanvas(4000, 3999)
 	count := 0
 	red, green, blue := canvas.NewColor(1, 0, 0), canvas.NewColor(0, 1, 0), canvas.NewColor(0, 0, 1)
-	for count <= 10 {
+	yellow, magenta, cyan := canvas.NewColor(1, 1, 0), canvas.NewColor(1, 0, 1), canvas.NewColor(0, 1, 1)
+	for count <= 1500 {
 		p = tick(e, p)
 		c.WritePixel(int(p.position.X), int(p.position.Y), red)
 		p = tick(e, p)
 		c.WritePixel(int(p.position.X), int(p.position.Y), green)
 		p = tick(e, p)
 		c.WritePixel(int(p.position.X), int(p.position.Y), blue)
+		p = tick(e, p)
+		c.WritePixel(int(p.position.X), int(p.position.Y), yellow)
+		p = tick(e, p)
+		c.WritePixel(int(p.position.X), int(p.position.Y), magenta)
+		p = tick(e, p)
+		c.WritePixel(int(p.position.X), int(p.position.Y), cyan)
 		count += 3
 	}
 	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
@@ -52,16 +59,19 @@ func main() {
 	fmt.Println(bytes)
 }
 
-func canvastest() {
-	c := canvas.NewCanvas(1000, 1000)
+// BUGGED ON NON-SQUARE CANVAS
+func main2() {
+	c := canvas.NewCanvas(5, 5)
 	count := 0
-	for count != 1000 {
-		c.WritePixel(0, count, canvas.White)
-		c.WritePixel(count, 0, canvas.White)
+	for count != 4 {
+		c.WritePixel(0, count, canvas.NewColor(1, 0, 0))
+		c.WritePixel(count, 0, canvas.NewColor(0, 1, 0))
 		c.WritePixel(count, count, canvas.White)
 		count++
 	}
-	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
+	fmt.Println(c.Image)
+	fmt.Println(c.PPMStr(1))
+	bytes, err := c.PPMFile(1, "/home/jason/out.ppm")
 	if err != nil {
 		fmt.Println(err)
 	}
