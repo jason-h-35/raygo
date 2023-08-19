@@ -30,7 +30,7 @@ func Test_WritePixel(t *testing.T) {
 	c := NewCanvas(10, 20)
 	red := NewColor(1, 0, 0)
 	c.WritePixel(2, 3, red)
-	result := c.Image[10][20]
+	result := c.Image[2][3]
 	if result != red {
 		t.Errorf("expected WritePixel pixel to be %v but was %v", red, result)
 	}
