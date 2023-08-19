@@ -27,12 +27,12 @@ func Test_NewCanvas(t *testing.T) {
 }
 
 func Test_WritePixel(t *testing.T) {
-	c := NewCanvas(20, 40)
-	white := NewColor(1, 1, 1)
-	c.WritePixel(10, 20, white)
+	c := NewCanvas(10, 20)
+	red := NewColor(1, 0, 0)
+	c.WritePixel(2, 3, red)
 	result := c.Image[10][20]
-	if result != white {
-		t.Errorf("expected WritePixel pixel to be %v but was %v", white, result)
+	if result != red {
+		t.Errorf("expected WritePixel pixel to be %v but was %v", red, result)
 	}
 }
 
