@@ -14,9 +14,9 @@ type Canvas struct {
 }
 
 func NewCanvas(xMax, yMax int) Canvas {
-	image := make([][]Color, xMax, xMax)
+	image := make([][]Color, xMax)
 	for i := range image {
-		image[i] = make([]Color, yMax, yMax)
+		image[i] = make([]Color, yMax)
 	}
 	return Canvas{image}
 }
