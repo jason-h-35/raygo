@@ -5,11 +5,24 @@ import (
 )
 
 func Test_NewCanvas(t *testing.T) {
-	canvas := NewCanvas(10, 5)
-	result := canvas.Image[9][4]
-	expect := NewColor(0, 0, 0)
-	if !result.Equals(expect) {
-		t.Errorf("expected pixel on new Canvas to be %v but was %v", expect, result)
+	xMax, yMax := 10, 20
+	canvas := NewCanvas(xMax, yMax)
+	xLen := len(canvas.Image)
+	if xLen != xMax {
+		t.Errorf("expected len of canvas.Image to be %v but instead was %v", xMax, xLen)
+	}
+	for i := range canvas.Image {
+		yLen := len(canvas.Image[i])
+		if yLen != yMax {
+			t.Errorf("expected len of canvas.Image to be %v but instead was %v", yMax, yLen)
+		}
+	}
+	for i := range canvas.Image {
+		for j := range canvas.Image[i] {
+			if !canvas.Image[i][j].Equals(Black) {
+				t.Errorf("expected NewCanvas Canvas to be %v on every pixel but was %v on (%v, %v)", Black, canvas.Image[i][j], i, j)
+			}
+		}
 	}
 }
 
