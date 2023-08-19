@@ -13,10 +13,10 @@ type Canvas struct {
 	Image [][]Color
 }
 
-func NewCanvas(width, height int) Canvas {
-	image := make([][]Color, width, width)
+func NewCanvas(xMax, yMax int) Canvas {
+	image := make([][]Color, xMax, xMax)
 	for i := range image {
-		image[i] = make([]Color, height, height)
+		image[i] = make([]Color, yMax, yMax)
 	}
 	return Canvas{image}
 }
