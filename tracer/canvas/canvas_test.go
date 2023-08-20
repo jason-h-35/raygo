@@ -1,6 +1,7 @@
 package canvas
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -50,4 +51,12 @@ func Test_ReadPixel(t *testing.T) {
 			}
 		}
 	}
+}
+
+func Test_PPMStr(t *testing.T) {
+	c := NewCanvas(5, 3)
+	headerExpect := "P3\n5 3\n255"
+	depth := 255
+	ppm := c.PPMStr(depth)
+	headerResult := strings.Split(ppm, "\n")[:3]
 }
