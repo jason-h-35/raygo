@@ -55,8 +55,11 @@ func Test_ReadPixel(t *testing.T) {
 
 func Test_PPMStr(t *testing.T) {
 	c := NewCanvas(5, 3)
-	headerExpect := "P3\n5 3\n255"
+	headerExpect := "P3\n5 3\n255\n"
 	depth := 255
 	ppm := c.PPMStr(depth)
-	headerResult := strings.Split(ppm, "\n")[:3]
+	headerResult := ppm[0:len(headerExpect)]
+	if headerExpect != headerResult {
+		t.Errorf("PPM header does not match.\nExpected: %v\nGot: %v\n")
+	}
 }
