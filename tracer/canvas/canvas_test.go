@@ -1,7 +1,6 @@
 package canvas
 
 import (
-	"strings"
 	"testing"
 )
 
