@@ -59,6 +59,6 @@ func Test_PPMStr(t *testing.T) {
 	ppm := c.PPMStr(depth)
 	headerResult := ppm[0:len(headerExpect)]
 	if headerExpect != headerResult {
-		t.Errorf("PPM header does not match.\nExpected: %v\nGot: %v\n")
+		t.Errorf("PPM header does not match.\nExpected: %v\nGot: %v\n", headerExpect, headerResult)
 	}
 }
