@@ -54,11 +54,21 @@ func Test_ReadPixel(t *testing.T) {
 
 func Test_PPMStr(t *testing.T) {
 	c := NewCanvas(5, 3)
+	ppm := c.PPMStr(255)
+	// header test
 	headerExpect := "P3\n5 3\n255\n"
-	depth := 255
-	ppm := c.PPMStr(depth)
 	headerResult := ppm[0:len(headerExpect)]
 	if headerExpect != headerResult {
 		t.Errorf("PPM header does not match.\nExpected:\n%v\nGot:\n%v\n", headerExpect, headerResult)
 	}
+	overRed := NewColor(1.5, 0, 0)
+	halfGreen := NewColor(0, 0.5, 0)
+	underBlue := NewColor(-0.5, 0, 1)
+	c.WritePixel(0, 0, overRed)
+	c.WritePixel(2, 1, halfGreen)
+	c.WritePixel(4, 2, underBlue)
+	ppm = c.PPMStr(255)
+	// TODO: unfinished...
+	// page 21 in book for rest of test
+
 }
