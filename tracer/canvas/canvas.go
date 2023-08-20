@@ -61,7 +61,7 @@ func (c Color) asInts() (int, int, int) {
 func (c *Canvas) PPMStr(maxColorVal int) string {
 	// TODO: test it because it's broken!!!
 	width, height := c.Width(), c.Height()
-	ppmHeader := fmt.Sprintf("\nP3\n%v %v\n%v\n", width, height, maxColorVal)
+	ppmHeader := fmt.Sprintf("P3\n%v %v\n%v\n", width, height, maxColorVal)
 	lenCount, lenMax := 0, 67
 	var b strings.Builder
 	b.WriteString(ppmHeader)
