@@ -33,7 +33,7 @@ func main() {
 		gravity: tracer.Vector(0, -0.2, 0),
 		wind:    tracer.Vector(-0.01, 0, 0),
 	}
-	c := canvas.NewCanvas(4000, 3999)
+	c := canvas.NewCanvas(900, 450)
 	count := 0
 	red, green, blue := canvas.NewColor(1, 0, 0), canvas.NewColor(0, 1, 0), canvas.NewColor(0, 0, 1)
 	yellow, magenta, cyan := canvas.NewColor(1, 1, 0), canvas.NewColor(1, 0, 1), canvas.NewColor(0, 1, 1)
@@ -61,7 +61,7 @@ func main() {
 
 // BUGGED ON NON-SQUARE CANVAS
 func main2() {
-	c := canvas.NewCanvas(5, 5)
+	c := canvas.NewCanvas(10, 5)
 	count := 0
 	for count != 4 {
 		c.WritePixel(0, count, canvas.NewColor(1, 0, 0))
