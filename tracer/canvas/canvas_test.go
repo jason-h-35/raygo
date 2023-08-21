@@ -56,10 +56,9 @@ func Test_PPMStr(t *testing.T) {
 	c := NewCanvas(5, 3)
 	ppm := c.PPMStr(255)
 	// header test
-	headerExpect := "P3\n5 3\n255\n"
-	headerResult := ppm[0:len(headerExpect)]
-	if headerExpect != headerResult {
-		t.Errorf("PPM header does not match.\nExpected:\n%v\nGot:\n%v\n", headerExpect, headerResult)
+	header := "P3\n5 3\n255\n"
+	if strings.HasPrefix(ppm, header) {
+		t.Errorf("PPM header does not match.\nExpected ppm:\n%v\n to begin with header:\n%v\n", ppm, header)
 	}
 	overRed := NewColor(1.5, 0, 0)
 	halfGreen := NewColor(0, 0.5, 0)
