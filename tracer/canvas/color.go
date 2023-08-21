@@ -1,8 +1,7 @@
 package canvas
 
 import (
-// "image"
-// "image/color"
+	"math"
 )
 
 type Color struct {
@@ -54,4 +53,28 @@ func (c Color) Times(f float64) Color {
 
 func (c1 Color) Hadamard(c2 Color) Color {
 	return NewColor(c1.R*c2.R, c1.G*c2.G, c1.B*c2.B)
+}
+
+func (c Color) ToPPMRange(maximum int) Color {
+	c = c.Times(float64(maximum))
+	// clamp each of c.R, c.G, c.B into range [0, maximum]
+	c.R = math.Min(math.Max(c.R, 0), float64(maximum))
+	c.G = math.Min(math.Max(c.G, 0), float64(maximum))
+	c.B = math.Min(math.Max(c.B, 0), float64(maximum))
+	return c.Round()
+}
+
+func (c Color) Round() Color {
+	c.R = math.Round(c.R)
+	c.G = math.Round(c.G)
+	c.B = math.Round(c.B)
+	return c
+}
+
+func (c Color) asFloats() (float64, float64, float64) {
+	return c.R, c.G, c.B
+}
+
+func (c Color) asInts() (int, int, int) {
+	return int(c.R), int(c.G), int(c.B)
 }

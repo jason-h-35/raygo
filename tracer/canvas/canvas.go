@@ -3,7 +3,6 @@ package canvas
 import (
 	"errors"
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -42,30 +41,6 @@ func (c *Canvas) WritePixel(x int, y int, color Color) error {
 
 func (c *Canvas) ReadPixel(x, y int) Color {
 	return c.Image[x][y]
-}
-
-func (c Color) ToPPMRange(maximum int) Color {
-	c = c.Times(float64(maximum))
-	// clamp each of c.R, c.G, c.B into range [0, maximum]
-	c.R = math.Min(math.Max(c.R, 0), float64(maximum))
-	c.G = math.Min(math.Max(c.G, 0), float64(maximum))
-	c.B = math.Min(math.Max(c.B, 0), float64(maximum))
-	return c.Round()
-}
-
-func (c Color) Round() Color {
-	c.R = math.Round(c.R)
-	c.G = math.Round(c.G)
-	c.B = math.Round(c.B)
-	return c
-}
-
-func (c Color) asFloats() (float64, float64, float64) {
-	return c.R, c.G, c.B
-}
-
-func (c Color) asInts() (int, int, int) {
-	return int(c.R), int(c.G), int(c.B)
 }
 
 func (c *Canvas) PPMStr(maxColorVal int) string {
