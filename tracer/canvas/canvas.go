@@ -51,11 +51,10 @@ func (c Color) ToPPMRange(maximum int) Color {
 }
 
 func (c Color) Round() Color {
-	return NewColor(
-		math.Round(c.R),
-		math.Round(c.G),
-		math.Round(c.B),
-	)
+	c.R = math.Round(c.R)
+	c.G = math.Round(c.G)
+	c.B = math.Round(c.B)
+	return c
 }
 
 func (c Color) asFloats() (float64, float64, float64) {
