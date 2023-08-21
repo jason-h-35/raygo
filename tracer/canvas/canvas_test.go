@@ -78,4 +78,13 @@ func Test_PPMStr(t *testing.T) {
 	if !strings.Contains(result, strings.Join(expect, "")) {
 		t.Errorf("Data portion of PPM seems incorrect. Expected \n%v\nto contain %v", ppm, expect)
 	}
+	// line length test
+	ppmLines := strings.Split(ppm, "\n")
+	maxLen := 70
+	for lineNum, line := range ppmLines {
+		if len(line) > maxLen {
+			t.Errorf("Line too long for PPM format. expected max of %v but was instead %v at line %v\n%v",
+				maxLen, len(line), lineNum, line)
+		}
+	}
 }
