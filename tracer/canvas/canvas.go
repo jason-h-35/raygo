@@ -44,7 +44,7 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 	return c.Image[x][y]
 }
 
-func (c Color) ppmRange(maximum int) Color {
+func (c Color) ToPPMRange(maximum int) Color {
 	// TODO: handle values outside of 0.0 and 1.0 color min and max
 	c = c.Times(float64(maximum))
 	return NewColor(
@@ -68,7 +68,7 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
 	for _, row := range c.Image {
 		for _, pix := range row {
-			R, G, B := pix.ppmRange(maxColorVal).asInts()
+			R, G, B := pix.ToPPMRange(maxColorVal).asInts()
 			Rs, Gs, Bs := strconv.Itoa(R), strconv.Itoa(G), strconv.Itoa(B)
 			b.WriteString(Rs)
 			b.WriteRune(' ')
