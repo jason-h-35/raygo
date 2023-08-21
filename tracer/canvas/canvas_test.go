@@ -61,7 +61,7 @@ func Test_PPMStr(t *testing.T) {
 	if !strings.HasPrefix(ppm, header) {
 		t.Errorf("PPM header does not match.\nExpected ppm:\n%v\nto begin with:\n%v\n", ppm, header)
 	}
-	// data test
+	// pixel data test
 	overRed := NewColor(1.5, 0, 0)
 	halfGreen := NewColor(0, 0.5, 0)
 	underBlue := NewColor(-0.5, 0, 1)
@@ -86,5 +86,10 @@ func Test_PPMStr(t *testing.T) {
 			t.Errorf("Line too long for PPM format. expected max of %v but was instead %v at line %v\n%v",
 				maxLen, len(line), lineNum, line)
 		}
+	}
+	// last char is newline test
+	lastChar := ppm[len(ppm)-1]
+	if lastChar != '\n' {
+		t.Errorf("Expected last char of PPM to be newline, but was %v instead.", lastChar)
 	}
 }
