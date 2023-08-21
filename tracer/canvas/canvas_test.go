@@ -1,6 +1,7 @@
 package canvas
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -57,9 +58,10 @@ func Test_PPMStr(t *testing.T) {
 	ppm := c.PPMStr(255)
 	// header test
 	header := "P3\n5 3\n255\n"
-	if strings.HasPrefix(ppm, header) {
-		t.Errorf("PPM header does not match.\nExpected ppm:\n%v\n to begin with header:\n%v\n", ppm, header)
+	if !strings.HasPrefix(ppm, header) {
+		t.Errorf("PPM header does not match.\nExpected ppm:\n%v\nto begin with:\n%v\n", ppm, header)
 	}
+	// data test
 	overRed := NewColor(1.5, 0, 0)
 	halfGreen := NewColor(0, 0.5, 0)
 	underBlue := NewColor(-0.5, 0, 1)
@@ -67,7 +69,13 @@ func Test_PPMStr(t *testing.T) {
 	c.WritePixel(2, 1, halfGreen)
 	c.WritePixel(4, 2, underBlue)
 	ppm = c.PPMStr(255)
-	// TODO: unfinished...
-	// page 21 in book for rest of test
-
+	result := strings.ReplaceAll(ppm, "\n", "")
+	expect := []string{
+		"255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ",
+		"0 0 0 0 0 0 0 128 0 0 0 0 0 0 0 ",
+		"0 0 0 0 0 0 0 0 0 0 0 0 0 0 255",
+	}
+	if !strings.Contains(result, strings.Join(expect, "")) {
+		t.Errorf("Data portion of PPM seems incorrect. Expected \n%v\nto contain %v", ppm, expect)
+	}
 }
