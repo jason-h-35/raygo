@@ -54,6 +54,10 @@ func (c Color) ToPPMRange(maximum int) Color {
 	)
 }
 
+func (c Color) asFloats() (float64, float64, float64) {
+	return c.R, c.G, c.B
+}
+
 func (c Color) asInts() (int, int, int) {
 	return int(c.R), int(c.G), int(c.B)
 }
