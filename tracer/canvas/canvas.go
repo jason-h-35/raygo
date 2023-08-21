@@ -45,9 +45,12 @@ func (c *Canvas) ReadPixel(x, y int) Color {
 }
 
 func (c Color) ToPPMRange(maximum int) Color {
-	// TODO: handle values outside of 0.0 and 1.0 color min and max
-	c = c.Times(float64(maximum)).Round()
-	return c
+	c = c.Times(float64(maximum))
+	// clamp each of c.R, c.G, c.B into range [0, maximum]
+	c.R = math.Min(math.Max(c.R, 0), float64(maximum))
+	c.G = math.Min(math.Max(c.G, 0), float64(maximum))
+	c.B = math.Min(math.Max(c.B, 0), float64(maximum))
+	return c.Round()
 }
 
 func (c Color) Round() Color {
