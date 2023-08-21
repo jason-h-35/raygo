@@ -59,7 +59,7 @@ func main() {
 	fmt.Println(bytes)
 }
 
-// BUGGED ON NON-SQUARE CANVAS
+// STILL BUGGED ON NON-SQUARE CANVAS, EVEN WITH BOOK TESTS
 func main2() {
 	c := canvas.NewCanvas(10, 5)
 	count := 0
