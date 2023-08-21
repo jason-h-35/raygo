@@ -16,8 +16,14 @@ cover: fmt
 test: vet
 	go test ./...
 
+t: test
+
 build: vet
 	go build raygo.go
 
+b: build
+
 run: vet
 	go run raygo.go
+
+r: run
