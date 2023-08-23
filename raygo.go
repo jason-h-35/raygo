@@ -66,7 +66,7 @@ func main2() {
 	for count != 4 {
 		c.WritePixel(0, count, canvas.NewColor(1, 0, 0))
 		c.WritePixel(count, 0, canvas.NewColor(0, 1, 0))
-		c.WritePixel(count, count, canvas.White)
+		c.WritePixel(count, count, canvas.NewColor(0, 0, 1))
 		count++
 	}
 	fmt.Println(c.Image)
