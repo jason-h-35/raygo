@@ -24,14 +24,21 @@ func NewMat4(aa, ab, ac, ad, ba, bb, bc, bd, ca, cb, cc, cd, da, db, dc, dd floa
 	return Mat4{arr: [4][4]float64{{aa, ab, ac, ad}, {ba, bb, bc, bd}, {ca, cb, cc, cd}, {da, db, dc, dd}}}
 }
 
-func (m *Mat4) At(i, j int) float64 {
-	return m.data[i][j]
+func (m1 *Mat4) Equals(m2 *Mat4) bool {
+	for i := range m1.arr {
+		for j := range m1.arr {
+			if abs(m1.arr[i][j]-m2.arr[i][j]) > eps {
+				return false
+			}
+		}
+	}
+	return true
 }
 
-func (m *Mat3) At(i, j int) float64 {
-	return m.data[i][j]
+func (m1 *Mat3) Equals(m2 *Mat3) bool {
+
 }
 
-func (m *Mat2) At(i, j int) float64 {
-	return m.data[i][j]
+func (m1 *Mat2) Equals(m2 *Mat2) bool {
+
 }
