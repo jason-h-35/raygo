@@ -34,11 +34,3 @@ func (m1 *Mat4) Equals(m2 *Mat4) bool {
 	}
 	return true
 }
-
-func (m1 *Mat3) Equals(m2 *Mat3) bool {
-
-}
-
-func (m1 *Mat2) Equals(m2 *Mat2) bool {
-
-}
