@@ -5,9 +5,29 @@ import (
 )
 
 func Test_NewMat2(t *testing.T) {
+	m := NewMat2(-3, 5, 1, -2)
+	table := []MatVal{
+		{0, 0, -3}, {0, 1, 5}, {1, 0, 1}, {1, 1, -2},
+	}
+	for _, v := range table {
+		result := m.At(v.i, v.j)
+		expect := v.val
+		if result != expect {
+			t.Errorf("expected %v at %v, %v. got %v", v.val, v.i, v.j, result)
+		}
+	}
 }
 
 func Test_NewMat3(t *testing.T) {
+	m := NewMat3(-3, 5, 0, 1, -2, -7, 0, 1, 1)
+	table := []MatVal{{0, 0, -3}, {1, 1, -2}, {2, 2, 1}}
+	for _, v := range table {
+		result := m.At(v.i, v.j)
+		expect := v.val
+		if result != expect {
+			t.Errorf("expected %v at %v, %v. got %v", v.val, v.i, v.j, result)
+		}
+	}
 
 }
 
