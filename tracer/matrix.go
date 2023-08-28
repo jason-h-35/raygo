@@ -24,6 +24,18 @@ func NewMat4(aa, ab, ac, ad, ba, bb, bc, bd, ca, cb, cc, cd, da, db, dc, dd floa
 	return Mat4{arr: [4][4]float64{{aa, ab, ac, ad}, {ba, bb, bc, bd}, {ca, cb, cc, cd}, {da, db, dc, dd}}}
 }
 
+func (m *Mat4) At(i, j int) float64 {
+	return m.arr[i][j]
+}
+
+func (m *Mat3) At(i, j int) float64 {
+	return m.arr[i][j]
+}
+
+func (m *Mat2) At(i, j int) float64 {
+	return m.arr[i][j]
+}
+
 func (m1 *Mat4) Equals(m2 *Mat4) bool {
 	for i := range m1.arr {
 		for j := range m1.arr {
