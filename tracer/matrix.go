@@ -12,6 +12,16 @@ type Mat2 struct {
 	arr [2][2]float64
 }
 
+type MatVal struct {
+	i   int
+	j   int
+	val float64
+}
+
+func NewMatVal(i int, j int, val float64) MatVal {
+	return MatVal{i, j, val}
+}
+
 func NewMat2(a, b, c, d float64) Mat2 {
 	return Mat2{arr: [2][2]float64{{a, b}, {c, d}}}
 }
