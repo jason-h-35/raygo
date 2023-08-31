@@ -24,16 +24,35 @@ func NewMatVal(i int, j int, val float64) MatVal {
 	return MatVal{i, j, val}
 }
 
-func NewMat2(a, b, c, d float64) Mat2 {
-	return Mat2{vals: [2][2]float64{{a, b}, {c, d}}}
+func NewMat2(a []float64) Mat2 {
+	if len(a) != 4 {
+		panic("Mat2 needs 4 elements.")
+	}
+	return Mat2{vals: [2][2]float64{
+		{a[0], a[1]}, {a[2], a[3]}}}
 }
 
-func NewMat3(a, b, c, d, e, f, g, h, i float64) Mat3 {
-	return Mat3{vals: [3][3]float64{{a, b, c}, {d, e, f}, {g, h, i}}}
+func NewMat3(a []float64) Mat3 {
+	if len(a) != 9 {
+		panic("Mat3 needs 9 elements.")
+	}
+	return Mat3{vals: [3][3]float64{
+		{a[0], a[1], a[2]},
+		{a[3], a[4], a[5]},
+		{a[6], a[7], a[8]},
+	}}
 }
 
-func NewMat4(aa, ab, ac, ad, ba, bb, bc, bd, ca, cb, cc, cd, da, db, dc, dd float64) Mat4 {
-	return Mat4{vals: [4][4]float64{{aa, ab, ac, ad}, {ba, bb, bc, bd}, {ca, cb, cc, cd}, {da, db, dc, dd}}}
+func NewMat4(a []float64) Mat4 {
+	if len(a) != 16 {
+		panic("Mat4 needs 16 elements.")
+	}
+	return Mat4{vals: [4][4]float64{
+		{a[0], a[1], a[2], a[3]},
+		{a[4], a[5], a[6], a[7]},
+		{a[8], a[9], a[10], a[11]},
+		{a[12], a[13], a[14], a[15]},
+	}}
 }
 
 func (m *Mat4) At(i, j int) float64 {
