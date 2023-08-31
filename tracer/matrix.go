@@ -2,16 +2,16 @@ package tracer
 
 // https://github.com/golang/go/issues/44253
 
-type Mat4 struct {
-	vals [4][4]float64
+type Mat2 struct {
+	vals [2][2]float64
 }
 
 type Mat3 struct {
 	vals [3][3]float64
 }
 
-type Mat2 struct {
-	vals [2][2]float64
+type Mat4 struct {
+	vals [4][4]float64
 }
 
 type MatVal struct {
