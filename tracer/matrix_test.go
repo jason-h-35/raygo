@@ -46,14 +46,26 @@ func Test_NewMat4(t *testing.T) {
 	}
 }
 
-func Test_Mat2Equals(t *testing.T) {
-
+func Test_Mat4Equals(t *testing.T) {
+	m1 := NewMat4([]float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2})
+	m2 := NewMat4([]float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2})
+	if !m1.Equals(&m2) {
+		t.Errorf("%v should equal %v", m1, m2)
+	}
 }
 
 func Test_Mat3Equals(t *testing.T) {
-
+	m1 := NewMat3([]float64{1, 2, 3, 4, 5, 6, 7, 8, 9})
+	m2 := NewMat3([]float64{1, 2, 3, 4, 5, 6, 7, 8, 9})
+	if !m1.Equals(&m2) {
+		t.Errorf("%v should equal %v", m1, m2)
+	}
 }
 
-func Test_Mat4Equals(t *testing.T) {
-
+func Test_Mat2Equals(t *testing.T) {
+	m1 := NewMat4([]float64{1, 2, 3, 4})
+	m2 := NewMat4([]float64{1, 2, 3, 4})
+	if !m1.Equals(&m2) {
+		t.Errorf("%v should equal %v", m1, m2)
+	}
 }
