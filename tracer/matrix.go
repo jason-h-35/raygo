@@ -77,3 +77,25 @@ func (m1 *Mat4) Equals(m2 *Mat4) bool {
 	}
 	return true
 }
+
+func (m1 *Mat3) Equals(m2 *Mat3) bool {
+	for i := range m1.vals {
+		for j := range m1.vals {
+			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func (m1 *Mat2) Equals(m2 *Mat2) bool {
+	for i := range m1.vals {
+		for j := range m1.vals {
+			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
+				return false
+			}
+		}
+	}
+	return true
+}
