@@ -106,9 +106,10 @@ func (a *Mat4) Times(b *Mat4) Mat4 {
 		next := 0.0
 		for j := 0; j < 4; j++ {
 			for k := 0; k < 4; k++ {
-
+				next += a.vals[i][k] * b.vals[k][j]
 			}
 		}
 		result = append(result, next)
 	}
+	return NewMat4(result)
 }
