@@ -78,4 +78,9 @@ func Test_Mat4Times(t *testing.T) {
 	if !result.Equals(&expect) {
 		t.Errorf("%v * %v should equal %v but was %v instead", a, b, expect, result)
 	}
+	identity := NewMat4([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1})
+	aID := a.Times(&identity)
+	if !aID.Equals(&a) {
+		t.Errorf("expected %v times Identity Mat would be %v, but was %v", a, a, aID)
+	}
 }
