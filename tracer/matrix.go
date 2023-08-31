@@ -102,14 +102,14 @@ func (m1 *Mat2) Equals(m2 *Mat2) bool {
 
 func (a *Mat4) Times(b *Mat4) Mat4 {
 	result := make([]float64, 0)
-	for i := 0; i < 16; i++ {
-		next := 0.0
+	for i := 0; i < 4; i++ {
 		for j := 0; j < 4; j++ {
+			next := 0.0
 			for k := 0; k < 4; k++ {
 				next += a.vals[i][k] * b.vals[k][j]
 			}
+			result = append(result, next)
 		}
-		result = append(result, next)
 	}
 	return NewMat4(result)
 }
