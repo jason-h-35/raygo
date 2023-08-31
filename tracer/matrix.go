@@ -99,3 +99,16 @@ func (m1 *Mat2) Equals(m2 *Mat2) bool {
 	}
 	return true
 }
+
+func (a *Mat4) Times(b *Mat4) Mat4 {
+	result := make([]float64, 0)
+	for i := 0; i < 16; i++ {
+		next := 0.0
+		for j := 0; j < 4; j++ {
+			for k := 0; k < 4; k++ {
+
+			}
+		}
+		result = append(result, next)
+	}
+}
