@@ -64,7 +64,7 @@ func main2() {
 	c := canvas.NewCanvas(10, 5)
 	count := 0
 	for count != 4 {
-		c.WritePixel(0, count, canvas.NewColor(1, 0, 0))
+		c.WritePixel(0, count, canvas.NewColor(1, 0, 1))
 		c.WritePixel(count, 0, canvas.NewColor(0, 1, 0))
 		c.WritePixel(count, count, canvas.NewColor(0, 0, 1))
 		count++
