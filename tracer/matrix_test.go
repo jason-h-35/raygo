@@ -63,8 +63,8 @@ func Test_Mat3Equals(t *testing.T) {
 }
 
 func Test_Mat2Equals(t *testing.T) {
-	m1 := NewMat4([]float64{1, 2, 3, 4})
-	m2 := NewMat4([]float64{1, 2, 3, 4})
+	m1 := NewMat2([]float64{1, 2, 3, 4})
+	m2 := NewMat2([]float64{1, 2, 3, 4})
 	if !m1.Equals(&m2) {
 		t.Errorf("%v should equal %v", m1, m2)
 	}
