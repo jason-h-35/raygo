@@ -70,17 +70,27 @@ func Test_Mat2Equals(t *testing.T) {
 	}
 }
 
-func Test_Mat4Times(t *testing.T) {
+func Test_Mat4TimesMat4(t *testing.T) {
 	a := NewMat4([]float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2})
 	b := NewMat4([]float64{-2, 1, 2, 3, 3, 2, 1, -1, 4, 3, 6, 5, 1, 2, 7, 8})
 	expect := NewMat4([]float64{20, 22, 50, 48, 44, 54, 114, 108, 40, 58, 110, 102, 16, 26, 46, 42})
-	result := a.Times(&b)
+	result := a.TimesMat4(&b)
 	if !result.Equals(&expect) {
 		t.Errorf("%v * %v should equal %v but was %v instead", a, b, expect, result)
 	}
 	identity := NewMat4([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1})
-	aID := a.Times(&identity)
+	aID := a.TimesMat4(&identity)
 	if !aID.Equals(&a) {
 		t.Errorf("expected %v times Identity Mat would be %v, but was %v", a, a, aID)
+	}
+}
+
+func Test_Mat4TimesTuple(t *testing.T) {
+	a := NewMat4([]float64{1, 2, 3, 4, 2, 4, 4, 2, 8, 6, 4, 1, 0, 0, 0, 1})
+	b := NewTuple(1, 2, 3, 1)
+	expect := NewTuple(18, 24, 33, 1)
+	result := a.TimesTuple(b)
+	if !result.Equals(expect) {
+		t.Errorf("expected %v TimesTuple %v would be %v, but was %v", a, b, expect, result)
 	}
 }
