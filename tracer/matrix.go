@@ -100,16 +100,29 @@ func (m1 *Mat2) Equals(m2 *Mat2) bool {
 	return true
 }
 
-func (a *Mat4) Times(b *Mat4) Mat4 {
+func (a *Mat4) TimesMat4(b *Mat4) Mat4 {
 	result := make([]float64, 0)
-	for i := 0; i < 4; i++ {
-		for j := 0; j < 4; j++ {
+	for i := 0; i != 4; i++ {
+		for j := 0; j != 4; j++ {
 			next := 0.0
-			for k := 0; k < 4; k++ {
+			for k := 0; k != 4; k++ {
 				next += a.vals[i][k] * b.vals[k][j]
 			}
 			result = append(result, next)
 		}
 	}
 	return NewMat4(result)
+}
+
+func (a *Mat4) TimesTuple(b Tuple) Tuple {
+	result := make([]float64, 0)
+	bArr := b.AsArray()
+	for i := 0; i != 4; i++ {
+		next := 0.0
+		for k := 0; k != 4; k++ {
+			next += a.vals[i][k] * bArr[i]
+		}
+		result = append(result, next)
+	}
+	return NewTuple(result[0], result[1], result[2], result[3])
 }
