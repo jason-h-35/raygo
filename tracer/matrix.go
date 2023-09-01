@@ -137,3 +137,7 @@ func (a *Mat4) Transpose() Mat4 {
 	},
 	)
 }
+
+func (a *Mat2) Determinant() float64 {
+	return a.vals[0][0]*a.vals[1][1] - a.vals[0][1]*a.vals[1][0]
+}

@@ -108,3 +108,12 @@ func Test_Mat4Transpose(t *testing.T) {
 		t.Errorf("expected %v Transpose would be %v, but was %v", a, expect, result)
 	}
 }
+
+func Test_Mat2Determinant(t *testing.T) {
+	a := NewMat2([]float64{1, 5, -3, 2})
+	expect := 17.0
+	result := a.Determinant()
+	if abs(expect-result) > eps {
+		t.Errorf("expected %v Determinant would be %v, but was %v", a, expect, result)
+	}
+}
