@@ -17,6 +17,7 @@ func NewTuple(x float64, y float64, z float64, w float64) Tuple {
 	return Tuple{x, y, z, w}
 }
 
+// if unperformant, come back and refactor this into a field?
 func (t Tuple) AsArray() []float64 {
 	return []float64{t.X, t.Y, t.Z, t.W}
 }
