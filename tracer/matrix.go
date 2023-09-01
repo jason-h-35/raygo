@@ -120,7 +120,7 @@ func (a *Mat4) TimesTuple(b Tuple) Tuple {
 	for i := 0; i != 4; i++ {
 		next := 0.0
 		for k := 0; k != 4; k++ {
-			next += a.vals[i][k] * bArr[i]
+			next += a.vals[i][k] * bArr[k]
 		}
 		result = append(result, next)
 	}
