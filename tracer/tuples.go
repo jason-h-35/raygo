@@ -17,6 +17,10 @@ func NewTuple(x float64, y float64, z float64, w float64) Tuple {
 	return Tuple{x, y, z, w}
 }
 
+func (t Tuple) AsArray() []float64 {
+	return []float64{t.X, t.Y, t.Z, t.W}
+}
+
 func Point(x, y, z float64) Tuple {
 	return NewTuple(x, y, z, 1)
 }
