@@ -102,4 +102,9 @@ func Test_Mat4Transpose(t *testing.T) {
 	if !result.Equals(&expect) {
 		t.Errorf("expected %v Transpose would be %v, but was %v", a, expect, result)
 	}
+	id := NewMat4([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1})
+	idT := id.Transpose()
+	if !id.Equals(&idT) {
+		t.Errorf("expected %v Transpose would be %v, but was %v", a, expect, result)
+	}
 }
