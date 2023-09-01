@@ -126,3 +126,14 @@ func (a *Mat4) TimesTuple(b Tuple) Tuple {
 	}
 	return NewTuple(result[0], result[1], result[2], result[3])
 }
+
+func (a *Mat4) Transpose() Mat4 {
+	av := a.vals
+	return NewMat4([]float64{
+		av[0][0], av[1][0], av[2][0], av[3][0],
+		av[0][1], av[1][1], av[2][1], av[3][1],
+		av[0][2], av[1][2], av[2][2], av[3][2],
+		av[0][3], av[1][3], av[2][3], av[3][3],
+	},
+	)
+}
