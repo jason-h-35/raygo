@@ -149,22 +149,57 @@ func Test_Mat3Determinant(t *testing.T) {
 	a := NewMat3([]float64{1, 2, 6, -5, 8, -4, 2, 6, 4})
 	table := []struct {
 		mat    Mat3
+		fnName string
 		fn     func(Mat3, int, int) float64
 		is     int
 		js     int
 		expect float64
 	}{
-		{a, Mat3.Minor, 0, 0, -12},
-		{a, Mat3.Cofactor, 0, 0, -12},
-		{a, Mat3.Minor, 1, 0, 25},
-		{a, Mat3.Cofactor, 1, 0, -25},
+		{a, "Cofactor", Mat3.Cofactor, 0, 0, 56},
+		{a, "Cofactor", Mat3.Cofactor, 0, 1, 12},
+		{a, "Cofactor", Mat3.Cofactor, 0, 2, -46},
 	}
 	for _, it := range table {
 		// calling fn on a mat in such a way the params can be extracted for the error msg
 		result := it.fn(it.mat, it.is, it.js)
 		if abs(result-it.expect) > 0 {
-			t.Errorf("expected %v under at (%v, %v) would be %v but was %v",
-				it.mat, it.is, it.js, it.expect, result)
+			t.Errorf("expected %v of %v at (%v, %v) would be %v but was %v",
+				it.fnName, it.mat, it.is, it.js, it.expect, result)
 		}
+	}
+	result := a.Determinant()
+	expect := -196.0
+	if abs(result-expect) > eps {
+		t.Errorf("expected Determinant of %v would be %v but was %v", a, expect, result)
+	}
+}
+
+func Test_Mat4Determinant(t *testing.T) {
+	a := NewMat4([]float64{-2, -8, 3, 5, -3, 1, 7, 3, 1, 2, -9, 6, -6, 7, 7, -9})
+	table := []struct {
+		mat    Mat4
+		fnName string
+		fn     func(Mat4, int, int) float64
+		is     int
+		js     int
+		expect float64
+	}{
+		{a, "Cofactor", Mat4.Cofactor, 0, 0, 690},
+		{a, "Cofactor", Mat4.Cofactor, 0, 1, 447},
+		{a, "Cofactor", Mat4.Cofactor, 0, 2, 210},
+		{a, "Cofactor", Mat4.Cofactor, 0, 3, 51},
+	}
+	for _, it := range table {
+		// calling fn on a mat in such a way the params can be extracted for the error msg
+		result := it.fn(it.mat, it.is, it.js)
+		if abs(result-it.expect) > 0 {
+			t.Errorf("expected %v of %v at (%v, %v) would be %v but was %v",
+				it.fnName, it.mat, it.is, it.js, it.expect, result)
+		}
+	}
+	result := a.Determinant()
+	expect := -4071.0
+	if abs(result-expect) > eps {
+		t.Errorf("expected Determinant of %v would be %v but was %v", a, expect, result)
 	}
 }
