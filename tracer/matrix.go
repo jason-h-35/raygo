@@ -153,3 +153,7 @@ func (a Mat3) SubMat(is, js int) Mat2 {
 	}
 	return NewMat2(s)
 }
+
+func (a Mat3) Minor(is, js int) float64 {
+	return a.SubMat(is, js).Determinant()
+}

@@ -126,3 +126,12 @@ func Test_Mat3SubMat(t *testing.T) {
 		t.Errorf("expected %v SubMat would be %v, but was %v", a, expect, result)
 	}
 }
+
+func Test_Mat3Minor(t *testing.T) {
+	a := NewMat3([]float64{3, 5, 0, 2, -1, -7, 6, -1, 5})
+	result := a.Minor(1, 0)
+	expect := 25.0
+	if abs(result-expect) > eps {
+		t.Errorf("expected %v Minor would be %v, but was %v", a, expect, result)
+	}
+}
