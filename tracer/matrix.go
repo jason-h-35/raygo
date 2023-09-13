@@ -55,19 +55,19 @@ func NewMat4(a []float64) Mat4 {
 	}}
 }
 
-func (m *Mat4) At(i, j int) float64 {
+func (m Mat4) At(i, j int) float64 {
 	return m.vals[i][j]
 }
 
-func (m *Mat3) At(i, j int) float64 {
+func (m Mat3) At(i, j int) float64 {
 	return m.vals[i][j]
 }
 
-func (m *Mat2) At(i, j int) float64 {
+func (m Mat2) At(i, j int) float64 {
 	return m.vals[i][j]
 }
 
-func (m1 *Mat4) Equals(m2 *Mat4) bool {
+func (m1 Mat4) Equals(m2 Mat4) bool {
 	for i := range m1.vals {
 		for j := range m1.vals {
 			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
@@ -78,7 +78,7 @@ func (m1 *Mat4) Equals(m2 *Mat4) bool {
 	return true
 }
 
-func (m1 *Mat3) Equals(m2 *Mat3) bool {
+func (m1 Mat3) Equals(m2 Mat3) bool {
 	for i := range m1.vals {
 		for j := range m1.vals {
 			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
@@ -89,7 +89,7 @@ func (m1 *Mat3) Equals(m2 *Mat3) bool {
 	return true
 }
 
-func (m1 *Mat2) Equals(m2 *Mat2) bool {
+func (m1 Mat2) Equals(m2 Mat2) bool {
 	for i := range m1.vals {
 		for j := range m1.vals {
 			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
@@ -100,7 +100,7 @@ func (m1 *Mat2) Equals(m2 *Mat2) bool {
 	return true
 }
 
-func (a *Mat4) TimesMat4(b *Mat4) Mat4 {
+func (a Mat4) TimesMat4(b *Mat4) Mat4 {
 	result := make([]float64, 0)
 	for i := 0; i != 4; i++ {
 		for j := 0; j != 4; j++ {
@@ -114,7 +114,7 @@ func (a *Mat4) TimesMat4(b *Mat4) Mat4 {
 	return NewMat4(result)
 }
 
-func (a *Mat4) TimesTuple(b Tuple) Tuple {
+func (a Mat4) TimesTuple(b Tuple) Tuple {
 	result := make([]float64, 0)
 	bArr := b.AsArray()
 	for i := 0; i != 4; i++ {
@@ -127,7 +127,7 @@ func (a *Mat4) TimesTuple(b Tuple) Tuple {
 	return NewTuple(result[0], result[1], result[2], result[3])
 }
 
-func (a *Mat4) Transpose() Mat4 {
+func (a Mat4) Transpose() Mat4 {
 	av := a.vals
 	return NewMat4([]float64{
 		av[0][0], av[1][0], av[2][0], av[3][0],
@@ -142,6 +142,6 @@ func (a *Mat2) Determinant() float64 {
 	return a.vals[0][0]*a.vals[1][1] - a.vals[0][1]*a.vals[1][0]
 }
 
-func (a *Mat3) Submat() Mat2 {
-	return Mat2{}
-}
+// func (a *Mat3) Submat(row, col int) Mat2 {
+// b :=
+// }
