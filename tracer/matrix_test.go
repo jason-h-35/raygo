@@ -117,3 +117,12 @@ func Test_Mat2Determinant(t *testing.T) {
 		t.Errorf("expected %v Determinant would be %v, but was %v", a, expect, result)
 	}
 }
+
+func Test_Mat3SubMat(t *testing.T) {
+	a := NewMat3([]float64{1, 5, 0, -3, 2, 7, 0, 6, 3})
+	result := a.SubMat(0, 2)
+	expect := NewMat2([]float64{-3, 2, 0, 6})
+	if !result.Equals(expect) {
+		t.Errorf("expected %v SubMat would be %v, but was %v", a, expect, result)
+	}
+}

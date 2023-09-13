@@ -138,10 +138,18 @@ func (a Mat4) Transpose() Mat4 {
 	)
 }
 
-func (a *Mat2) Determinant() float64 {
+func (a Mat2) Determinant() float64 {
 	return a.vals[0][0]*a.vals[1][1] - a.vals[0][1]*a.vals[1][0]
 }
 
-// func (a *Mat3) Submat(row, col int) Mat2 {
-// b :=
-// }
+func (a Mat3) SubMat(is, js int) Mat2 {
+	s := make([]float64, 0)
+	for i, row := range a.vals {
+		for j, val := range row {
+			if i != is && j != js {
+				s = append(s, val)
+			}
+		}
+	}
+	return NewMat2(s)
+}
