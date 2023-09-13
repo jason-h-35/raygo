@@ -157,3 +157,10 @@ func (a Mat3) SubMat(is, js int) Mat2 {
 func (a Mat3) Minor(is, js int) float64 {
 	return a.SubMat(is, js).Determinant()
 }
+
+func (a Mat3) Cofactor(is, js int) float64 {
+	if (is+js)%2 == 1 {
+		return -a.Minor(is, js)
+	}
+	return a.Minor(is, js)
+}
