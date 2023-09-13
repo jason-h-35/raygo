@@ -144,3 +144,27 @@ func Test_Mat3Cofactor(t *testing.T) {
 		t.Errorf("expected %v Cofactor would be %v, but was %v", a, expect, result)
 	}
 }
+
+func Test_Mat3Determinant(t *testing.T) {
+	a := NewMat3([]float64{1, 2, 6, -5, 8, -4, 2, 6, 4})
+	table := []struct {
+		mat    Mat3
+		fn     func(Mat3, int, int) float64
+		is     int
+		js     int
+		expect float64
+	}{
+		{a, Mat3.Minor, 0, 0, -12},
+		{a, Mat3.Cofactor, 0, 0, -12},
+		{a, Mat3.Minor, 1, 0, 25},
+		{a, Mat3.Cofactor, 1, 0, -25},
+	}
+	for _, it := range table {
+		// calling fn on a mat in such a way the params can be extracted for the error msg
+		result := it.fn(it.mat, it.is, it.js)
+		if abs(result-it.expect) > 0 {
+			t.Errorf("expected %v under at (%v, %v) would be %v but was %v",
+				it.mat, it.is, it.js, it.expect, result)
+		}
+	}
+}

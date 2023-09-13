@@ -154,7 +154,23 @@ func (a Mat3) SubMat(is, js int) Mat2 {
 	return NewMat2(s)
 }
 
+func (a Mat4) SubMat(is, js int) Mat3 {
+	s := make([]float64, 0)
+	for i, row := range a.vals {
+		for j, val := range row {
+			if i != is && j != js {
+				s = append(s, val)
+			}
+		}
+	}
+	return NewMat3(s)
+}
+
 func (a Mat3) Minor(is, js int) float64 {
+	return a.SubMat(is, js).Determinant()
+}
+
+func (a Mat4) Minor(is, js int) float64 {
 	return a.SubMat(is, js).Determinant()
 }
 
@@ -163,4 +179,27 @@ func (a Mat3) Cofactor(is, js int) float64 {
 		return -a.Minor(is, js)
 	}
 	return a.Minor(is, js)
+}
+
+func (a Mat4) Cofactor(is, js int) float64 {
+	if (is+js)%2 == 1 {
+		return -a.Minor(is, js)
+	}
+	return a.Minor(is, js)
+}
+
+func (a Mat3) Determinant() float64 {
+	det, i := 0.0, 0 // may need to extract this param later?
+	for j, val := range a.vals[i] {
+		det += val * a.Cofactor(i, j)
+	}
+	return det
+}
+
+func (a Mat4) Determinant() float64 {
+	det, i := 0.0, 0
+	for j, val := range a.vals[i] {
+		det += val * a.Cofactor(i, j)
+	}
+	return det
 }
