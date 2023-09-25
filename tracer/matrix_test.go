@@ -234,3 +234,14 @@ func Test_Mat4Inverse(t *testing.T) {
 		}
 	}
 }
+
+func Test_Mat4InverseIdent(t *testing.T) {
+	a := NewMat4([]float64{3, -9, 7, 3, 3, -8, 2, -9, -4, 4, 4, 1, -6, 5, -1, 1})
+	b := NewMat4([]float64{8, 2, 2, 2, 3, -1, 7, 0, 7, 0, 5, 4, 6, -2, 0, 5})
+	c := a.TimesMat4(&b)
+	bI := b.Inverse()
+	result := c.TimesMat4(&bI)
+	if !result.Equals(a) {
+		t.Errorf("A * B * B' should be A but instead was %v", result)
+	}
+}
