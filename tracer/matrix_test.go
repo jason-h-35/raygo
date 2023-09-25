@@ -203,3 +203,14 @@ func Test_Mat4Determinant(t *testing.T) {
 		t.Errorf("expected Determinant of %v would be %v but was %v", a, expect, result)
 	}
 }
+
+func Test_Mat4CanInverse(t *testing.T) {
+	a := NewMat4([]float64{6, 4, 4, 4, 5, 5, 7, 6, 4, -9, 3, -7, 9, 1, 7, -6})
+	b := NewMat4([]float64{-4, 2, -2, -3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0})
+	if !a.CanInverse() {
+		t.Errorf("%v should be invertible", a)
+	}
+	if b.CanInverse() {
+		t.Errorf("%v should be invertible", b)
+	}
+}
