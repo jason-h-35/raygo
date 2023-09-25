@@ -189,7 +189,7 @@ func (a Mat4) Cofactor(is, js int) float64 {
 }
 
 func (a Mat3) Determinant() float64 {
-	det, i := 0.0, 0 // may need to extract this param later?
+	det, i := 0.0, 0 // may need to extract i later?
 	for j, val := range a.vals[i] {
 		det += val * a.Cofactor(i, j)
 	}
@@ -197,9 +197,49 @@ func (a Mat3) Determinant() float64 {
 }
 
 func (a Mat4) Determinant() float64 {
-	det, i := 0.0, 0
+	det, i := 0.0, 0 // may need to extract i later?
 	for j, val := range a.vals[i] {
 		det += val * a.Cofactor(i, j)
 	}
 	return det
+}
+
+func (a Mat3) CanInverse() bool {
+	if abs(a.Determinant()) > eps {
+		return true
+	}
+	return false
+}
+
+func (a Mat4) CanInverse() bool {
+	if abs(a.Determinant()) > eps {
+		return true
+	}
+	return false
+}
+
+func (a Mat3) Inverse() Mat3 {
+	if !a.CanInverse() {
+		panic("can't inverse this matrix")
+	}
+	inverse := NewMat3(make([]float64, 9))
+	for i, row := range a.vals {
+		for j := range row {
+			inverse.vals[j][i] = a.Cofactor(i, j) / a.Determinant()
+		}
+	}
+	return inverse
+}
+
+func (a Mat4) Inverse() Mat4 {
+	if !a.CanInverse() {
+		panic("can't inverse this matrix")
+	}
+	inverse := NewMat4(make([]float64, 16))
+	for i, row := range a.vals {
+		for j := range row {
+			inverse.vals[j][i] = a.Cofactor(i, j) / a.Determinant()
+		}
+	}
+	return inverse
 }
