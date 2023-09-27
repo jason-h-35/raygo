@@ -18,6 +18,14 @@ type MatVal struct {
 	val float64
 }
 
+var I2 = NewMat2([]float64{1, 0, 0, 1})
+var I3 = NewMat3([]float64{1, 0, 0, 0, 1, 0, 0, 0, 1})
+var I4 = NewMat4([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1})
+
+var Z2 = NewMat2(make([]float64, 4))
+var Z3 = NewMat3(make([]float64, 9))
+var Z4 = NewMat4(make([]float64, 16))
+
 func NewMatVal(i int, j int, val float64) MatVal {
 	return MatVal{i, j, val}
 }
