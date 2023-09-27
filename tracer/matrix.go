@@ -1,7 +1,5 @@
 package tracer
 
-// https://github.com/golang/go/issues/44253
-
 type Mat2 struct {
 	vals [2][2]float64
 }
@@ -100,7 +98,7 @@ func (m1 Mat2) Equals(m2 Mat2) bool {
 	return true
 }
 
-func (a Mat4) TimesMat4(b *Mat4) Mat4 {
+func (a Mat4) Times(b Mat4) Mat4 {
 	result := make([]float64, 0)
 	for i := 0; i != 4; i++ {
 		for j := 0; j != 4; j++ {

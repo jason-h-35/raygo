@@ -74,12 +74,12 @@ func Test_Mat4TimesMat4(t *testing.T) {
 	a := NewMat4([]float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2})
 	b := NewMat4([]float64{-2, 1, 2, 3, 3, 2, 1, -1, 4, 3, 6, 5, 1, 2, 7, 8})
 	expect := NewMat4([]float64{20, 22, 50, 48, 44, 54, 114, 108, 40, 58, 110, 102, 16, 26, 46, 42})
-	result := a.TimesMat4(&b)
+	result := a.Times(b)
 	if !result.Equals(expect) {
 		t.Errorf("%v * %v should equal %v but was %v instead", a, b, expect, result)
 	}
 	identity := NewMat4([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1})
-	aID := a.TimesMat4(&identity)
+	aID := a.Times(identity)
 	if !aID.Equals(a) {
 		t.Errorf("expected %v times Identity Mat would be %v, but was %v", a, a, aID)
 	}
@@ -238,9 +238,9 @@ func Test_Mat4Inverse(t *testing.T) {
 func Test_Mat4InverseIdent(t *testing.T) {
 	a := NewMat4([]float64{3, -9, 7, 3, 3, -8, 2, -9, -4, 4, 4, 1, -6, 5, -1, 1})
 	b := NewMat4([]float64{8, 2, 2, 2, 3, -1, 7, 0, 7, 0, 5, 4, 6, -2, 0, 5})
-	c := a.TimesMat4(&b)
+	c := a.Times(b)
 	bI := b.Inverse()
-	result := c.TimesMat4(&bI)
+	result := c.Times(bI)
 	if !result.Equals(a) {
 		t.Errorf("A * B * B' should be A but instead was %v", result)
 	}
