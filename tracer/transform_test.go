@@ -1,10 +1,11 @@
 package tracer
 
 import (
+	"math"
 	"testing"
 )
 
-func TestTranslate(t *testing.T) {
+func TestTransform(t *testing.T) {
 	data := []struct {
 		transform Mat4
 		pt        Tuple
@@ -17,11 +18,13 @@ func TestTranslate(t *testing.T) {
 		{I4.Scale(2, 3, 4), Vector(-4, 6, 8), Vector(-8, 18, 32)},
 		{I4.Scale(2, 3, 4).Inverse(), Vector(-4, 6, 8), Vector(-2, 2, 2)},
 		{I4.Scale(-1, 1, 1), Point(2, 3, 4), Point(-2, 3, 4)},
+		{I4.RotateX(math.Pi / 4.0), Point(0, 1, 0), Point(0, math.Sqrt(2)/2.0, math.Sqrt(2)/2.0)},
+		{I4.RotateX(math.Pi / 2.0), Point(0, 1, 0), Point(0, 0, 1)},
 	}
 	for _, row := range data {
 		result := row.transform.TimesTuple(row.pt)
-		if result != row.expect {
-			t.Errorf("Point %v should have translated to %v but was %v", row.pt, row.expect, result)
+		if !result.Equals(row.expect) {
+			t.Errorf("%v should have transformed to %v but was %v", row.pt, row.expect, result)
 		}
 	}
 }
