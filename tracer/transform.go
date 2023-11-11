@@ -58,3 +58,14 @@ func (m Mat4) RotateZ(rad float64) Mat4 {
 	T := NewMat4(f)
 	return T.Times(m)
 }
+
+func (m Mat4) Shear(xy, xz, yx, yz, zx, zy float64) Mat4 {
+	f := []float64{
+		1, xy, xz, 0,
+		yx, 1, yz, 0,
+		zx, zy, 1, 0,
+		0, 0, 0, 1,
+	}
+	T := NewMat4(f)
+	return T.Times(m)
+}

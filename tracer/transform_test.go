@@ -25,6 +25,12 @@ func TestTransform(t *testing.T) {
 		{I4.RotateY(math.Pi / 2.), Point(0, 0, 1), Point(1, 0, 0)},
 		{I4.RotateZ(math.Pi / 4.), Point(0, 1, 0), Point(-math.Sqrt(2)/2., math.Sqrt(2)/2., 0)},
 		{I4.RotateZ(math.Pi / 2.), Point(0, 1, 0), Point(-1, 0, 0)},
+		{I4.Shear(1, 0, 0, 0, 0, 0), Point(2, 3, 4), Point(5, 3, 4)},
+		{I4.Shear(0, 1, 0, 0, 0, 0), Point(2, 3, 4), Point(6, 3, 4)},
+		{I4.Shear(0, 0, 1, 0, 0, 0), Point(2, 3, 4), Point(2, 5, 4)},
+		{I4.Shear(0, 0, 0, 1, 0, 0), Point(2, 3, 4), Point(2, 7, 4)},
+		{I4.Shear(0, 0, 0, 0, 1, 0), Point(2, 3, 4), Point(2, 3, 6)},
+		{I4.Shear(0, 0, 0, 0, 0, 1), Point(2, 3, 4), Point(2, 3, 7)},
 	}
 	for _, row := range data {
 		result := row.transform.TimesTuple(row.pt)
