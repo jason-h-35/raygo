@@ -8,3 +8,7 @@ type Ray struct {
 func NewRay(origin, direction Tuple) Ray {
 	return Ray{origin, direction}
 }
+
+func (r Ray) Position(time float64) Tuple {
+	return r.origin.Plus(r.direction.Times(time))
+}
