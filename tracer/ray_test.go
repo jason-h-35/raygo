@@ -42,27 +42,28 @@ func TestPosition(t *testing.T) {
 }
 
 func TestSphereTable(t *testing.T) {
+	vec := NewVectorTuple(0, 0, 1)
+	sphere := NewSphere()
 	data := []struct {
-		r         Ray
-		s         Sphere
-		lenExpect int
-		expect    []float64
+		r      Ray
+		s      Sphere
+		expect []float64
 	}{
 		// A ray intersects a sphere at two points
-		{NewRay(NewPointTuple(0, 0, -5), NewVectorTuple(0, 0, 1)), NewSphere(), 2, []float64{4, 6}},
+		{NewRay(NewPointTuple(0, 0, -5), vec), sphere, []float64{4, 6}},
 		// A ray intersects a sphere at a tangent
-		{NewRay(NewPointTuple(0, 1, -5), NewVectorTuple(0, 0, 1)), NewSphere(), 2, []float64{5, 5}},
+		{NewRay(NewPointTuple(0, 1, -5), vec), sphere, []float64{5, 5}},
 		// A ray misses a sphere
-		{NewRay(NewPointTuple(0, 2, -5), NewVectorTuple(0, 0, 1)), NewSphere(), 0, []float64{}},
+		{NewRay(NewPointTuple(0, 2, -5), vec), sphere, []float64{}},
 		// A ray originates inside a sphere
-		{NewRay(NewPointTuple(0, 0, 0), NewVectorTuple(0, 0, 1)), NewSphere(), 2, []float64{-1, 1}},
+		{NewRay(NewPointTuple(0, 0, 0), vec), sphere, []float64{-1, 1}},
 		// A sphere is behind a ray
-		{NewRay(NewPointTuple(0, 0, 5), NewVectorTuple(0, 0, 1)), NewSphere(), 2, []float64{-6, -4}},
+		{NewRay(NewPointTuple(0, 0, 5), vec), sphere, []float64{-6, -4}},
 	}
 	for _, row := range data {
 		result := row.s.Intersect(row.r)
-		if len(result) != row.lenExpect {
-			t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead", row.s, row.r, row.lenExpect, len(result))
+		if len(result) != len(row.expect) {
+			t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead", row.s, row.r, len(row.expect), len(result))
 		}
 		if len(result) != 0 {
 			if abs(result[0]-row.expect[0]) > 0 {
