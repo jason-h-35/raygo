@@ -18,5 +18,4 @@ func (r Ray) Position(time float64) Tuple {
 }
 
 func Sphere() {
-
 }
