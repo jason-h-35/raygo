@@ -1,12 +1,14 @@
 package tracer
 
-import (
-	"math/rand"
-)
-
 type Ray struct {
 	origin    Tuple
 	direction Tuple
+}
+
+var id int = 0
+
+type Sphere struct {
+	id int
 }
 
 func NewRay(origin, direction Tuple) Ray {
@@ -17,5 +19,8 @@ func (r Ray) Position(time float64) Tuple {
 	return r.origin.Plus(r.direction.Times(time))
 }
 
-func Sphere() {
+func NewSphere() Sphere {
+	s := Sphere{id}
+	id += 1
+	return s
 }
