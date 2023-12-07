@@ -9,10 +9,10 @@ func TestNewRay(t *testing.T) {
 	origin := NewPointTuple(1, 2, 3)
 	direction := NewVectorTuple(4, 5, 6)
 	r := NewRay(origin, direction)
-	if origin != r.origin {
+	if origin != r.Origin {
 		t.Errorf("ray origin not initialized properly")
 	}
-	if direction != r.direction {
+	if direction != r.Direction {
 		t.Errorf("ray origin not initialized properly")
 	}
 }
@@ -46,7 +46,7 @@ func TestSphereTable(t *testing.T) {
 		r         Ray
 		s         Sphere
 		lenExpect int
-		xsExpect  []float64
+		expect    []float64
 	}{
 		// A ray intersects a sphere at two points
 		{NewRay(NewPointTuple(0, 0, -5), NewVectorTuple(0, 0, 1)), NewSphere(), 2, []float64{4, 6}},
@@ -59,17 +59,18 @@ func TestSphereTable(t *testing.T) {
 		// A sphere is behind a ray
 		{NewRay(NewPointTuple(0, 0, 5), NewVectorTuple(0, 0, 1)), NewSphere(), 2, []float64{-6, -4}},
 	}
-}
-
-// A ray misses a sphere
-func TestSphereMiss(t *testing.T) {
-	r := NewRay(
-		NewPointTuple(0, 2, -5),
-		NewVectorTuple(0, 0, 1),
-	)
-	s := NewSphere()
-	xs := s.Intersect(r)
-	if len(xs) != 0 {
-		t.Error("incorrect amount of intersections. expected 0. got %v", len(xs))
+	for _, row := range data {
+		result := row.s.Intersect(row.r)
+		if len(result) != row.lenExpect {
+			t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead", row.s, row.r, row.lenExpect, len(result))
+		}
+		if len(result) != 0 {
+			if abs(result[0]-row.expect[0]) > 0 {
+				t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead", row.s, row.r, row.expect, result)
+			}
+			if abs(result[1]-row.expect[1]) > 0 {
+				t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead", row.s, row.r, row.expect, result)
+			}
+		}
 	}
 }
