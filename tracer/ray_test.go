@@ -81,6 +81,7 @@ func TestSphereTable(t *testing.T) {
 }
 
 func TestNewIntersection(t *testing.T) {
+	// An intersection encapsulates t and object
 	s := NewSphere()
 	time := 3.5
 	ix := NewIntersection(time, s)
