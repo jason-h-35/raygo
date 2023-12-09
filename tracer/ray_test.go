@@ -106,3 +106,21 @@ func TestIntersectionSlice(t *testing.T) {
 		t.Errorf("incorrect time value. expected 2, got %v", xs[1].time)
 	}
 }
+
+func TestIntersectSetsObject(t *testing.T) {
+	r := NewRay(NewPointTuple(0, 0, -5), NewVectorTuple(0, 0, 1))
+	s1 := NewSphere()
+	s2 := NewSphere()
+	xs := s1.Intersect(r)
+	if len(xs) != 2 {
+		t.Errorf("incorrect len. got %v", len(xs))
+	}
+	for _, ix := range xs {
+		if ix.object != s1 {
+			t.Errorf("intersection object not set. expected %v. got %v", s1, ix.object)
+		}
+		if ix.object == s2 {
+			t.Errorf("ray intersecting with a different sphere. are object IDs working?. expected %v. got %v", s1, ix.object)
+		}
+	}
+}
