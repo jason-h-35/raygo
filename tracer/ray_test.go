@@ -89,3 +89,20 @@ func TestNewIntersection(t *testing.T) {
 		t.Errorf("expected intersect time to be %v but was %v", time, i.time)
 	}
 }
+
+func TestIntersectionSlice(t *testing.T) {
+	// Aggregating intersections
+	s := NewSphere()
+	i1 := NewIntersection(1, s)
+	i2 := NewIntersection(2, s)
+	xs := []Intersection{i1, i2}
+	if len(xs) != 2 {
+		t.Errorf("incorrect intersection slice len. expected 2, got %v", len(xs))
+	}
+	if xs[0].time != 1 {
+		t.Errorf("incorrect time value. expected 1, got %v", xs[0].time)
+	}
+	if xs[1].time != 2 {
+		t.Errorf("incorrect time value. expected 2, got %v", xs[1].time)
+	}
+}
