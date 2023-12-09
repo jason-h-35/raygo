@@ -38,17 +38,17 @@ func NewSphere() Sphere {
 	return s
 }
 
-func (s Sphere) Intersect(r Ray) [2]float64 {
+func (s Sphere) Intersect(r Ray) []float64 {
 	sphereToRay := r.Origin.Minus(NewPointTuple(0, 0, 0))
 	a := r.Direction.Dot(r.Direction)
 	b := 2 * r.Direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1
 	discriminant := b*b - 4*a*c
 	if discriminant < 0 {
-		return [2]float64{}
+		return []float64{}
 	}
 	sqrtDiscriminant := math.Sqrt(discriminant)
 	t1 := (-b - sqrtDiscriminant) / (2 * a)
 	t2 := (-b + sqrtDiscriminant) / (2 * a)
-	return [2]float64{t1, t2}
+	return []float64{t1, t2}
 }
