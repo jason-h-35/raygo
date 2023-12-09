@@ -84,8 +84,8 @@ func TestNewIntersection(t *testing.T) {
 	// An intersection encapsulates t and object
 	s := NewSphere()
 	time := 3.5
-	ix := NewIntersection(time, s)
-	if ix.time != time {
-		t.Errorf("expected intersect time to be %v but was %v", time, ix.time)
+	i := NewIntersection(time, s)
+	if i.time != time {
+		t.Errorf("expected intersect time to be %v but was %v", time, i.time)
 	}
 }
