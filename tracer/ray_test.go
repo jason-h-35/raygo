@@ -79,3 +79,12 @@ func TestSphereTable(t *testing.T) {
 		}
 	}
 }
+
+func TestNewIntersection(t *testing.T) {
+	s := NewSphere()
+	time := 3.5
+	ix := NewIntersection(time, s)
+	if ix.time != time {
+		t.Errorf("expected intersect time to be %v but was %v", time, ix.time)
+	}
+}
