@@ -36,7 +36,8 @@ func TestPosition(t *testing.T) {
 	for _, row := range data {
 		result := row.ray.Position(row.time)
 		if !result.Equals(row.expect) {
-			t.Errorf("%v at time %v should have transformed to %v but was %v", row.ray, row.time, row.expect, result)
+			t.Errorf("%v at time %v should have transformed to %v but was %v",
+				row.ray, row.time, row.expect, result)
 		}
 	}
 }
@@ -63,14 +64,17 @@ func TestSphereTable(t *testing.T) {
 	for _, row := range data {
 		result := row.s.Intersect(row.r)
 		if len(result) != len(row.expect) {
-			t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead", row.s, row.r, len(row.expect), len(result))
+			t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead.\nexpect: %v\nresult: %v",
+				row.s, row.r, len(row.expect), len(result), row.expect, result)
 		}
 		if len(result) != 0 {
 			if abs(result[0]-row.expect[0]) > 0 {
-				t.Errorf("sphere %v intersecting ray %v should have 1st intersect at %v but was at %v instead", row.s, row.r, row.expect[0], result[0])
+				t.Errorf("sphere %v intersecting ray %v should have 1st intersect at %v but was at %v instead",
+					row.s, row.r, row.expect[0], result[0])
 			}
 			if abs(result[1]-row.expect[1]) > 0 {
-				t.Errorf("sphere %v intersecting ray %v should have 2nd intersect at %v but was at %v instead", row.s, row.r, row.expect[1], result[1])
+				t.Errorf("sphere %v intersecting ray %v should have 2nd intersect at %v but was at %v instead",
+					row.s, row.r, row.expect[1], result[1])
 			}
 		}
 	}
