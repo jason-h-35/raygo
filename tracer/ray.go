@@ -2,6 +2,7 @@ package tracer
 
 import (
 	"math"
+	"math/rand"
 )
 
 type Ray struct {
@@ -9,7 +10,7 @@ type Ray struct {
 	Direction Tuple
 }
 
-var id int = 0
+var idGen = rand.New(rand.NewSource(69))
 
 type Sphere struct {
 	id int
@@ -33,8 +34,7 @@ func (r Ray) Position(time float64) Tuple {
 }
 
 func NewSphere() Sphere {
-	s := Sphere{id}
-	id += 1
+	s := Sphere{idGen.Int()}
 	return s
 }
 
