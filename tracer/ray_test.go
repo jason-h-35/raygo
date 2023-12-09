@@ -68,11 +68,11 @@ func TestSphereTable(t *testing.T) {
 				row.s, row.r, len(row.expect), len(result), row.expect, result)
 		}
 		if len(result) != 0 {
-			if abs(result[0]-row.expect[0]) > 0 {
+			if abs(result[0].time-row.expect[0]) > 0 {
 				t.Errorf("sphere %v intersecting ray %v should have 1st intersect at %v but was at %v instead",
 					row.s, row.r, row.expect[0], result[0])
 			}
-			if abs(result[1]-row.expect[1]) > 0 {
+			if abs(result[1].time-row.expect[1]) > 0 {
 				t.Errorf("sphere %v intersecting ray %v should have 2nd intersect at %v but was at %v instead",
 					row.s, row.r, row.expect[1], result[1])
 			}
