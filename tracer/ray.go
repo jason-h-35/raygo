@@ -20,6 +20,10 @@ type Intersection struct {
 	object Sphere
 }
 
+func NewIntersection(time float64, object Sphere) Intersection {
+	return Intersection{time, object}
+}
+
 func NewRay(origin, direction Tuple) Ray {
 	return Ray{origin, direction}
 }
