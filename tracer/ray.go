@@ -15,6 +15,11 @@ type Sphere struct {
 	id int
 }
 
+type Intersection struct {
+	time   float64
+	object Sphere
+}
+
 func NewRay(origin, direction Tuple) Ray {
 	return Ray{origin, direction}
 }
