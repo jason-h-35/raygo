@@ -43,8 +43,8 @@ func (s Sphere) Intersect(r Ray) [2]float64 {
 	if discriminant < 0 {
 		return [2]float64{}
 	}
-	sqrt := math.Sqrt(discriminant)
-	t1 := (-b - sqrt) / (2 * a)
-	t2 := (-b + sqrt) / (2 * a)
+	sqrtDiscriminant := math.Sqrt(discriminant)
+	t1 := (-b - sqrtDiscriminant) / (2 * a)
+	t2 := (-b + sqrtDiscriminant) / (2 * a)
 	return [2]float64{t1, t2}
 }
