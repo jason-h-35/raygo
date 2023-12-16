@@ -124,3 +124,31 @@ func TestIntersectSetsObject(t *testing.T) {
 		}
 	}
 }
+
+func TestHitTable(t *testing.T) {
+	s := NewSphere()
+	data := []struct {
+		xs     []Intersection
+		expect Intersection
+		ok     bool
+	}{
+		// The hit, when all intersections have positive t
+		{[]Intersection{{2, s}, {1, s}}, Intersection{1, s}, true},
+		// The hit, when some intersections have negative t
+		{[]Intersection{{1, s}, {-1, s}}, Intersection{1, s}, true},
+		// The hit, when all intersections have negative t
+		{[]Intersection{{-1, s}, {-2, s}}, Intersection{0, s}, false},
+		// The hit is always the lowest nonnegative intersection
+		{[]Intersection{{5, s}, {7, s}, {-3, s}, {2, s}}, Intersection{2, s}, true},
+	}
+	for _, row := range data {
+		result, ok := Hit(row.xs)
+		if ok != row.ok {
+			t.Errorf("expected ok to be %v but was %v instead. row.expect test should also now fail.")
+		}
+		if row.expect != result {
+			t.Errorf("expected hit to be %v but was %v instead",
+				row.expect, result)
+		}
+	}
+}

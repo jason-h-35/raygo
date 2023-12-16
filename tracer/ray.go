@@ -55,3 +55,7 @@ func (s Sphere) Intersect(r Ray) []Intersection {
 		{t2, s},
 	}
 }
+
+func Hit(xs []Intersection) (Intersection, bool) {
+	return xs[0], true
+}
