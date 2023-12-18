@@ -62,7 +62,7 @@ func TestSphereTable(t *testing.T) {
 		{NewRay(NewPointTuple(0, 0, 5), vec), sphere, []float64{-6, -4}},
 	}
 	for _, row := range data {
-		result := row.s.Intersect(row.r)
+		result := row.s.GetIntersects(row.r)
 		if len(result) != len(row.expect) {
 			t.Errorf("sphere %v intersecting ray %v should have %v intersects but had %v instead.\nexpect: %v\nresult: %v",
 				row.s, row.r, len(row.expect), len(result), row.expect, result)
@@ -95,7 +95,7 @@ func TestIntersectionSlice(t *testing.T) {
 	s := NewSphere()
 	i1 := NewIntersection(1, s)
 	i2 := NewIntersection(2, s)
-	xs := []Intersection{i1, i2}
+	xs := []Intersect{i1, i2}
 	if len(xs) != 2 {
 		t.Errorf("incorrect intersection slice len. expected 2, got %v", len(xs))
 	}
@@ -111,7 +111,7 @@ func TestIntersectSetsObject(t *testing.T) {
 	r := NewRay(NewPointTuple(0, 0, -5), NewVectorTuple(0, 0, 1))
 	s1 := NewSphere()
 	s2 := NewSphere()
-	xs := s1.Intersect(r)
+	xs := s1.GetIntersects(r)
 	if len(xs) != 2 {
 		t.Errorf("incorrect len. got %v", len(xs))
 	}
@@ -128,18 +128,18 @@ func TestIntersectSetsObject(t *testing.T) {
 func TestHitTable(t *testing.T) {
 	s := NewSphere()
 	data := []struct {
-		xs     []Intersection
-		expect Intersection
+		xs     []Intersect
+		expect Intersect
 		ok     bool
 	}{
 		// The hit, when all intersections have positive t
-		{[]Intersection{{2, s}, {1, s}}, Intersection{1, s}, true},
+		{[]Intersect{{2, s}, {1, s}}, Intersect{1, s}, true},
 		// The hit, when some intersections have negative t
-		{[]Intersection{{1, s}, {-1, s}}, Intersection{1, s}, true},
+		{[]Intersect{{1, s}, {-1, s}}, Intersect{1, s}, true},
 		// The hit, when all intersections have negative t
-		{[]Intersection{{-1, s}, {-2, s}}, Intersection{0, s}, false},
+		{[]Intersect{{-1, s}, {-2, s}}, Intersect{0, s}, false},
 		// The hit is always the lowest nonnegative intersection
-		{[]Intersection{{5, s}, {7, s}, {-3, s}, {2, s}}, Intersection{2, s}, true},
+		{[]Intersect{{5, s}, {7, s}, {-3, s}, {2, s}}, Intersect{2, s}, true},
 	}
 	for _, row := range data {
 		result, ok := Hit(row.xs)
