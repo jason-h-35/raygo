@@ -144,7 +144,7 @@ func TestHitTable(t *testing.T) {
 	for _, row := range data {
 		result, ok := Hit(row.xs)
 		if ok != row.ok {
-			t.Errorf("expected ok to be %v but was %v instead. row.expect test should also now fail.")
+			t.Errorf("expected ok to be %v but was %v instead. row.expect test should also now fail.", row.expect, result)
 		}
 		if row.expect != result {
 			t.Errorf("expected hit to be %v but was %v instead",
