@@ -154,3 +154,26 @@ func TestHitTable(t *testing.T) {
 		}
 	}
 }
+
+func TestRayTransform(t *testing.T) {
+	r := NewRay(NewPointTuple(1, 2, 3), NewVectorTuple(0, 1, 0))
+	data := []struct {
+		r      Ray
+		m      Mat4
+		expect Ray
+	}{
+		{r, I4.Translate(3, 4, 5), NewRay(NewPointTuple(4, 6, 8), NewVectorTuple(0, 1, 0))},
+		{r, I4.Scale(2, 3, 4), NewRay(NewPointTuple(2, 6, 12), NewVectorTuple(0, 3, 0))},
+	}
+	for _, row := range data {
+		result := row.r.Transform(row.m)
+		if !row.expect.Origin.Equals(result.Origin) {
+
+			t.Errorf("expected ray origin to be %v but was %v instead", row.expect.Origin, result.Origin)
+		}
+		if !row.expect.Direction.Equals(result.Direction) {
+
+			t.Errorf("expected ray direction to be %v but was %v instead", row.expect.Direction, result.Direction)
+		}
+	}
+}

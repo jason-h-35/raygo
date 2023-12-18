@@ -84,3 +84,7 @@ func Hit(xs []Intersect) (Intersect, bool) {
 	}
 	return NewIntersect(0, NewSphere()), false
 }
+
+func (r Ray) Transform(m Mat4) Ray {
+	return NewRay(m.TimesTuple(r.Origin), m.TimesTuple(r.Direction))
+}
