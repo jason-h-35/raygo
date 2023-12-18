@@ -3,6 +3,7 @@ package tracer
 import (
 	"math"
 	"math/rand"
+	"slices"
 )
 
 type Ray struct {
@@ -50,6 +51,10 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 	sqrtDiscriminant := math.Sqrt(discriminant)
 	t1 := (-b - sqrtDiscriminant) / (2 * a)
 	t2 := (-b + sqrtDiscriminant) / (2 * a)
+	// not necessary, but trying to keep sorted t's
+	if t1 > t2 {
+		t1, t2 = t2, t1
+	}
 	return []Intersect{
 		{t1, s},
 		{t2, s},
@@ -58,6 +63,24 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 
 func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
+		return NewIntersect(0, NewSphere()), false
 	}
-	return xs[0], true
+	f := func(a, b Intersect) int {
+		if abs(a.time-b.time) < eps {
+			return 0
+		} else if a.time < b.time {
+			return -1
+		} else {
+			return 1
+		}
+	}
+	if !slices.IsSortedFunc(xs, f) {
+		slices.SortFunc(xs, f)
+	}
+	for _, x := range xs {
+		if x.time >= 0 {
+			return x, true
+		}
+	}
+	return NewIntersect(0, NewSphere()), false
 }
