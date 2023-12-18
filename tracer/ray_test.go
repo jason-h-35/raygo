@@ -84,7 +84,7 @@ func TestNewIntersection(t *testing.T) {
 	// An intersection encapsulates t and object
 	s := NewSphere()
 	time := 3.5
-	i := NewIntersection(time, s)
+	i := NewIntersect(time, s)
 	if i.time != time {
 		t.Errorf("expected intersect time to be %v but was %v", time, i.time)
 	}
@@ -93,8 +93,8 @@ func TestNewIntersection(t *testing.T) {
 func TestIntersectionSlice(t *testing.T) {
 	// Aggregating intersections
 	s := NewSphere()
-	i1 := NewIntersection(1, s)
-	i2 := NewIntersection(2, s)
+	i1 := NewIntersect(1, s)
+	i2 := NewIntersect(2, s)
 	xs := []Intersect{i1, i2}
 	if len(xs) != 2 {
 		t.Errorf("incorrect intersection slice len. expected 2, got %v", len(xs))

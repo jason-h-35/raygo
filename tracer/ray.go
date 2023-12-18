@@ -21,7 +21,7 @@ type Intersect struct {
 	object Sphere
 }
 
-func NewIntersection(time float64, object Sphere) Intersect {
+func NewIntersect(time float64, object Sphere) Intersect {
 	return Intersect{time, object}
 }
 
@@ -57,6 +57,7 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 }
 
 func Hit(xs []Intersect) (Intersect, bool) {
-	_ = xs[:0]
+	if len(xs) == 0 {
+	}
 	return xs[0], true
 }
