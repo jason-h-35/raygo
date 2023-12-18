@@ -14,7 +14,8 @@ type Ray struct {
 var idGen = rand.New(rand.NewSource(69))
 
 type Sphere struct {
-	id int
+	id        int
+	transform Mat4
 }
 
 type Intersect struct {
@@ -35,7 +36,7 @@ func (r Ray) Position(time float64) Tuple {
 }
 
 func NewSphere() Sphere {
-	s := Sphere{idGen.Int()}
+	s := Sphere{idGen.Int(), I4}
 	return s
 }
 
