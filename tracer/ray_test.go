@@ -1,6 +1,7 @@
 package tracer
 
 import (
+	"math/rand"
 	"testing"
 )
 
@@ -128,27 +129,28 @@ func TestIntersectSetsObject(t *testing.T) {
 func TestHitTable(t *testing.T) {
 	s := NewSphere()
 	data := []struct {
+		name   string
 		xs     []Intersect
 		expect Intersect
 		ok     bool
 	}{
 		// The hit, when all intersections have positive t
-		{[]Intersect{{2, s}, {1, s}}, Intersect{1, s}, true},
+		{"all positive t", []Intersect{{2, s}, {1, s}}, Intersect{1, s}, true},
 		// The hit, when some intersections have negative t
-		{[]Intersect{{1, s}, {-1, s}}, Intersect{1, s}, true},
-		// The hit, when all intersections have negative t
-		{[]Intersect{{-1, s}, {-2, s}}, Intersect{0, s}, false},
+		{"some negative t", []Intersect{{1, s}, {-1, s}}, Intersect{1, s}, true},
+		// The hit, when all intersections have negative t. ok is checked and expect is not read. put garbage there just in case
+		{"all negative t", []Intersect{{-1, s}, {-2, s}}, Intersect{200*rand.Float64() - 100, NewSphere()}, false},
 		// The hit is always the lowest nonnegative intersection
-		{[]Intersect{{5, s}, {7, s}, {-3, s}, {2, s}}, Intersect{2, s}, true},
+		{"sorting many t", []Intersect{{5, s}, {7, s}, {-3, s}, {2, s}}, Intersect{2, s}, true},
 	}
 	for _, row := range data {
 		result, ok := Hit(row.xs)
 		if ok != row.ok {
-			t.Errorf("expected ok to be %v but was %v instead. row.expect test should also now fail.", row.expect, result)
+			t.Errorf("%v: expected ok to be %v but was %v instead. row.expect test should also now fail.", row.name, row.expect, result)
 		}
-		if row.expect != result {
-			t.Errorf("expected hit to be %v but was %v instead",
-				row.expect, result)
+		if row.ok && (row.expect != result) {
+			t.Errorf("%v: expected hit to be %v but was %v instead",
+				row.name, row.expect, result)
 		}
 	}
 }
