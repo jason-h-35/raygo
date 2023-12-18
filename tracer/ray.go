@@ -66,6 +66,7 @@ func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
 		return NewIntersect(0, NewSphere()), false
 	}
+	// needed for slice sort funcs to sort Intersects
 	f := func(a, b Intersect) int {
 		if abs(a.time-b.time) < eps {
 			return 0
