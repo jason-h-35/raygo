@@ -57,5 +57,9 @@ func (s Sphere) Intersect(r Ray) []Intersection {
 }
 
 func Hit(xs []Intersection) (Intersection, bool) {
+	nonneg_t := xs[:0]
+	for _, x := range xs {
+		if x.time > 0
+	}
 	return xs[0], true
 }
