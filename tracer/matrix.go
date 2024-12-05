@@ -46,6 +46,17 @@ func NewMatVal(i int, j int, val float64) MatVal {
 
 func NewMat[T ~int](a []float64) Mat[T] {
 	var size T
+	switch any(size).(type) {
+	case Size2:
+		size = T(_2)
+	case Size3:
+		size = T(_3)
+	case Size4:
+		size = T(_4)
+	default:
+		panic("unsupported matrix size type")
+	}
+
 	expected := size * size
 	if len(a) != int(expected) {
 		panic(fmt.Sprintf("Mat%d needs %d elements", size, expected))
