@@ -146,7 +146,7 @@ func TestHitTable(t *testing.T) {
 		if ok != row.ok {
 			t.Errorf("%v: expected ok to be %v but was %v instead. row.expect test should also now fail.", row.name, row.expect, result)
 		}
-		if row.ok && (row.expect.id != result.id) {
+		if row.ok && (!row.expect.Same(result)) {
 			t.Errorf("%v: expected hit to be %v but was %v instead",
 				row.name, row.expect, result)
 		}

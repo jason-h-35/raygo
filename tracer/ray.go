@@ -71,6 +71,17 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 	return NewIntersects(s, t1, t2)
 }
 
+func (x Intersect) Equals(y Intersect) bool {
+	return x.id == y.id &&
+		x.object.id == y.object.id &&
+		abs(x.time-y.time) < eps
+}
+
+func (x Intersect) Same(y Intersect) bool {
+	return x.object.id == y.object.id &&
+		abs(x.time-y.time) < eps
+}
+
 func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
 		return NewIntersect(NewSphere(), 0), false
