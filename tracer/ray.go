@@ -11,7 +11,10 @@ type Ray struct {
 	Direction Tuple
 }
 
-var idGen = rand.New(rand.NewSource(69))
+var (
+	sphereIDGen       = rand.New(rand.NewSource(69))
+	intersectionIDGen = rand.New(rand.NewSource(420))
+)
 
 type Sphere struct {
 	id        int
@@ -19,12 +22,13 @@ type Sphere struct {
 }
 
 type Intersect struct {
+	id     int
 	time   float64
 	object Sphere
 }
 
 func NewIntersect(time float64, object Sphere) Intersect {
-	return Intersect{time, object}
+	return Intersect{intersectionIDGen.Int(), time, object}
 }
 
 func NewRay(origin, direction Tuple) Ray {
@@ -36,7 +40,7 @@ func (r Ray) Position(time float64) Tuple {
 }
 
 func NewSphere() Sphere {
-	s := Sphere{idGen.Int(), I4}
+	s := Sphere{sphereIDGen.Int(), I4}
 	return s
 }
 
