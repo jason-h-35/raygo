@@ -140,11 +140,14 @@ func (a Mat[T]) Transpose() Mat[T] {
 }
 
 func SubMat[T, U ~int](a Mat[T], is, js int) Mat[U] {
-	s := make([]float64, 0)
+	newSize := len(a.vals) - 1
+	s := make([]float64, newSize*newSize)
+	idx := 0
 	for i, row := range a.vals {
 		for j, val := range row {
 			if i != is && j != js {
-				s = append(s, val)
+				s[idx] = val
+				idx++
 			}
 		}
 	}
@@ -155,9 +158,9 @@ func Minor[T ~int](a Mat[T], is, js int) float64 {
 	size := a.size
 	switch size {
 	case 3:
-		return SubMat[T, T](a, is, js).Determinant()
+		return SubMat[T, Size2](a, is, js).Determinant()
 	case 4:
-		return SubMat[T, T](a, is, js).Determinant()
+		return SubMat[T, Size3](a, is, js).Determinant()
 	default:
 		panic("Minor only supported for Mat3 and Mat4")
 	}
