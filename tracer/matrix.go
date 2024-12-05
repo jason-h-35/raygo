@@ -97,7 +97,7 @@ func (m1 Mat[T]) Equals(m2 Mat[T]) bool {
 }
 
 func (a Mat[T]) Times(b Mat[T]) Mat[T] {
-	var size T
+	size := a.size
 	result := make([]float64, size*size)
 	for i := 0; i < int(size); i++ {
 		for j := 0; j < int(size); j++ {
@@ -112,7 +112,7 @@ func (a Mat[T]) Times(b Mat[T]) Mat[T] {
 }
 
 func (a Mat[T]) TimesTuple(b Tuple) Tuple {
-	var size T
+	size := a.size
 	if size != 4 {
 		panic("TimesTuple only works with 4x4 matrices")
 	}
@@ -129,7 +129,7 @@ func (a Mat[T]) TimesTuple(b Tuple) Tuple {
 }
 
 func (a Mat[T]) Transpose() Mat[T] {
-	var size T
+	size := a.size
 	result := make([]float64, size*size)
 	for i := 0; i < int(size); i++ {
 		for j := 0; j < int(size); j++ {
@@ -152,7 +152,7 @@ func SubMat[T, U ~int](a Mat[T], is, js int) Mat[U] {
 }
 
 func Minor[T ~int](a Mat[T], is, js int) float64 {
-	var size T
+	size := a.size
 	switch size {
 	case 3:
 		return SubMat[T, T](a, is, js).Determinant()
@@ -171,7 +171,7 @@ func Cofactor[T ~int](a Mat[T], is, js int) float64 {
 }
 
 func (a Mat[T]) Determinant() float64 {
-	var size T
+	size := a.size
 	switch size {
 	case 2:
 		return a.vals[0][0]*a.vals[1][1] - a.vals[0][1]*a.vals[1][0]
@@ -195,7 +195,7 @@ func (a Mat[T]) Inverse() Mat[T] {
 	if !a.CanInverse() {
 		panic("can't inverse this matrix")
 	}
-	var size T
+	size := a.size
 	inverse := NewMat[T](make([]float64, size*size))
 	for i, row := range a.vals {
 		for j := range row {
