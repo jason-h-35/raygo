@@ -4,14 +4,14 @@ import (
 	"fmt"
 )
 
-type Matrix[T int] interface {
+type Matrix[T ~int] interface {
 	At(i, j int) float64
 	Equals(other Matrix[T]) bool
 	Determinant() float64
 	CanInverse() bool
 }
 
-type Mat[T int] struct {
+type Mat[T ~int] struct {
 	vals [][]float64
 	size T
 }
@@ -44,7 +44,7 @@ func NewMatVal(i int, j int, val float64) MatVal {
 	return MatVal{i, j, val}
 }
 
-func NewMat[T int](a []float64) Mat[T] {
+func NewMat[T ~int](a []float64) Mat[T] {
 	var size T
 	expected := size * size
 	if len(a) != int(expected) {
@@ -128,7 +128,7 @@ func (a Mat[T]) Transpose() Mat[T] {
 	return NewMat[T](result)
 }
 
-func SubMat[T, U int](a Mat[T], is, js int) Mat[U] {
+func SubMat[T, U ~int](a Mat[T], is, js int) Mat[U] {
 	s := make([]float64, 0)
 	for i, row := range a.vals {
 		for j, val := range row {
@@ -140,19 +140,19 @@ func SubMat[T, U int](a Mat[T], is, js int) Mat[U] {
 	return NewMat[U](s)
 }
 
-func Minor[T int](a Mat[T], is, js int) float64 {
+func Minor[T ~int](a Mat[T], is, js int) float64 {
 	var size T
 	switch size {
 	case 3:
-		return SubMat[int, int](a, is, js).Determinant()
+		return SubMat[T, T](a, is, js).Determinant()
 	case 4:
-		return SubMat[int, int](a, is, js).Determinant()
+		return SubMat[T, T](a, is, js).Determinant()
 	default:
 		panic("Minor only supported for Mat3 and Mat4")
 	}
 }
 
-func Cofactor[T int](a Mat[T], is, js int) float64 {
+func Cofactor[T ~int](a Mat[T], is, js int) float64 {
 	if (is+js)%2 == 1 {
 		return -Minor(a, is, js)
 	}
