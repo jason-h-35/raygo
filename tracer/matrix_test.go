@@ -155,9 +155,9 @@ func Test_Mat3Determinant(t *testing.T) {
 		js     int
 		expect float64
 	}{
-		{a, "Cofactor", Mat3.Cofactor, 0, 0, 56},
-		{a, "Cofactor", Mat3.Cofactor, 0, 1, 12},
-		{a, "Cofactor", Mat3.Cofactor, 0, 2, -46},
+		{a, "Cofactor", Cofactor[Size3], 0, 0, 56},
+		{a, "Cofactor", Cofactor[Size3], 0, 1, 12},
+		{a, "Cofactor", Cofactor[Size3], 0, 2, -46},
 	}
 	for _, it := range table {
 		// calling fn on a mat in such a way the params can be extracted for the error msg
@@ -177,17 +177,17 @@ func Test_Mat3Determinant(t *testing.T) {
 func Test_Mat4Determinant(t *testing.T) {
 	a := NewMat[Size4]([]float64{-2, -8, 3, 5, -3, 1, 7, 3, 1, 2, -9, 6, -6, 7, 7, -9})
 	table := []struct {
-		mat    Mat4
+		mat    Mat[Size4]
 		fnName string
-		fn     func(Mat4, int, int) float64
+		fn     func(Mat[Size4], int, int) float64
 		is     int
 		js     int
 		expect float64
 	}{
-		{a, "Cofactor", Mat4.Cofactor, 0, 0, 690},
-		{a, "Cofactor", Mat4.Cofactor, 0, 1, 447},
-		{a, "Cofactor", Mat4.Cofactor, 0, 2, 210},
-		{a, "Cofactor", Mat4.Cofactor, 0, 3, 51},
+		{a, "Cofactor", Cofactor[Size4], 0, 0, 690},
+		{a, "Cofactor", Cofactor[Size4], 0, 1, 447},
+		{a, "Cofactor", Cofactor[Size4], 0, 2, 210},
+		{a, "Cofactor", Cofactor[Size4], 0, 3, 51},
 	}
 	for _, it := range table {
 		// calling fn on a mat in such a way the params can be extracted for the error msg
