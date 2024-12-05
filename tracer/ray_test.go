@@ -117,10 +117,10 @@ func TestIntersectSetsObject(t *testing.T) {
 		t.Errorf("incorrect len. got %v", len(xs))
 	}
 	for _, ix := range xs {
-		if ix.object != s1 {
+		if ix.object.id != s1.id {
 			t.Errorf("intersection object not set. expected %v. got %v", s1, ix.object)
 		}
-		if ix.object == s2 {
+		if ix.object.id == s2.id {
 			t.Errorf("ray intersecting with a different sphere. are object IDs working?. expected %v. got %v", s1, ix.object)
 		}
 	}
@@ -159,7 +159,7 @@ func TestRayTransform(t *testing.T) {
 	r := NewRay(NewPointTuple(1, 2, 3), NewVectorTuple(0, 1, 0))
 	data := []struct {
 		r      Ray
-		m      Mat4
+		m      Mat[Size4]
 		expect Ray
 	}{
 		{r, I4.Translate(3, 4, 5), NewRay(NewPointTuple(4, 6, 8), NewVectorTuple(0, 1, 0))},
