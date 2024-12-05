@@ -15,7 +15,7 @@ var idGen = rand.New(rand.NewSource(69))
 
 type Sphere struct {
 	id        int
-	transform Mat4
+	transform Mat[Size4]
 }
 
 type Intersect struct {
@@ -87,6 +87,6 @@ func Hit(xs []Intersect) (Intersect, bool) {
 	return NewIntersect(0, NewSphere()), false
 }
 
-func (r Ray) Transform(m Mat4) Ray {
+func (r Ray) Transform(m Mat[Size4]) Ray {
 	return NewRay(m.TimesTuple(r.Origin), m.TimesTuple(r.Direction))
 }
