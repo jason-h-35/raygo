@@ -7,7 +7,7 @@ import (
 
 func TestTransform(t *testing.T) {
 	data := []struct {
-		transform Mat4
+		transform Mat[Size4]
 		pt        Tuple
 		expect    Tuple
 	}{
