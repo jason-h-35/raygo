@@ -85,7 +85,7 @@ func TestNewIntersection(t *testing.T) {
 	// An intersection encapsulates t and object
 	s := NewSphere()
 	time := 3.5
-	i := NewIntersect(time, s)
+	i := NewIntersect(s, time)
 	if i.time != time {
 		t.Errorf("expected intersect time to be %v but was %v", time, i.time)
 	}
@@ -94,9 +94,7 @@ func TestNewIntersection(t *testing.T) {
 func TestIntersectionSlice(t *testing.T) {
 	// Aggregating intersections
 	s := NewSphere()
-	i1 := NewIntersect(1, s)
-	i2 := NewIntersect(2, s)
-	xs := []Intersect{i1, i2}
+	xs := NewIntersects(s, 1, 2)
 	if len(xs) != 2 {
 		t.Errorf("incorrect intersection slice len. expected 2, got %v", len(xs))
 	}
@@ -135,20 +133,20 @@ func TestHitTable(t *testing.T) {
 		ok     bool
 	}{
 		// The hit, when all intersections have positive t
-		{"all positive t", []Intersect{{2, s}, {1, s}}, Intersect{1, s}, true},
+		{"all positive t", NewIntersects(s, 2, 1), NewIntersect(s, 1), true},
 		// The hit, when some intersections have negative t
-		{"some negative t", []Intersect{{1, s}, {-1, s}}, Intersect{1, s}, true},
-		// The hit, when all intersections have negative t. ok is checked and expect is not read. put garbage there just in case
-		{"all negative t", []Intersect{{-1, s}, {-2, s}}, Intersect{200*rand.Float64() - 100, NewSphere()}, false},
+		{"some negative t", NewIntersects(s, 1, -1), NewIntersect(s, 1), true},
+		// The hit, when all intersections have negative t. ok is checked and expect is not read
+		{"all negative t", NewIntersects(s, -1, -2), NewIntersect(NewSphere(), 200*rand.Float64()-100), false},
 		// The hit is always the lowest nonnegative intersection
-		{"sorting many t", []Intersect{{5, s}, {7, s}, {-3, s}, {2, s}}, Intersect{2, s}, true},
+		{"sorting many t", NewIntersects(s, 5, 7, -3, 2), NewIntersect(s, 2), true},
 	}
 	for _, row := range data {
 		result, ok := Hit(row.xs)
 		if ok != row.ok {
 			t.Errorf("%v: expected ok to be %v but was %v instead. row.expect test should also now fail.", row.name, row.expect, result)
 		}
-		if row.ok && (row.expect != result) {
+		if row.ok && (row.expect.id != result.id) {
 			t.Errorf("%v: expected hit to be %v but was %v instead",
 				row.name, row.expect, result)
 		}

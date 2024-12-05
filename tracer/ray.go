@@ -23,12 +23,20 @@ type Sphere struct {
 
 type Intersect struct {
 	id     int
-	time   float64
 	object Sphere
+	time   float64
 }
 
-func NewIntersect(time float64, object Sphere) Intersect {
-	return Intersect{intersectionIDGen.Int(), time, object}
+func NewIntersect(object Sphere, time float64) Intersect {
+	return Intersect{intersectionIDGen.Int(), object, time}
+}
+
+func NewIntersects(object Sphere, times ...float64) []Intersect {
+	xs := make([]Intersect, len(times))
+	for i, t := range times {
+		xs[i] = NewIntersect(object, t)
+	}
+	return xs
 }
 
 func NewRay(origin, direction Tuple) Ray {
@@ -60,15 +68,12 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 	if t1 > t2 {
 		t1, t2 = t2, t1
 	}
-	return []Intersect{
-		{t1, s},
-		{t2, s},
-	}
+	return NewIntersects(s, t1, t2)
 }
 
 func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
-		return NewIntersect(0, NewSphere()), false
+		return NewIntersect(NewSphere(), 0), false
 	}
 	// needed for slice sort funcs to sort Intersects
 	f := func(a, b Intersect) int {
@@ -88,7 +93,7 @@ func Hit(xs []Intersect) (Intersect, bool) {
 			return x, true
 		}
 	}
-	return NewIntersect(0, NewSphere()), false
+	return NewIntersect(NewSphere(), 0), false
 }
 
 func (r Ray) Transform(m Mat[Size4]) Ray {
