@@ -110,7 +110,7 @@ func Test_Mat4Transpose(t *testing.T) {
 }
 
 func Test_Mat2Determinant(t *testing.T) {
-	a := NewMat[Size4]([]float64{1, 5, -3, 2})
+	a := NewMat[Size2]([]float64{1, 5, -3, 2})
 	expect := 17.0
 	result := a.Determinant()
 	if abs(expect-result) > eps {
@@ -119,8 +119,8 @@ func Test_Mat2Determinant(t *testing.T) {
 }
 
 func Test_Mat3SubMat(t *testing.T) {
-	a := NewMat[Size4]([]float64{1, 5, 0, -3, 2, 7, 0, 6, 3})
-	result := a.SubMat(0, 2)
+	a := NewMat[Size3]([]float64{1, 5, 0, -3, 2, 7, 0, 6, 3})
+	result := SubMat[Size3, Size2](a, 0, 2)
 	expect := NewMat[Size2]([]float64{-3, 2, 0, 6})
 	if !result.Equals(expect) {
 		t.Errorf("expected %v SubMat would be %v, but was %v", a, expect, result)
@@ -129,7 +129,7 @@ func Test_Mat3SubMat(t *testing.T) {
 
 func Test_Mat3Minor(t *testing.T) {
 	a := NewMat[Size3]([]float64{3, 5, 0, 2, -1, -7, 6, -1, 5})
-	result := a.Minor(1, 0)
+	result := Minor(a, 1, 0)
 	expect := 25.0
 	if abs(result-expect) > eps {
 		t.Errorf("expected %v Minor would be %v, but was %v", a, expect, result)
@@ -138,7 +138,7 @@ func Test_Mat3Minor(t *testing.T) {
 
 func Test_Mat3Cofactor(t *testing.T) {
 	a := NewMat[Size3]([]float64{3, 5, 0, 2, -1, -7, 6, -1, 5})
-	result := a.Cofactor(1, 0)
+	result := Cofactor(a, 1, 0)
 	expect := -25.0
 	if abs(result-expect) > eps {
 		t.Errorf("expected %v Cofactor would be %v, but was %v", a, expect, result)
