@@ -4,6 +4,12 @@ import (
 	"math"
 )
 
+// Transform functions apply geometric transformations to 4x4 matrices.
+// Each transformation returns a new matrix without modifying the original.
+// The transformations follow the right-hand rule and are applied in order
+// from right to left when chained.
+
+// Translate returns a new matrix translated by (x,y,z)
 func (m Mat[Size4]) Translate(x, y, z float64) Mat[Size4] {
 	f := []float64{
 		1, 0, 0, x,
@@ -14,6 +20,7 @@ func (m Mat[Size4]) Translate(x, y, z float64) Mat[Size4] {
 	return NewMat[Size4](f).Times(m)
 }
 
+// Scale returns a new matrix scaled by (x,y,z) factors
 func (m Mat[Size4]) Scale(x, y, z float64) Mat[Size4] {
 	f := []float64{
 		x, 0, 0, 0,
@@ -24,6 +31,7 @@ func (m Mat[Size4]) Scale(x, y, z float64) Mat[Size4] {
 	return NewMat[Size4](f).Times(m)
 }
 
+// RotateX returns a new matrix rotated around the X axis by rad radians
 func (m Mat[Size4]) RotateX(rad float64) Mat[Size4] {
 	sin, cos := math.Sincos(rad)
 	f := []float64{
@@ -32,10 +40,10 @@ func (m Mat[Size4]) RotateX(rad float64) Mat[Size4] {
 		0, sin, cos, 0,
 		0, 0, 0, 1,
 	}
-	T := NewMat[Size4](f).Times(m)
-	return T.Times(m)
+	return NewMat[Size4](f).Times(m)
 }
 
+// RotateY returns a new matrix rotated around the Y axis by rad radians
 func (m Mat[Size4]) RotateY(rad float64) Mat[Size4] {
 	sin, cos := math.Sincos(rad)
 	f := []float64{
@@ -44,10 +52,10 @@ func (m Mat[Size4]) RotateY(rad float64) Mat[Size4] {
 		-sin, 0, cos, 0,
 		0, 0, 0, 1,
 	}
-	T := NewMat[Size4](f)
-	return T.Times(m)
+	return NewMat[Size4](f).Times(m)
 }
 
+// RotateZ returns a new matrix rotated around the Z axis by rad radians
 func (m Mat[Size4]) RotateZ(rad float64) Mat[Size4] {
 	sin, cos := math.Sincos(rad)
 	f := []float64{
@@ -56,10 +64,13 @@ func (m Mat[Size4]) RotateZ(rad float64) Mat[Size4] {
 		0, 0, 1, 0,
 		0, 0, 0, 1,
 	}
-	T := NewMat[Size4](f)
-	return T.Times(m)
+	return NewMat[Size4](f).Times(m)
 }
 
+// Shear returns a new matrix sheared by the given factors
+// xy: X along Y, xz: X along Z
+// yx: Y along X, yz: Y along Z
+// zx: Z along X, zy: Z along Y
 func (m Mat[Size4]) Shear(xy, xz, yx, yz, zx, zy float64) Mat[Size4] {
 	f := []float64{
 		1, xy, xz, 0,
@@ -67,6 +78,5 @@ func (m Mat[Size4]) Shear(xy, xz, yx, yz, zx, zy float64) Mat[Size4] {
 		zx, zy, 1, 0,
 		0, 0, 0, 1,
 	}
-	T := NewMat[Size4](f)
-	return T.Times(m)
+	return NewMat[Size4](f).Times(m)
 }
