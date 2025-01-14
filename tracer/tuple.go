@@ -4,13 +4,10 @@ import (
 	"math"
 )
 
-const eps = 1.e-5
+const epsilon = 1e-5
 
 type Tuple struct {
-	X float64
-	Y float64
-	Z float64
-	W float64
+	X, Y, Z, W float64
 }
 
 func NewTuple(x, y, z, w float64) Tuple {
@@ -38,13 +35,10 @@ func (t Tuple) IsPoint() bool {
 }
 
 func (t1 Tuple) Equals(t2 Tuple) bool {
-	if math.Abs(t1.X-t2.X) <= eps &&
-		math.Abs(t1.Y-t2.Y) <= eps &&
-		math.Abs(t1.Z-t2.Z) <= eps &&
-		t1.W == t2.W {
-		return true
-	}
-	return false
+	return math.Abs(t1.X-t2.X) <= epsilon &&
+		math.Abs(t1.Y-t2.Y) <= epsilon &&
+		math.Abs(t1.Z-t2.Z) <= epsilon &&
+		t1.W == t2.W
 }
 
 func (t1 Tuple) Plus(t2 Tuple) Tuple {
@@ -66,8 +60,8 @@ func (t Tuple) Times(f float64) Tuple {
 }
 
 func (t Tuple) Divide(f float64) Tuple {
-	if math.Abs(f) < eps {
-		panic("divisor too close to 0.0")
+	if math.Abs(f) < epsilon {
+		panic("division by near-zero value")
 	}
 	return t.Times(1 / f)
 }
@@ -77,10 +71,11 @@ func (t Tuple) Length() float64 {
 }
 
 func (t Tuple) Normalized() Tuple {
-	if t.Length() < eps {
-		panic("divisor too close to 0.0")
+	length := t.Length()
+	if length < epsilon {
+		panic("cannot normalize tuple with zero-length")
 	}
-	return t.Times(1 / t.Length())
+	return t.Times(1 / length)
 }
 
 func (t1 Tuple) Dot(t2 Tuple) float64 {

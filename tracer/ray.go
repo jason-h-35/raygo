@@ -74,12 +74,12 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 func (x Intersect) Equals(y Intersect) bool {
 	return x.id == y.id &&
 		x.object.id == y.object.id &&
-		math.Abs(x.time-y.time) < eps
+		math.Abs(x.time-y.time) < epsilon
 }
 
 func (x Intersect) Same(y Intersect) bool {
 	return x.object.id == y.object.id &&
-		math.Abs(x.time-y.time) < eps
+		math.Abs(x.time-y.time) < epsilon
 }
 
 func Hit(xs []Intersect) (Intersect, bool) {
@@ -88,7 +88,7 @@ func Hit(xs []Intersect) (Intersect, bool) {
 	}
 	// needed for slice sort funcs to sort Intersects
 	f := func(a, b Intersect) int {
-		if math.Abs(a.time-b.time) < eps {
+		if math.Abs(a.time-b.time) < epsilon {
 			return 0
 		} else if a.time < b.time {
 			return -1
