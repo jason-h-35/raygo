@@ -8,7 +8,7 @@ import (
 // Creating and querying a ray
 func TestNewRay(t *testing.T) {
 	origin := NewPoint(1, 2, 3)
-	direction := NewVectorTuple(4, 5, 6)
+	direction := NewVector(4, 5, 6)
 	r := NewRay(origin, direction)
 	if origin != r.Origin {
 		t.Errorf("ray origin not initialized properly")
@@ -22,7 +22,7 @@ func TestNewRay(t *testing.T) {
 func TestPosition(t *testing.T) {
 	r := NewRay(
 		NewPoint(2, 3, 4),
-		NewVectorTuple(1, 0, 0),
+		NewVector(1, 0, 0),
 	)
 	data := []struct {
 		ray    Ray
@@ -44,7 +44,7 @@ func TestPosition(t *testing.T) {
 }
 
 func TestSphereTable(t *testing.T) {
-	vec := NewVectorTuple(0, 0, 1)
+	vec := NewVector(0, 0, 1)
 	sphere := NewSphere()
 	data := []struct {
 		r      Ray
@@ -107,7 +107,7 @@ func TestIntersectionSlice(t *testing.T) {
 }
 
 func TestIntersectSetsObject(t *testing.T) {
-	r := NewRay(NewPoint(0, 0, -5), NewVectorTuple(0, 0, 1))
+	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
 	s1 := NewSphere()
 	s2 := NewSphere()
 	xs := s1.GetIntersects(r)
@@ -154,14 +154,14 @@ func TestHitTable(t *testing.T) {
 }
 
 func TestRayTransform(t *testing.T) {
-	r := NewRay(NewPoint(1, 2, 3), NewVectorTuple(0, 1, 0))
+	r := NewRay(NewPoint(1, 2, 3), NewVector(0, 1, 0))
 	data := []struct {
 		r      Ray
 		m      Mat[Size4]
 		expect Ray
 	}{
-		{r, I4.Translate(3, 4, 5), NewRay(NewPoint(4, 6, 8), NewVectorTuple(0, 1, 0))},
-		{r, I4.Scale(2, 3, 4), NewRay(NewPoint(2, 6, 12), NewVectorTuple(0, 3, 0))},
+		{r, I4.Translate(3, 4, 5), NewRay(NewPoint(4, 6, 8), NewVector(0, 1, 0))},
+		{r, I4.Scale(2, 3, 4), NewRay(NewPoint(2, 6, 12), NewVector(0, 3, 0))},
 	}
 	for _, row := range data {
 		result := row.r.Transform(row.m)

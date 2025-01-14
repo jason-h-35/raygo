@@ -27,11 +27,11 @@ func tick(env Environment, proj Projectile) Projectile {
 func main() {
 	p := Projectile{
 		position: tracer.NewPoint(0, 1, 0),
-		velocity: tracer.NewVectorTuple(1, 1.8, 0).Normalized().Times(11.25),
+		velocity: tracer.NewVector(1, 1.8, 0).Normalized().Times(11.25),
 	}
 	e := Environment{
-		gravity: tracer.NewVectorTuple(0, -0.2, 0),
-		wind:    tracer.NewVectorTuple(-0.01, 0, 0),
+		gravity: tracer.NewVector(0, -0.2, 0),
+		wind:    tracer.NewVector(-0.01, 0, 0),
 	}
 	c := canvas.NewCanvas(900, 450)
 	count := 0

@@ -26,7 +26,7 @@ func NewPoint(x, y, z float64) Tuple {
 	return NewTuple(x, y, z, 1)
 }
 
-func NewVectorTuple(x, y, z float64) Tuple {
+func NewVector(x, y, z float64) Tuple {
 	return NewTuple(x, y, z, 0)
 }
 
@@ -114,7 +114,7 @@ func (t1 Tuple) Cross(t2 Tuple) Tuple {
 	if !t1.IsVector() || !t2.IsVector() {
 		panic("Cross cannot operate on non-vectors.")
 	}
-	return NewVectorTuple(
+	return NewVector(
 		t1.Y*t2.Z-t1.Z*t2.Y,
 		t1.Z*t2.X-t1.X*t2.Z,
 		t1.X*t2.Y-t1.Y*t2.X,

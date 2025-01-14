@@ -27,7 +27,7 @@ func Test_Point(t *testing.T) {
 	if got.IsVector() || expect.IsVector() {
 		t.Errorf("expected IsVector() to be false for both bare struct and New method.")
 	}
-	notPoint := NewVectorTuple(1, 1, 1)
+	notPoint := NewVector(1, 1, 1)
 	if notPoint.IsPoint() {
 		t.Errorf("expected IsPoint() to be false for %v", notPoint)
 	}
@@ -36,7 +36,7 @@ func Test_Point(t *testing.T) {
 // Test that NewVectorTuple sets W=0 and IsVector() and not IsPoint()
 func Test_Vector(t *testing.T) {
 	expect := Tuple{X: 4.3, Y: -4.2, Z: 3.1, W: 0}
-	got := NewVectorTuple(4.3, -4.2, 3.1)
+	got := NewVector(4.3, -4.2, 3.1)
 	if got != expect {
 		t.Errorf("expected: %v. got: %v", expect, got)
 	}
@@ -54,7 +54,7 @@ func Test_Vector(t *testing.T) {
 
 func Test_Equals(t *testing.T) {
 	same1 := NewTuple(1, 2, 3, 0)
-	same2 := NewVectorTuple(1, 2, 3)
+	same2 := NewVector(1, 2, 3)
 	diff := NewPoint(1, 2, 3)
 	zero := NewTuple(0, 0, 0, 0)
 	if NewPoint(1, 2, 3).Equals(NewPoint(2, 2, 3)) {
@@ -66,7 +66,7 @@ func Test_Equals(t *testing.T) {
 	if NewPoint(1, 2, 3).Equals(NewPoint(1, 2, 2)) {
 		t.Errorf("Tuples should be unequal because Z")
 	}
-	if NewPoint(1, 2, 3).Equals(NewVectorTuple(1, 2, 3)) {
+	if NewPoint(1, 2, 3).Equals(NewVector(1, 2, 3)) {
 		t.Errorf("Tuples should be unequal because  W")
 	}
 	if !same1.Equals(same2) || !same2.Equals(same1) {
@@ -82,7 +82,7 @@ func Test_Equals(t *testing.T) {
 
 func Test_Plus(t *testing.T) {
 	point := NewPoint(1, 2, 3)
-	vector := NewVectorTuple(1, 2, 3)
+	vector := NewVector(1, 2, 3)
 	test1 := point.Plus(vector)
 	test2 := vector.Plus(point)
 	test3 := vector.Plus(vector)
@@ -102,21 +102,21 @@ func Test_Minus_Method(t *testing.T) {
 	p1 := NewPoint(3, 2, 1)
 	p2 := NewPoint(5, 6, 7)
 	result2p := p1.Minus(p2)
-	expect2p := NewVectorTuple(-2, -4, -6)
+	expect2p := NewVector(-2, -4, -6)
 	if !result2p.Equals(expect2p) {
 		t.Errorf("%v Minus %v should be %v, but was %v", p1, p2, expect2p, result2p)
 	}
 	// Subtracting a vector from a point
-	v2 := NewVectorTuple(5, 6, 7)
+	v2 := NewVector(5, 6, 7)
 	resultvp := p1.Minus(v2)
 	expectvp := NewPoint(-2, -4, -6)
 	if !resultvp.Equals(expectvp) {
 		t.Errorf("%v Minus %v should be %v, but was %v", p1, v2, expectvp, resultvp)
 	}
 	// Subtracting a vector from a vector
-	v1 := NewVectorTuple(3, 2, 1)
+	v1 := NewVector(3, 2, 1)
 	result2v := v1.Minus(v2)
-	expect2v := NewVectorTuple(-2, -4, -6)
+	expect2v := NewVector(-2, -4, -6)
 	if !result2v.Equals(expect2v) {
 		t.Errorf("%v Minus %v should be %v, but was %v", v1, v2, expect2v, result2v)
 	}
@@ -166,11 +166,11 @@ func Test_Divide_Panic(t *testing.T) {
 
 func Test_Length(t *testing.T) {
 	tuples := []Tuple{
-		NewVectorTuple(1, 0, 0),
-		NewVectorTuple(0, 1, 0),
-		NewVectorTuple(0, 0, 1),
-		NewVectorTuple(1, 2, 3),
-		NewVectorTuple(-1, -2, -3),
+		NewVector(1, 0, 0),
+		NewVector(0, 1, 0),
+		NewVector(0, 0, 1),
+		NewVector(1, 2, 3),
+		NewVector(-1, -2, -3),
 	}
 
 	lengths := []float64{
@@ -186,12 +186,12 @@ func Test_Length(t *testing.T) {
 
 func Test_Normalized(t *testing.T) {
 	tuples := []Tuple{
-		NewVectorTuple(4, 0, 0),
-		NewVectorTuple(1, 2, 3),
+		NewVector(4, 0, 0),
+		NewVector(1, 2, 3),
 	}
 	normalized := []Tuple{
-		NewVectorTuple(1, 0, 0),
-		NewVectorTuple(1, 2, 3).Divide(math.Sqrt(14)),
+		NewVector(1, 0, 0),
+		NewVector(1, 2, 3).Divide(math.Sqrt(14)),
 	}
 	for ix, tup := range tuples {
 		if tup.Normalized() != normalized[ix] {
@@ -211,8 +211,8 @@ func Test_Normalized_Panic(t *testing.T) {
 }
 
 func Test_Dot(t *testing.T) {
-	t1 := NewVectorTuple(1, 2, 3)
-	t2 := NewVectorTuple(2, 3, 4)
+	t1 := NewVector(1, 2, 3)
+	t2 := NewVector(2, 3, 4)
 	result := t1.Dot(t2)
 	expect := 20.0
 	if result != expect {
@@ -227,19 +227,19 @@ func Test_Dot(t *testing.T) {
 func Test_Dot_Panic(t *testing.T) {
 	defer func() { _ = recover() }()
 	p := NewPoint(1, 2, 3)
-	v := NewVectorTuple(4, 5, 6)
+	v := NewVector(4, 5, 6)
 	_ = p.Dot(v)
 	t.Errorf("%v Dot %v did not panic", p, v)
 }
 
 func Test_Cross(t *testing.T) {
-	v1 := NewVectorTuple(1, 2, 3)
-	v2 := NewVectorTuple(2, 3, 4)
-	expect1 := NewVectorTuple(-1, 2, -1)
+	v1 := NewVector(1, 2, 3)
+	v2 := NewVector(2, 3, 4)
+	expect1 := NewVector(-1, 2, -1)
 	if v1.Cross(v2) != expect1 {
 		t.Errorf("%v Cross %v should be %v, but was %v", v1, v2, expect1, v1.Cross(v2))
 	}
-	expect2 := NewVectorTuple(1, -2, 1)
+	expect2 := NewVector(1, -2, 1)
 	if v2.Cross(v1) != expect2 {
 		t.Errorf("%v Cross %v should be %v, but was %v", v2, v1, expect2, v2.Cross(v1))
 	}
@@ -248,7 +248,7 @@ func Test_Cross(t *testing.T) {
 func Test_Cross_Panic(t *testing.T) {
 	defer func() { _ = recover() }()
 	p := NewPoint(1, 2, 3)
-	v := NewVectorTuple(4, 5, 6)
+	v := NewVector(4, 5, 6)
 	_ = p.Cross(v)
 	t.Errorf("%v Cross %v did not panic", p, v)
 }

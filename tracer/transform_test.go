@@ -13,10 +13,10 @@ func TestTransform(t *testing.T) {
 	}{
 		{I4.Translate(5, -3, 2), NewPoint(-3, 4, 5), NewPoint(2, 1, 7)},
 		{I4.Translate(5, -3, 2).Inverse(), NewPoint(-3, 4, 5), NewPoint(-8, 7, 3)},
-		{I4.Translate(5, -3, 2), NewVectorTuple(-3, 4, 5), NewVectorTuple(-3, 4, 5)},
+		{I4.Translate(5, -3, 2), NewVector(-3, 4, 5), NewVector(-3, 4, 5)},
 		{I4.Scale(2, 3, 4), NewPoint(-4, 6, 8), NewPoint(-8, 18, 32)},
-		{I4.Scale(2, 3, 4), NewVectorTuple(-4, 6, 8), NewVectorTuple(-8, 18, 32)},
-		{I4.Scale(2, 3, 4).Inverse(), NewVectorTuple(-4, 6, 8), NewVectorTuple(-2, 2, 2)},
+		{I4.Scale(2, 3, 4), NewVector(-4, 6, 8), NewVector(-8, 18, 32)},
+		{I4.Scale(2, 3, 4).Inverse(), NewVector(-4, 6, 8), NewVector(-2, 2, 2)},
 		{I4.Scale(-1, 1, 1), NewPoint(2, 3, 4), NewPoint(-2, 3, 4)},
 		{I4.RotateX(math.Pi / 4.), NewPoint(0, 1, 0), NewPoint(0, math.Sqrt(2)/2., math.Sqrt(2)/2.)},
 		{I4.RotateX(math.Pi / 2.), NewPoint(0, 1, 0), NewPoint(0, 0, 1)},
