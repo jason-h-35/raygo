@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// Check NewTuple constructor assigns to fields properly.
 func Test_NewTuple(t *testing.T) {
 	expect := Tuple{X: 4.3, Y: -4.2, Z: 3.1, W: 1}
 	got := NewTuple(4.3, -4.2, 3.1, 1)
@@ -13,6 +14,7 @@ func Test_NewTuple(t *testing.T) {
 	}
 }
 
+// Check that NewPointTuple sets W=1 and IsPoint() and not IsVector()
 func Test_Point(t *testing.T) {
 	expect := Tuple{X: 4.3, Y: -4.2, Z: 3.1, W: 1}
 	got := NewPointTuple(4.3, -4.2, 3.1)
@@ -22,12 +24,16 @@ func Test_Point(t *testing.T) {
 	if !got.IsPoint() || !expect.IsPoint() {
 		t.Errorf("expected IsPoint() to be true for both bare struct and New method.")
 	}
+	if got.IsVector() || expect.IsVector() {
+		t.Errorf("expected IsVector() to be false for both bare struct and New method.")
+	}
 	notPoint := NewVectorTuple(1, 1, 1)
 	if notPoint.IsPoint() {
 		t.Errorf("expected IsPoint() to be false for %v", notPoint)
 	}
 }
 
+// Test that NewVectorTuple sets W=0 and IsVector() and not IsPoint()
 func Test_Vector(t *testing.T) {
 	expect := Tuple{X: 4.3, Y: -4.2, Z: 3.1, W: 0}
 	got := NewVectorTuple(4.3, -4.2, 3.1)
@@ -36,6 +42,9 @@ func Test_Vector(t *testing.T) {
 	}
 	if !got.IsVector() || !expect.IsVector() {
 		t.Errorf("expected IsVector() == true for both bare struct and New method.")
+	}
+	if got.IsPoint() || expect.IsPoint() {
+		t.Errorf("expected IsPoint() == false for both bare struct and New method.")
 	}
 	notVector := NewPointTuple(1, 1, 1)
 	if notVector.IsVector() {
