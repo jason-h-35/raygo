@@ -1,6 +1,7 @@
 package tracer
 
 import (
+	"math"
 	"testing"
 )
 
@@ -113,7 +114,7 @@ func Test_Mat2Determinant(t *testing.T) {
 	a := NewMat[Size2]([]float64{1, 5, -3, 2})
 	expect := 17.0
 	result := a.Determinant()
-	if abs(expect-result) > eps {
+	if math.Abs(expect-result) > eps {
 		t.Errorf("expected %v Determinant would be %v, but was %v", a, expect, result)
 	}
 }
@@ -131,7 +132,7 @@ func Test_Mat3Minor(t *testing.T) {
 	a := NewMat[Size3]([]float64{3, 5, 0, 2, -1, -7, 6, -1, 5})
 	result := Minor(a, 1, 0)
 	expect := 25.0
-	if abs(result-expect) > eps {
+	if math.Abs(result-expect) > eps {
 		t.Errorf("expected %v Minor would be %v, but was %v", a, expect, result)
 	}
 }
@@ -140,7 +141,7 @@ func Test_Mat3Cofactor(t *testing.T) {
 	a := NewMat[Size3]([]float64{3, 5, 0, 2, -1, -7, 6, -1, 5})
 	result := Cofactor(a, 1, 0)
 	expect := -25.0
-	if abs(result-expect) > eps {
+	if math.Abs(result-expect) > eps {
 		t.Errorf("expected %v Cofactor would be %v, but was %v", a, expect, result)
 	}
 }
@@ -162,14 +163,14 @@ func Test_Mat3Determinant(t *testing.T) {
 	for _, it := range table {
 		// calling fn on a mat in such a way the params can be extracted for the error msg
 		result := it.fn(it.mat, it.is, it.js)
-		if abs(result-it.expect) > 0 {
+		if math.Abs(result-it.expect) > 0 {
 			t.Errorf("expected %v of %v at (%v, %v) would be %v but was %v",
 				it.fnName, it.mat, it.is, it.js, it.expect, result)
 		}
 	}
 	result := a.Determinant()
 	expect := -196.0
-	if abs(result-expect) > eps {
+	if math.Abs(result-expect) > eps {
 		t.Errorf("expected Determinant of %v would be %v but was %v", a, expect, result)
 	}
 }
@@ -192,14 +193,14 @@ func Test_Mat4Determinant(t *testing.T) {
 	for _, it := range table {
 		// calling fn on a mat in such a way the params can be extracted for the error msg
 		result := it.fn(it.mat, it.is, it.js)
-		if abs(result-it.expect) > 0 {
+		if math.Abs(result-it.expect) > 0 {
 			t.Errorf("expected %v of %v at (%v, %v) would be %v but was %v",
 				it.fnName, it.mat, it.is, it.js, it.expect, result)
 		}
 	}
 	result := a.Determinant()
 	expect := -4071.0
-	if abs(result-expect) > eps {
+	if math.Abs(result-expect) > eps {
 		t.Errorf("expected Determinant of %v would be %v but was %v", a, expect, result)
 	}
 }

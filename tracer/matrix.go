@@ -2,6 +2,7 @@ package tracer
 
 import (
 	"fmt"
+	"math"
 )
 
 type Matrix[T ~int] interface {
@@ -88,7 +89,7 @@ func (m Mat[T]) At(i, j int) float64 {
 func (m1 Mat[T]) Equals(m2 Mat[T]) bool {
 	for i := range m1.vals {
 		for j := range m1.vals {
-			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
+			if math.Abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
 				return false
 			}
 		}
@@ -191,7 +192,7 @@ func (a Mat[T]) Determinant() float64 {
 }
 
 func (a Mat[T]) CanInverse() bool {
-	return abs(a.Determinant()) > eps
+	return math.Abs(a.Determinant()) > eps
 }
 
 func (a Mat[T]) Inverse() Mat[T] {

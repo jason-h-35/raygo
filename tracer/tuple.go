@@ -13,7 +13,7 @@ type Tuple struct {
 	W float64
 }
 
-func NewTuple(x float64, y float64, z float64, w float64) Tuple {
+func NewTuple(x, y, z, w float64) Tuple {
 	return Tuple{x, y, z, w}
 }
 
@@ -31,34 +31,21 @@ func NewVector(x, y, z float64) Tuple {
 }
 
 func (t Tuple) IsVector() bool {
-	if t.W == 0 {
-		return true
-	}
-	return false
+	return t.W == 0
 }
 
 func (t Tuple) IsPoint() bool {
-	if t.W == 1 {
-		return true
-	}
-	return false
-}
-
-func abs(x float64) float64 {
-	if x < 0 {
-		return -x
-	}
-	return x
+	return t.W == 1
 }
 
 func (t1 Tuple) Equals(t2 Tuple) bool {
-	if abs(t1.X-t2.X) > eps {
+	if math.Abs(t1.X-t2.X) > eps {
 		return false
 	}
-	if abs(t1.Y-t2.Y) > eps {
+	if math.Abs(t1.Y-t2.Y) > eps {
 		return false
 	}
-	if abs(t1.Z-t2.Z) > eps {
+	if math.Abs(t1.Z-t2.Z) > eps {
 		return false
 	}
 	if t1.W != t2.W {
@@ -86,7 +73,7 @@ func (t Tuple) Times(f float64) Tuple {
 }
 
 func (t Tuple) Divide(f float64) Tuple {
-	if abs(f) < eps {
+	if math.Abs(f) < eps {
 		panic("divisor too close to 0.0")
 	}
 	return t.Times(1 / f)
