@@ -18,8 +18,8 @@ func NewTuple(x, y, z, w float64) Tuple {
 }
 
 // if unperformant, come back and refactor this into a field?
-func (t Tuple) AsArray() []float64 {
-	return []float64{t.X, t.Y, t.Z, t.W}
+func (t Tuple) AsArray() [4]float64 {
+	return [4]float64{t.X, t.Y, t.Z, t.W}
 }
 
 func NewPoint(x, y, z float64) Tuple {
@@ -39,16 +39,10 @@ func (t Tuple) IsPoint() bool {
 }
 
 func (t1 Tuple) Equals(t2 Tuple) bool {
-	if math.Abs(t1.X-t2.X) > eps {
-		return false
-	}
-	if math.Abs(t1.Y-t2.Y) > eps {
-		return false
-	}
-	if math.Abs(t1.Z-t2.Z) > eps {
-		return false
-	}
-	if t1.W != t2.W {
+	if math.Abs(t1.X-t2.X) > eps ||
+		math.Abs(t1.Y-t2.Y) > eps ||
+		math.Abs(t1.Z-t2.Z) > eps ||
+		t1.W != t2.W {
 		return false
 	}
 	return true
