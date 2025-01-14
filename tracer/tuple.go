@@ -38,13 +38,13 @@ func (t Tuple) IsPoint() bool {
 }
 
 func (t1 Tuple) Equals(t2 Tuple) bool {
-	if math.Abs(t1.X-t2.X) > eps ||
-		math.Abs(t1.Y-t2.Y) > eps ||
-		math.Abs(t1.Z-t2.Z) > eps ||
-		t1.W != t2.W {
-		return false
+	if math.Abs(t1.X-t2.X) <= eps &&
+		math.Abs(t1.Y-t2.Y) <= eps &&
+		math.Abs(t1.Z-t2.Z) <= eps &&
+		t1.W == t2.W {
+		return true
 	}
-	return true
+	return false
 }
 
 func (t1 Tuple) Plus(t2 Tuple) Tuple {
