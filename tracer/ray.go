@@ -53,7 +53,7 @@ func NewSphere() Sphere {
 }
 
 func (s Sphere) GetIntersects(r Ray) []Intersect {
-	sphereToRay := r.Origin.Minus(NewPointTuple(0, 0, 0))
+	sphereToRay := r.Origin.Minus(NewPoint(0, 0, 0))
 	a := r.Direction.Dot(r.Direction)
 	b := 2 * r.Direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1

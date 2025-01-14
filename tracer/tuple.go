@@ -22,7 +22,7 @@ func (t Tuple) AsArray() []float64 {
 	return []float64{t.X, t.Y, t.Z, t.W}
 }
 
-func NewPointTuple(x, y, z float64) Tuple {
+func NewPoint(x, y, z float64) Tuple {
 	return NewTuple(x, y, z, 1)
 }
 

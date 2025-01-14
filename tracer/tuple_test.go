@@ -17,7 +17,7 @@ func Test_NewTuple(t *testing.T) {
 // Check that NewPointTuple sets W=1 and IsPoint() and not IsVector()
 func Test_Point(t *testing.T) {
 	expect := Tuple{X: 4.3, Y: -4.2, Z: 3.1, W: 1}
-	got := NewPointTuple(4.3, -4.2, 3.1)
+	got := NewPoint(4.3, -4.2, 3.1)
 	if got != expect {
 		t.Errorf("expected: %v. got: %v", expect, got)
 	}
@@ -46,7 +46,7 @@ func Test_Vector(t *testing.T) {
 	if got.IsPoint() || expect.IsPoint() {
 		t.Errorf("expected IsPoint() == false for both bare struct and New method.")
 	}
-	notVector := NewPointTuple(1, 1, 1)
+	notVector := NewPoint(1, 1, 1)
 	if notVector.IsVector() {
 		t.Errorf("expected IsVector() to be false for %v", notVector)
 	}
@@ -55,18 +55,18 @@ func Test_Vector(t *testing.T) {
 func Test_Equals(t *testing.T) {
 	same1 := NewTuple(1, 2, 3, 0)
 	same2 := NewVectorTuple(1, 2, 3)
-	diff := NewPointTuple(1, 2, 3)
+	diff := NewPoint(1, 2, 3)
 	zero := NewTuple(0, 0, 0, 0)
-	if NewPointTuple(1, 2, 3).Equals(NewPointTuple(2, 2, 3)) {
+	if NewPoint(1, 2, 3).Equals(NewPoint(2, 2, 3)) {
 		t.Errorf("Tuples should be unequal because X")
 	}
-	if NewPointTuple(1, 2, 3).Equals(NewPointTuple(1, 1, 3)) {
+	if NewPoint(1, 2, 3).Equals(NewPoint(1, 1, 3)) {
 		t.Errorf("Tuples should be unequal because Y")
 	}
-	if NewPointTuple(1, 2, 3).Equals(NewPointTuple(1, 2, 2)) {
+	if NewPoint(1, 2, 3).Equals(NewPoint(1, 2, 2)) {
 		t.Errorf("Tuples should be unequal because Z")
 	}
-	if NewPointTuple(1, 2, 3).Equals(NewVectorTuple(1, 2, 3)) {
+	if NewPoint(1, 2, 3).Equals(NewVectorTuple(1, 2, 3)) {
 		t.Errorf("Tuples should be unequal because  W")
 	}
 	if !same1.Equals(same2) || !same2.Equals(same1) {
@@ -81,7 +81,7 @@ func Test_Equals(t *testing.T) {
 }
 
 func Test_Plus(t *testing.T) {
-	point := NewPointTuple(1, 2, 3)
+	point := NewPoint(1, 2, 3)
 	vector := NewVectorTuple(1, 2, 3)
 	test1 := point.Plus(vector)
 	test2 := vector.Plus(point)
@@ -99,8 +99,8 @@ func Test_Plus(t *testing.T) {
 
 func Test_Minus_Method(t *testing.T) {
 	// Subtracting two points
-	p1 := NewPointTuple(3, 2, 1)
-	p2 := NewPointTuple(5, 6, 7)
+	p1 := NewPoint(3, 2, 1)
+	p2 := NewPoint(5, 6, 7)
 	result2p := p1.Minus(p2)
 	expect2p := NewVectorTuple(-2, -4, -6)
 	if !result2p.Equals(expect2p) {
@@ -109,7 +109,7 @@ func Test_Minus_Method(t *testing.T) {
 	// Subtracting a vector from a point
 	v2 := NewVectorTuple(5, 6, 7)
 	resultvp := p1.Minus(v2)
-	expectvp := NewPointTuple(-2, -4, -6)
+	expectvp := NewPoint(-2, -4, -6)
 	if !resultvp.Equals(expectvp) {
 		t.Errorf("%v Minus %v should be %v, but was %v", p1, v2, expectvp, resultvp)
 	}
@@ -226,7 +226,7 @@ func Test_Dot(t *testing.T) {
 
 func Test_Dot_Panic(t *testing.T) {
 	defer func() { _ = recover() }()
-	p := NewPointTuple(1, 2, 3)
+	p := NewPoint(1, 2, 3)
 	v := NewVectorTuple(4, 5, 6)
 	_ = p.Dot(v)
 	t.Errorf("%v Dot %v did not panic", p, v)
@@ -247,7 +247,7 @@ func Test_Cross(t *testing.T) {
 
 func Test_Cross_Panic(t *testing.T) {
 	defer func() { _ = recover() }()
-	p := NewPointTuple(1, 2, 3)
+	p := NewPoint(1, 2, 3)
 	v := NewVectorTuple(4, 5, 6)
 	_ = p.Cross(v)
 	t.Errorf("%v Cross %v did not panic", p, v)
