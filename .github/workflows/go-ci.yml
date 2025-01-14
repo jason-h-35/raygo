@@ -39,6 +39,6 @@ jobs:
 
     - name: Run Tests
       run: make test
-      
+
     - name: Build Application
       run: make build
