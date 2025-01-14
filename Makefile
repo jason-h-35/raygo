@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := build 
+.DEFAULT_GOAL := build
 
 fmt:
 	go fmt ./...
