@@ -11,8 +11,7 @@ func (m Mat[Size4]) Translate(x, y, z float64) Mat[Size4] {
 		0, 0, 1, z,
 		0, 0, 0, 1,
 	}
-	T := NewMat[Size4](f)
-	return T.Times(m)
+	return NewMat[Size4](f).Times(m)
 }
 
 func (m Mat[Size4]) Scale(x, y, z float64) Mat[Size4] {
@@ -22,26 +21,27 @@ func (m Mat[Size4]) Scale(x, y, z float64) Mat[Size4] {
 		0, 0, z, 0,
 		0, 0, 0, 1,
 	}
-	T := NewMat[Size4](f)
-	return T.Times(m)
+	return NewMat[Size4](f).Times(m)
 }
 
 func (m Mat[Size4]) RotateX(rad float64) Mat[Size4] {
+	sin, cos := math.Sincos(rad)
 	f := []float64{
 		1, 0, 0, 0,
-		0, math.Cos(rad), -math.Sin(rad), 0,
-		0, math.Sin(rad), math.Cos(rad), 0,
+		0, cos, -sin, 0,
+		0, sin, cos, 0,
 		0, 0, 0, 1,
 	}
-	T := NewMat[Size4](f)
+	T := NewMat[Size4](f).Times(m)
 	return T.Times(m)
 }
 
 func (m Mat[Size4]) RotateY(rad float64) Mat[Size4] {
+	sin, cos := math.Sincos(rad)
 	f := []float64{
-		math.Cos(rad), 0, math.Sin(rad), 0,
+		cos, 0, sin, 0,
 		0, 1, 0, 0,
-		-math.Sin(rad), 0, math.Cos(rad), 0,
+		-sin, 0, cos, 0,
 		0, 0, 0, 1,
 	}
 	T := NewMat[Size4](f)
@@ -49,9 +49,10 @@ func (m Mat[Size4]) RotateY(rad float64) Mat[Size4] {
 }
 
 func (m Mat[Size4]) RotateZ(rad float64) Mat[Size4] {
+	sin, cos := math.Sincos(rad)
 	f := []float64{
-		math.Cos(rad), -math.Sin(rad), 0, 0,
-		math.Sin(rad), math.Cos(rad), 0, 0,
+		cos, -sin, 0, 0,
+		sin, cos, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1,
 	}
