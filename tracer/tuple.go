@@ -56,14 +56,14 @@ func (t1 Tuple) Minus(t2 Tuple) Tuple {
 }
 
 func (t Tuple) Times(f float64) Tuple {
-	return NewTuple(f*t.X, f*t.Y, f*t.Z, f*t.W)
+	return NewTuple(t.X*f, t.Y*f, t.Z*f, t.W*f)
 }
 
 func (t Tuple) Divide(f float64) Tuple {
 	if math.Abs(f) < epsilon {
-		panic("division by near-zero value")
+		panic("Cannot divide by near-zero value")
 	}
-	return t.Times(1 / f)
+	return NewTuple(t.X/f, t.Y/f, t.Z/f, t.W/f)
 }
 
 func (t Tuple) Length() float64 {
@@ -73,21 +73,21 @@ func (t Tuple) Length() float64 {
 func (t Tuple) Normalized() Tuple {
 	length := t.Length()
 	if length < epsilon {
-		panic("cannot normalize tuple with zero-length")
+		panic("Cannot normalize tuple with near-zero length")
 	}
 	return t.Times(1 / length)
 }
 
 func (t1 Tuple) Dot(t2 Tuple) float64 {
 	if !t1.IsVector() || !t2.IsVector() {
-		panic("Dot cannot operate on non-vectors.")
+		panic("Dot product requires both operands to be vectors (W=0)")
 	}
 	return t1.X*t2.X + t1.Y*t2.Y + t1.Z*t2.Z
 }
 
 func (t1 Tuple) Cross(t2 Tuple) Tuple {
 	if !t1.IsVector() || !t2.IsVector() {
-		panic("Cross cannot operate on non-vectors.")
+		panic("Cross product requires both operands to be vectors (W=0)")
 	}
 	return NewVector(
 		t1.Y*t2.Z-t1.Z*t2.Y,
