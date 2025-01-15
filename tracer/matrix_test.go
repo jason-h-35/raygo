@@ -5,45 +5,46 @@ import (
 	"testing"
 )
 
-func Test_NewMat2(t *testing.T) {
-	m := NewMat[Size2]([]float64{-3, 5, 1, -2})
-	table := []MatVal{
-		{0, 0, -3}, {0, 1, 5}, {1, 0, 1}, {1, 1, -2},
-	}
-	for _, v := range table {
-		result := m.At(v.i, v.j)
-		expect := v.val
-		if result != expect {
-			t.Errorf("expected %v at %v, %v. got %v", v.val, v.i, v.j, result)
-		}
-	}
-}
-
-func Test_NewMat3(t *testing.T) {
-	m := NewMat[Size3]([]float64{-3, 5, 0, 1, -2, -7, 0, 1, 1})
-	table := []MatVal{{0, 0, -3}, {1, 1, -2}, {2, 2, 1}}
-	for _, v := range table {
-		result := m.At(v.i, v.j)
-		expect := v.val
-		if result != expect {
-			t.Errorf("expected %v at %v, %v. got %v", v.val, v.i, v.j, result)
-		}
+func Test_NewMat(t *testing.T) {
+	tests := []struct {
+		name string
+		mat  any
+		vals []MatVal
+	}{
+		{
+			"2x2 matrix",
+			NewMat[Size2]([]float64{-3, 5, 1, -2}),
+			[]MatVal{{0, 0, -3}, {0, 1, 5}, {1, 0, 1}, {1, 1, -2}},
+		},
+		{
+			"3x3 matrix",
+			NewMat[Size3]([]float64{-3, 5, 0, 1, -2, -7, 0, 1, 1}),
+			[]MatVal{{0, 0, -3}, {1, 1, -2}, {2, 2, 1}},
+		},
+		{
+			"4x4 matrix",
+			NewMat[Size4]([]float64{1, 2, 3, 4, 5.5, 6.5, 7.5, 8.5, 9, 10, 11, 12, 13.5, 14.5, 15.5, 16.5}),
+			[]MatVal{{0, 0, 1.0}, {0, 3, 4.0}, {1, 0, 5.5}, {1, 2, 7.5}, {2, 2, 11.0}, {3, 0, 13.5}, {3, 2, 15.5}},
+		},
 	}
 
-}
-
-func Test_NewMat4(t *testing.T) {
-	m := NewMat[Size4]([]float64{1, 2, 3, 4, 5.5, 6.5, 7.5, 8.5, 9, 10, 11, 12, 13.5, 14.5, 15.5, 16.5})
-	table := []MatVal{
-		{0, 0, 1.0}, {0, 3, 4.0}, {1, 0, 5.5}, {1, 2, 7.5},
-		{2, 2, 11.0}, {3, 0, 13.5}, {3, 2, 15.5},
-	}
-	for _, v := range table {
-		result := m.At(v.i, v.j)
-		expect := v.val
-		if result != expect {
-			t.Errorf("expected %v at %v, %v. got %v", v.val, v.i, v.j, result)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for _, v := range tt.vals {
+				var result float64
+				switch m := tt.mat.(type) {
+				case Mat[Size2]:
+					result = m.At(v.i, v.j)
+				case Mat[Size3]:
+					result = m.At(v.i, v.j)
+				case Mat[Size4]:
+					result = m.At(v.i, v.j)
+				}
+				if result != v.val {
+					t.Errorf("expected %v at %v, %v. got %v", v.val, v.i, v.j, result)
+				}
+			}
+		})
 	}
 }
 
