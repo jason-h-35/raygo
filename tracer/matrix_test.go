@@ -8,7 +8,7 @@ import (
 func Test_NewMat(t *testing.T) {
 	tests := []struct {
 		name string
-		mat  any
+		mat  any // Mat[2], Mat[3], or Mat[4]
 		vals []MatVal
 	}{
 		{
