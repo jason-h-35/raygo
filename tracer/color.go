@@ -19,21 +19,14 @@ func NewColor(R, G, B float64) Color {
 	return Color{R, G, B}
 }
 
-func abs(x float64) float64 {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
 func (c1 Color) Equals(c2 Color) bool {
-	if abs(c1.R-c2.R) > eps {
+	if math.Abs(c1.R-c2.R) > eps {
 		return false
 	}
-	if abs(c1.G-c2.G) > eps {
+	if math.Abs(c1.G-c2.G) > eps {
 		return false
 	}
-	if abs(c1.B-c2.B) > eps {
+	if math.Abs(c1.B-c2.B) > eps {
 		return false
 	}
 	return true
