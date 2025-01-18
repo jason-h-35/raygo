@@ -29,7 +29,7 @@ func Test_NewCanvas(t *testing.T) {
 
 func Test_WritePixel(t *testing.T) {
 	c := NewCanvas(10, 20)
-	red := NewColor(1, 0, 0)
+	red := Color{1, 0, 0}
 	c.WritePixel(2, 3, red)
 	result := c.Image[2][3]
 	if result != red {
@@ -40,8 +40,8 @@ func Test_WritePixel(t *testing.T) {
 func Test_ReadPixel(t *testing.T) {
 	c := Canvas{
 		Image: [][]Color{
-			{NewColor(1, 0, 0), NewColor(0, 1, 0)},
-			{NewColor(0, 0, 1), NewColor(1, 1, 1)},
+			{Color{1, 0, 0}, Color{0, 1, 0}},
+			{Color{0, 0, 1}, Color{1, 1, 1}},
 		},
 	}
 	for i := range c.Image {
@@ -62,9 +62,9 @@ func Test_PPMStr(t *testing.T) {
 		t.Errorf("PPM header does not match.\nExpected ppm:\n%v\nto begin with:\n%v\n", ppm, header)
 	}
 	// pixel data test
-	overRed := NewColor(1.5, 0, 0)
-	halfGreen := NewColor(0, 0.5, 0)
-	underBlue := NewColor(-0.5, 0, 1)
+	overRed := Color{1.5, 0, 0}
+	halfGreen := Color{0, 0.5, 0}
+	underBlue := Color{-0.5, 0, 1}
 	c.WritePixel(0, 0, overRed)
 	c.WritePixel(2, 1, halfGreen)
 	c.WritePixel(4, 2, underBlue)

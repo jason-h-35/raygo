@@ -32,21 +32,19 @@ func main() {
 	}
 	c := tracer.NewCanvas(900, 450)
 	count := 0
-	red, green, blue := tracer.NewColor(1, 0, 0), tracer.NewColor(0, 1, 0), tracer.NewColor(0, 0, 1)
-	yellow, magenta, cyan := tracer.NewColor(1, 1, 0), tracer.NewColor(1, 0, 1), tracer.NewColor(0, 1, 1)
 	for count <= 1500 {
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), red)
+		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Red)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), green)
+		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Green)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), blue)
+		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Blue)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), yellow)
+		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Yellow)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), magenta)
+		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Magenta)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), cyan)
+		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Cyan)
 		count += 3
 	}
 	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
@@ -58,12 +56,12 @@ func main() {
 
 // STILL BUGGED ON NON-SQUARE CANVAS, EVEN WITH BOOK TESTS
 func main2() {
-	c := tracer.NewCanvas(10, 5)
+	c := tracer.NewCanvas(100, 100)
 	count := 0
 	for count != 4 {
-		c.WritePixel(0, count, tracer.NewColor(1, 0, 1))
-		c.WritePixel(count, 0, tracer.NewColor(0, 1, 0))
-		c.WritePixel(count, count, tracer.NewColor(0, 0, 1))
+		c.WritePixel(0, count, tracer.Magenta)
+		c.WritePixel(count, 0, tracer.Green)
+		c.WritePixel(count, count, tracer.Blue)
 		count++
 	}
 	fmt.Println(c.Image)
