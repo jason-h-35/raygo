@@ -1,6 +1,7 @@
 package tracer
 
 import (
+	"image/color"
 	"testing"
 )
 
@@ -62,5 +63,33 @@ func Test_Hadamard(t *testing.T) {
 	result := c1.Hadamard(c2)
 	if !expect.Equals(result) {
 		t.Errorf("%v Times %v should be %v, but was %v", c1, c2, expect, result)
+	}
+}
+
+func TestColorImplementsColorInterface(t *testing.T) {
+	// Static type assertion at compile time
+	var _ color.Color = Color{} // Will fail to compile if Color doesn't implement color.Color
+
+	// Runtime behavior test
+	c := NewColor(0.5, 0.25, 0.75)
+	r, g, b, a := c.RGBA()
+
+	// Expected values: 0.5 * 65535 ≈ 32767, 0.25 * 65535 ≈ 16383, 0.75 * 65535 ≈ 49151
+	expectedR := uint32(32767)
+	expectedG := uint32(16383)
+	expectedB := uint32(49151)
+	expectedA := uint32(65535) // Full opacity
+
+	if r != expectedR {
+		t.Errorf("Red channel incorrect. Got %d, want %d", r, expectedR)
+	}
+	if g != expectedG {
+		t.Errorf("Green channel incorrect. Got %d, want %d", g, expectedG)
+	}
+	if b != expectedB {
+		t.Errorf("Blue channel incorrect. Got %d, want %d", b, expectedB)
+	}
+	if a != expectedA {
+		t.Errorf("Alpha channel incorrect. Got %d, want %d", a, expectedA)
 	}
 }
