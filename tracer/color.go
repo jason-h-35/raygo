@@ -64,23 +64,62 @@ func (c1 HDRColor) Distance(c2 HDRColor) uint64 {
 }
 
 func (c1 HDRColor) Plus(c2 HDRColor) HDRColor {
-	r := min(c1.R+c2.R, math.MaxUint64)
-	g := min(c1.G+c2.G, math.MaxUint64)
-	b := min(c1.B+c2.B, math.MaxUint64)
+	var r, g, b uint64
+	if math.MaxUint64-c1.R < c2.R {
+		r = math.MaxUint64
+	} else {
+		r = c1.R + c2.R
+	}
+	if math.MaxUint64-c1.G < c2.G {
+		g = math.MaxUint64
+	} else {
+		g = c1.G + c2.G
+	}
+	if math.MaxUint64-c1.B < c2.B {
+		b = math.MaxUint64
+	} else {
+		b = c1.B + c2.B
+	}
 	return HDRColor{r, g, b}
 }
 
 func (c1 HDRColor) Minus(c2 HDRColor) HDRColor {
-	r := max(c1.R-c2.R, 0)
-	g := max(c1.G-c2.G, 0)
-	b := max(c1.B-c2.B, 0)
+	var r, g, b uint64
+	if c1.R < c2.R {
+		r = 0
+	} else {
+		r = c1.R - c2.R
+	}
+	if c1.G < c2.G {
+		g = 0
+	} else {
+		g = c1.G - c2.G
+	}
+	if c1.B < c2.B {
+		b = 0
+	} else {
+		b = c1.B - c2.B
+	}
 	return HDRColor{r, g, b}
 }
 
 func (c HDRColor) Times(f uint64) HDRColor {
-	r := min(c.R*f, math.MaxUint64)
-	g := min(c.G*f, math.MaxUint64)
-	b := min(c.B*f, math.MaxUint64)
+	var r, g, b uint64
+	if f != 0 && c.R > math.MaxUint64/f {
+		r = math.MaxUint64
+	} else {
+		r = c.R * f
+	}
+	if f != 0 && c.G > math.MaxUint64/f {
+		g = math.MaxUint64
+	} else {
+		g = c.G * f
+	}
+	if f != 0 && c.B > math.MaxUint64/f {
+		b = math.MaxUint64
+	} else {
+		b = c.B * f
+	}
 	return HDRColor{r, g, b}
 }
 
