@@ -4,77 +4,122 @@ import (
 	"math"
 )
 
-type Color struct{ R, G, B float64 }
+type HDRColor struct{ R, G, B uint64 }
+
+const colorEps = 3
 
 var (
-	Black   = Color{0, 0, 0}
-	Blue    = Color{0, 0, 1}
-	Green   = Color{0, 1, 0}
-	Cyan    = Color{0, 1, 1}
-	Red     = Color{1, 0, 0}
-	Magenta = Color{1, 0, 1}
-	Yellow  = Color{1, 1, 0}
-	White   = Color{1, 1, 1}
+	ColorBlack   = HDRColor{0x0000, 0x0000, 0x0000}
+	ColorBlue    = HDRColor{0x0000, 0x0000, 0xffff}
+	ColorGreen   = HDRColor{0x0000, 0xffff, 0x0000}
+	ColorCyan    = HDRColor{0x0000, 0xffff, 0xffff}
+	ColorRed     = HDRColor{0xffff, 0x0000, 0x0000}
+	ColorMagenta = HDRColor{0xffff, 0x0000, 0xffff}
+	ColorYellow  = HDRColor{0xffff, 0xffff, 0x0000}
+	ColorWhite   = HDRColor{0xffff, 0xffff, 0xffff}
 )
 
-func (c Color) RGBA() (r, g, b, a uint32) {
-	// Convert from float64 [0,1] to uint32 [0,65535]
-	r = uint32(c.R * 65535)
-	g = uint32(c.G * 65535)
-	b = uint32(c.B * 65535)
-	a = 65535
-	return
-}
-
-func (c1 Color) Equals(c2 Color) bool {
-	if math.Abs(c1.R-c2.R) > epsilon {
-		return false
+func NewColorFromFloat64(r, g, b float64) HDRColor {
+	if r < 0 || g < 0 || b < 0 {
+		panic("tracer.NewColorFromFloat64: negative color components not allowed")
 	}
-	if math.Abs(c1.G-c2.G) > epsilon {
-		return false
+	return HDRColor{
+		uint64(r * 0xffff),
+		uint64(g * 0xffff),
+		uint64(b * 0xffff),
 	}
-	if math.Abs(c1.B-c2.B) > epsilon {
-		return false
+}
+
+func (c HDRColor) RGBA() (r, g, b, a uint32) {
+	// Convert from uint64 to uint32 [0,65535]
+	r = uint32(min(c.R, 0xffff))
+	g = uint32(min(c.G, 0xffff))
+	b = uint32(min(c.B, 0xffff))
+	a = 0xffff
+	return // r,g,b,a
+}
+
+func (c1 HDRColor) Equals(c2 HDRColor) bool {
+	return c1.Distance(c2) == 0
+}
+
+func (c1 HDRColor) Distance(c2 HDRColor) uint64 {
+	var dr, dg, db uint64
+	if c1.R > c2.R {
+		dr = c1.R - c2.R
+	} else {
+		dr = c2.R - c1.R
 	}
-	return true
+	if c1.G > c2.G {
+		dg = c1.G - c2.G
+	} else {
+		dg = c2.G - c1.G
+	}
+	if c1.B > c2.B {
+		db = c1.B - c2.B
+	} else {
+		db = c2.B - c1.B
+	}
+	return dr + dg + db
 }
 
-func (c1 Color) Plus(c2 Color) Color {
-	return Color{c1.R + c2.R, c1.G + c2.G, c1.B + c2.B}
+func (c1 HDRColor) Plus(c2 HDRColor) HDRColor {
+	r := min(c1.R+c2.R, math.MaxUint64)
+	g := min(c1.G+c2.G, math.MaxUint64)
+	b := min(c1.B+c2.B, math.MaxUint64)
+	return HDRColor{r, g, b}
 }
 
-func (c1 Color) Minus(c2 Color) Color {
-	return Color{c1.R - c2.R, c1.G - c2.G, c1.B - c2.B}
+func (c1 HDRColor) Minus(c2 HDRColor) HDRColor {
+	r := max(c1.R-c2.R, 0)
+	g := max(c1.G-c2.G, 0)
+	b := max(c1.B-c2.B, 0)
+	return HDRColor{r, g, b}
 }
 
-func (c Color) Times(f float64) Color {
-	return Color{f * c.R, f * c.G, f * c.B}
+func (c HDRColor) Times(f uint64) HDRColor {
+	r := min(c.R*f, math.MaxUint64)
+	g := min(c.G*f, math.MaxUint64)
+	b := min(c.B*f, math.MaxUint64)
+	return HDRColor{r, g, b}
 }
 
-func (c1 Color) Hadamard(c2 Color) Color {
-	return Color{c1.R * c2.R, c1.G * c2.G, c1.B * c2.B}
+// Hadamard requires colors be mapped into the [0-1] floating point color space.
+// For large uint64, we may not be able to cast to float64, so check first.
+// These are then mapped back
+func (c1 HDRColor) Hadamard(c2 HDRColor) HDRColor {
+	const maxExactFloat = 1<<53 - 1
+	if c1.R > maxExactFloat || c2.R > maxExactFloat ||
+		c1.G > maxExactFloat || c2.G > maxExactFloat ||
+		c1.B > maxExactFloat || c2.B > maxExactFloat {
+		panic("HDRColor.Hadamard: color components too large for precise float64 conversion")
+	}
+	fr := float64(c1.R) * float64(c2.R) / 0xffff
+	fg := float64(c1.G) * float64(c2.G) / 0xffff
+	fb := float64(c1.B) * float64(c2.B) / 0xffff
+	r := uint64(min(fr, math.MaxUint64))
+	g := uint64(min(fg, math.MaxUint64))
+	b := uint64(min(fb, math.MaxUint64))
+	return HDRColor{r, g, b}
 }
 
-func (c Color) ToPPMRange(maximum float64) Color {
-	c = c.Times(maximum) //
-	// clamp each of c.R, c.G, c.B into range [0, maximum]
-	c.R = math.Min(math.Max(c.R, 0), maximum)
-	c.G = math.Min(math.Max(c.G, 0), maximum)
-	c.B = math.Min(math.Max(c.B, 0), maximum)
-	return c.Round()
+func (c HDRColor) ToPPMRange(limit uint64) HDRColor {
+	const fullColor = uint64(0xFFFF)
+	// Clamp each component to 0xFFFF
+	r := min(c.R, fullColor)
+	g := min(c.G, fullColor)
+	b := min(c.B, fullColor)
+	// Now scale the clamped values to the target range
+	r = (r * limit) / fullColor
+	g = (g * limit) / fullColor
+	b = (b * limit) / fullColor
+	return HDRColor{r, g, b}
 }
 
-func (c Color) Round() Color {
-	c.R = math.Round(c.R)
-	c.G = math.Round(c.G)
-	c.B = math.Round(c.B)
-	return c
+func (c HDRColor) AsFloats() (float64, float64, float64) {
+	return float64(c.R), float64(c.G), float64(c.B)
 }
 
-func (c Color) AsFloats() (float64, float64, float64) {
-	return c.R, c.G, c.B
-}
-
-func (c Color) AsInts() (int, int, int) {
+func (c HDRColor) AsInts() (int, int, int) {
 	return int(c.R), int(c.G), int(c.B)
 }

@@ -10,21 +10,29 @@ import (
 )
 
 type Canvas struct {
-	Image [][]Color
+	image [][]HDRColor
 }
 
 func NewCanvas(xMax, yMax int) Canvas {
-	image := make([][]Color, xMax)
+	image := make([][]HDRColor, xMax)
 	for i := range image {
-		image[i] = make([]Color, yMax)
+		image[i] = make([]HDRColor, yMax)
 	}
 	return Canvas{image}
 }
 
-// implements image.Image
+func (c *Canvas) At(x, y int) color.Color {
+	if !(image.Point{x, y}.In(c.Bounds())) {
+		return HDRColor{}
+	}
+	return c.image[x][y]
+}
 
-func (c *Canvas) At(x, y int) Color {
-	return c.Image[x][y]
+func (c *Canvas) AtHDR(x, y int) HDRColor {
+	if !(image.Point{x, y}.In(c.Bounds())) {
+		return HDRColor{}
+	}
+	return c.image[x][y]
 }
 
 func (c *Canvas) ColorModel() color.Model {
@@ -32,16 +40,28 @@ func (c *Canvas) ColorModel() color.Model {
 }
 
 func (c *Canvas) Bounds() image.Rectangle {
-	return image.Rect(0, 0, len(c.Image), len(c.Image[0]))
+	return image.Rect(0, 0, len(c.image), len(c.image[0]))
 }
 
-// implements draw.Image
-
-func (c *Canvas) Set(x int, y int, color Color) {
-	c.Image[x][y] = color
+func (c *Canvas) Set(x, y int, clr color.Color) {
+	bounds := c.Bounds().Max
+	if x < 0 || x >= bounds.X || y < 0 || y >= bounds.Y {
+		return
+	}
+	r, g, b, _ := clr.RGBA()
+	// Convert from uint32 [0-65535] to float64 [0-1]
+	c.image[x][y] = HDRColor{uint64(r), uint64(g), uint64(b)}
 }
 
-func (c *Canvas) PPMStr(maxColorVal int) string {
+func (c *Canvas) SetColor(x, y int, clr HDRColor) {
+	bounds := c.Bounds().Max
+	if x < 0 || x >= bounds.X || y < 0 || y >= bounds.Y {
+		return
+	}
+	c.image[x][y] = clr
+}
+
+func (c *Canvas) PPMStr(maxColorVal uint64) string {
 	// TODO: test it because it's broken!!!
 	bounds := c.Bounds().Max
 	width, height := bounds.X, bounds.Y
@@ -50,9 +70,9 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 	var b strings.Builder
 	b.WriteString(ppmHeader)
 	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
-	for _, row := range c.Image {
+	for _, row := range c.image {
 		for _, pix := range row {
-			R, G, B := pix.ToPPMRange(float64(maxColorVal)).AsInts()
+			R, G, B := pix.Times(maxColorVal).AsInts()
 			Rs, Gs, Bs := strconv.Itoa(R), strconv.Itoa(G), strconv.Itoa(B)
 			b.WriteString(Rs)
 			b.WriteRune(' ')
@@ -71,7 +91,7 @@ func (c *Canvas) PPMStr(maxColorVal int) string {
 	return b.String()
 }
 
-func (c *Canvas) PPMFile(maxColorVal int, writePath string) (int, error) {
+func (c *Canvas) PPMFile(maxColorVal uint64, writePath string) (int, error) {
 	ppmStr := c.PPMStr(maxColorVal)
 	file, fileErr := os.Create(writePath)
 	defer file.Close()

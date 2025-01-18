@@ -34,17 +34,17 @@ func main() {
 	c := tracer.NewCanvas(900, 450)
 	for i := 0; i <= 1500; i += 3 {
 		p = tick(e, p)
-		c.Set(int(p.position.X), int(p.position.Y), tracer.Red)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.ColorRed)
 		p = tick(e, p)
-		c.Set(int(p.position.X), int(p.position.Y), tracer.Green)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.ColorGreen)
 		p = tick(e, p)
-		c.Set(int(p.position.X), int(p.position.Y), tracer.Blue)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.ColorBlue)
 		p = tick(e, p)
-		c.Set(int(p.position.X), int(p.position.Y), tracer.Yellow)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.ColorYellow)
 		p = tick(e, p)
-		c.Set(int(p.position.X), int(p.position.Y), tracer.Magenta)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.ColorMagenta)
 		p = tick(e, p)
-		c.Set(int(p.position.X), int(p.position.Y), tracer.Cyan)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.ColorCyan)
 	}
 	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
 	if err != nil {
@@ -58,12 +58,12 @@ func main2() {
 	c := tracer.NewCanvas(100, 100)
 	count := 0
 	for count != 4 {
-		c.Set(0, count, tracer.Magenta)
-		c.Set(count, 0, tracer.Green)
-		c.Set(count, count, tracer.Blue)
+		c.Set(0, count, tracer.ColorMagenta)
+		c.Set(count, 0, tracer.ColorGreen)
+		c.Set(count, count, tracer.ColorBlue)
 		count++
 	}
-	fmt.Println(c.Image)
+	// fmt.Println(c.Image)
 	fmt.Println(c.PPMStr(1))
 	bytes, err := c.PPMFile(1, "/home/jason/out.ppm")
 	if err != nil {
