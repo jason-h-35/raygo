@@ -30,7 +30,7 @@ func Test_NewCanvas(t *testing.T) {
 func Test_WritePixel(t *testing.T) {
 	c := NewCanvas(10, 20)
 	red := Color{1, 0, 0}
-	c.WritePixel(2, 3, red)
+	c.Set(2, 3, red)
 	result := c.Image[2][3]
 	if result != red {
 		t.Errorf("expected WritePixel pixel to be %v but was %v", red, result)
@@ -65,9 +65,9 @@ func Test_PPMStr(t *testing.T) {
 	overRed := Color{1.5, 0, 0}
 	halfGreen := Color{0, 0.5, 0}
 	underBlue := Color{-0.5, 0, 1}
-	c.WritePixel(0, 0, overRed)
-	c.WritePixel(2, 1, halfGreen)
-	c.WritePixel(4, 2, underBlue)
+	c.Set(0, 0, overRed)
+	c.Set(2, 1, halfGreen)
+	c.Set(4, 2, underBlue)
 	ppm = c.PPMStr(255)
 	result := strings.ReplaceAll(ppm, "\n", "")
 	expect := []string{

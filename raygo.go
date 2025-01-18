@@ -34,17 +34,17 @@ func main() {
 	c := tracer.NewCanvas(900, 450)
 	for i := 0; i <= 1500; i += 3 {
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Red)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.Red)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Green)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.Green)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Blue)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.Blue)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Yellow)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.Yellow)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Magenta)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.Magenta)
 		p = tick(e, p)
-		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Cyan)
+		c.Set(int(p.position.X), int(p.position.Y), tracer.Cyan)
 	}
 	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
 	if err != nil {
@@ -58,9 +58,9 @@ func main2() {
 	c := tracer.NewCanvas(100, 100)
 	count := 0
 	for count != 4 {
-		c.WritePixel(0, count, tracer.Magenta)
-		c.WritePixel(count, 0, tracer.Green)
-		c.WritePixel(count, count, tracer.Blue)
+		c.Set(0, count, tracer.Magenta)
+		c.Set(count, 0, tracer.Green)
+		c.Set(count, count, tracer.Blue)
 		count++
 	}
 	fmt.Println(c.Image)

@@ -1,7 +1,6 @@
 package tracer
 
 import (
-	"errors"
 	"fmt"
 	"image"
 	"image/color"
@@ -36,18 +35,10 @@ func (c *Canvas) Bounds() image.Rectangle {
 	return image.Rect(0, 0, len(c.Image), len(c.Image[0]))
 }
 
-// end of image.Image methods
+// implements draw.Image
 
-func (c *Canvas) WritePixel(x int, y int, color Color) error {
-	bounds := c.Bounds().Max
-	if !(0 <= x && x < bounds.X) {
-		return errors.New("x out of range")
-	}
-	if !(0 <= y && y < bounds.Y) {
-		return errors.New("y out of range")
-	}
+func (c *Canvas) Set(x int, y int, color Color) {
 	c.Image[x][y] = color
-	return nil
 }
 
 func (c *Canvas) PPMStr(maxColorVal int) string {
