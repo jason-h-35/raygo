@@ -17,6 +17,15 @@ func NewColor(R, G, B float64) Color {
 	return Color{R, G, B}
 }
 
+func (c Color) RGBA() (r, g, b, a uint32) {
+	// Convert from float64 [0,1] to uint32 [0,65535]
+	r = uint32(c.R * 65535)
+	g = uint32(c.G * 65535)
+	b = uint32(c.B * 65535)
+	a = 65535
+	return
+}
+
 func (c1 Color) Equals(c2 Color) bool {
 	if math.Abs(c1.R-c2.R) > epsilon {
 		return false
