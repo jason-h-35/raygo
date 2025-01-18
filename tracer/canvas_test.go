@@ -46,7 +46,7 @@ func Test_ReadPixel(t *testing.T) {
 	}
 	for i := range c.Image {
 		for j := range c.Image[i] {
-			if !c.ReadPixel(i, j).Equals(c.Image[i][j]) {
+			if !c.At(i, j).Equals(c.Image[i][j]) {
 				t.Errorf("c.ReadPixel does not match c.image on c.image[%v][%v]", i, j)
 			}
 		}

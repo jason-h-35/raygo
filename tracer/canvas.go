@@ -3,6 +3,8 @@ package tracer
 import (
 	"errors"
 	"fmt"
+	"image"
+	"image/color"
 	"os"
 	"strconv"
 	"strings"
@@ -20,32 +22,38 @@ func NewCanvas(xMax, yMax int) Canvas {
 	return Canvas{image}
 }
 
-func (c *Canvas) Width() int {
-	return len(c.Image)
+// implements image.Image
+
+func (c *Canvas) At(x, y int) Color {
+	return c.Image[x][y]
 }
 
-func (c *Canvas) Height() int {
-	return len(c.Image[0]) // how to check if all sub-arrays are the same length?
+func (c *Canvas) ColorModel() color.Model {
+	return color.RGBAModel
 }
+
+func (c *Canvas) Bounds() image.Rectangle {
+	return image.Rect(0, 0, len(c.Image), len(c.Image[0]))
+}
+
+// end of image.Image methods
 
 func (c *Canvas) WritePixel(x int, y int, color Color) error {
-	if !(0 <= x && x < c.Width()) {
+	bounds := c.Bounds().Max
+	if !(0 <= x && x < bounds.X) {
 		return errors.New("x out of range")
 	}
-	if !(0 <= y && y < c.Height()) {
+	if !(0 <= y && y < bounds.Y) {
 		return errors.New("y out of range")
 	}
 	c.Image[x][y] = color
 	return nil
 }
 
-func (c *Canvas) ReadPixel(x, y int) Color {
-	return c.Image[x][y]
-}
-
 func (c *Canvas) PPMStr(maxColorVal int) string {
 	// TODO: test it because it's broken!!!
-	width, height := c.Width(), c.Height()
+	bounds := c.Bounds().Max
+	width, height := bounds.X, bounds.Y
 	ppmHeader := fmt.Sprintf("P3\n%v %v\n%v\n", width, height, maxColorVal)
 	lenCount, lenMax := 0, 67
 	var b strings.Builder
