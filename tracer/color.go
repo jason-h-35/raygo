@@ -53,12 +53,12 @@ func (c1 Color) Hadamard(c2 Color) Color {
 	return NewColor(c1.R*c2.R, c1.G*c2.G, c1.B*c2.B)
 }
 
-func (c Color) ToPPMRange(maximum int) Color {
-	c = c.Times(float64(maximum))
+func (c Color) ToPPMRange(maximum float64) Color {
+	c = c.Times(maximum) //
 	// clamp each of c.R, c.G, c.B into range [0, maximum]
-	c.R = math.Min(math.Max(c.R, 0), float64(maximum))
-	c.G = math.Min(math.Max(c.G, 0), float64(maximum))
-	c.B = math.Min(math.Max(c.B, 0), float64(maximum))
+	c.R = math.Min(math.Max(c.R, 0), maximum)
+	c.G = math.Min(math.Max(c.G, 0), maximum)
+	c.B = math.Min(math.Max(c.B, 0), maximum)
 	return c.Round()
 }
 
