@@ -5,9 +5,7 @@ import (
 )
 
 type Color struct {
-	R float64
-	G float64
-	B float64
+	R, G, B float64
 }
 
 var Black Color = NewColor(0, 0, 0)
@@ -71,10 +69,10 @@ func (c Color) Round() Color {
 	return c
 }
 
-func (c Color) asFloats() (float64, float64, float64) {
+func (c Color) AsFloats() (float64, float64, float64) {
 	return c.R, c.G, c.B
 }
 
-func (c Color) asInts() (int, int, int) {
+func (c Color) AsInts() (int, int, int) {
 	return int(c.R), int(c.G), int(c.B)
 }
