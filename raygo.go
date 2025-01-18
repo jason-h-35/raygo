@@ -16,9 +16,10 @@ type Environment struct {
 }
 
 func tick(env Environment, proj Projectile) Projectile {
-	position := proj.position.Plus(proj.velocity.Divide(5))
-	velocity := proj.velocity.Plus(env.gravity.Plus(env.wind).Divide(5))
-	return Projectile{position, velocity}
+	return Projectile{
+		position: proj.position.Plus(proj.velocity.Divide(5)),
+		velocity: proj.velocity.Plus(env.gravity.Plus(env.wind).Divide(5)),
+	}
 }
 
 func main() {
@@ -31,8 +32,7 @@ func main() {
 		wind:    tracer.NewVector(-0.01, 0, 0),
 	}
 	c := tracer.NewCanvas(900, 450)
-	count := 0
-	for count <= 1500 {
+	for i := 0; i <= 1500; i += 3 {
 		p = tick(e, p)
 		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Red)
 		p = tick(e, p)
@@ -45,7 +45,6 @@ func main() {
 		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Magenta)
 		p = tick(e, p)
 		c.WritePixel(int(p.position.X), int(p.position.Y), tracer.Cyan)
-		count += 3
 	}
 	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
 	if err != nil {
