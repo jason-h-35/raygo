@@ -66,7 +66,7 @@ func Test_PPMStr(t *testing.T) {
 	// pixel data test
 	doubleRed := NewColorFromFloat64(1.5, 0, 0)
 	halfGreen := NewColorFromFloat64(0, 0.5, 0)
-	underBlue := NewColorFromFloat64(0, 0, 1)
+	underBlue := NewColorFromFloat64(-0.5, 0, 1)
 	c.SetColor(0, 0, doubleRed)
 	c.SetColor(2, 1, halfGreen)
 	c.SetColor(4, 2, underBlue)
