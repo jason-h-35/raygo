@@ -18,15 +18,13 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.21'
-        # cache: true  # This handles module caching internally
-        # cache-dependency-path: go.sum
 
     - name: Install dependencies
       run: go mod download
 
     - name: Run Tests
       run: make test
-      timeout-minutes: 10  # Added timeout for safety
+      timeout-minutes: 1
 
     - name: Build Application
       run: make build
