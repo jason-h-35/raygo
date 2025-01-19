@@ -20,13 +20,10 @@ var (
 )
 
 func NewColorFromFloat64(r, g, b float64) HDRColor {
-	if r < 0 || g < 0 || b < 0 {
-		panic("tracer.NewColorFromFloat64: negative color components not allowed")
-	}
 	return HDRColor{
-		uint64(r * 0xffff),
-		uint64(g * 0xffff),
-		uint64(b * 0xffff),
+		uint64(max(r, 0) * 0xffff),
+		uint64(max(g, 0) * 0xffff),
+		uint64(max(b, 0) * 0xffff),
 	}
 }
 
