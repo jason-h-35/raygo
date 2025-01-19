@@ -143,8 +143,8 @@ func (c1 HDRColor) Hadamard(c2 HDRColor) HDRColor {
 }
 
 func (c HDRColor) ToPPMRange(limit uint64) HDRColor {
-	const fullColor = uint64(0xFFFF)
-	// Clamp each component to 0xFFFF, mapping into RGBA space
+	const fullColor = uint64(0xffff)
+	// Clamp each component to 0xffff, mapping into RGBA space
 	r := min(c.R, fullColor)
 	g := min(c.G, fullColor)
 	b := min(c.B, fullColor)
