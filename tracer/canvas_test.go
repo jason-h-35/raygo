@@ -71,14 +71,14 @@ func Test_PPMStr(t *testing.T) {
 	c.SetColor(2, 1, halfGreen)
 	c.SetColor(4, 2, underBlue)
 	ppm = c.PPMStr(255)
-	result := strings.ReplaceAll(ppm, "\n", "")
+	result := strings.ReplaceAll(strings.TrimPrefix(ppm, header), "\n", " ")
 	expect := []string{
-		"255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ",
-		"0 0 0 0 0 0 0 128 0 0 0 0 0 0 0 ",
+		"255 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+		"0 0 0 0 0 0 0 127 0 0 0 0 0 0 0",
 		"0 0 0 0 0 0 0 0 0 0 0 0 0 0 255",
 	}
-	if !strings.Contains(result, strings.Join(expect, "")) {
-		t.Errorf("Data portion of PPM seems incorrect. Expected \n%v\nto contain %v", ppm, expect)
+	if result == strings.Join(expect, " ") {
+		t.Errorf("Data portion of PPM seems incorrect.\nGot:\n%s\nWant:\n%s\n", result, expect)
 	}
 	// line length test
 	ppmLines := strings.Split(ppm, "\n")
