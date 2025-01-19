@@ -47,6 +47,7 @@ func main() {
 		c.Set(int(p.position.X), int(p.position.Y), tracer.ColorCyan)
 	}
 	bytes, err := c.PPMFile(255, "/home/jason/out.ppm")
+	c.PNGFile("/home/jason/out.png")
 	if err != nil {
 		fmt.Println(err)
 	}
