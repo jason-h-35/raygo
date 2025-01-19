@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"image/png"
 	"os"
 	"strconv"
 	"strings"
@@ -62,33 +63,40 @@ func (c *Canvas) SetColor(x, y int, clr HDRColor) {
 }
 
 func (c *Canvas) PPMStr(maxColorVal uint64) string {
-	// TODO: test it because it's broken!!!
+	const (
+		maxLineLen = 70 // per PPM standard
+		pixelSep   = " "
+		lineSep    = "\n"
+	)
 	bounds := c.Bounds().Max
-	width, height := bounds.X, bounds.Y
-	ppmHeader := fmt.Sprintf("P3\n%v %v\n%v\n", width, height, maxColorVal)
-	lenCount, lenMax := 0, 67
-	var b strings.Builder
-	b.WriteString(ppmHeader)
-	// transform Canvas of Colors into 1-D arrays of ints representing just one Color Value from 0 to maxColorVal
-	for _, row := range c.image {
-		for _, pix := range row {
-			R, G, B := pix.Times(maxColorVal).AsInts()
-			Rs, Gs, Bs := strconv.Itoa(R), strconv.Itoa(G), strconv.Itoa(B)
-			b.WriteString(Rs)
-			b.WriteRune(' ')
-			b.WriteString(Gs)
-			b.WriteRune(' ')
-			b.WriteString(Bs)
-			b.WriteRune(' ')
-			lenCount += len(Rs) + len(Gs) + len(Bs) + 3
-			if lenCount > lenMax {
-				b.WriteRune('\n')
-				lenCount = 0
+	var builder strings.Builder
+	// Write the header
+	fmt.Fprintf(&builder, "P3\n%d %d\n%d\n", bounds.X, bounds.Y, maxColorVal)
+	lineLen := 0
+	for y := 0; y < bounds.Y; y++ {
+		for x := 0; x < bounds.X; x++ {
+			pixel := c.image[x][y].ToPPMRange(maxColorVal)
+			r, g, b := int(pixel.R), int(pixel.G), int(pixel.B)
+			for _, v := range []int{r, g, b} {
+				s := strconv.Itoa(v)
+				// Add newline if this component would exceed line length
+				if lineLen > 0 && lineLen+len(s) >= maxLineLen {
+					builder.WriteString(lineSep)
+					lineLen = 0
+				}
+				// Add separator between components if not at start of line
+				if lineLen > 0 {
+					builder.WriteString(pixelSep)
+					lineLen++
+				}
+				// Write the value
+				builder.WriteString(s)
+				lineLen += len(s)
 			}
 		}
 	}
-	b.WriteRune('\n')
-	return b.String()
+	builder.WriteString(lineSep)
+	return builder.String()
 }
 
 func (c *Canvas) PPMFile(maxColorVal uint64, writePath string) (int, error) {
