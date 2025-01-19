@@ -101,3 +101,16 @@ func (c *Canvas) PPMFile(maxColorVal uint64, writePath string) (int, error) {
 	}
 	return fmt.Fprintf(file, "%v", ppmStr)
 }
+
+func (c *Canvas) PNGFile(writePath string) error {
+	file, err := os.Create(writePath)
+	if err != nil {
+		return fmt.Errorf("failed to create PNG file: %w", err)
+	}
+	defer file.Close()
+
+	if err := png.Encode(file, c); err != nil {
+		return fmt.Errorf("failed to encode PNG: %w", err)
+	}
+	return nil
+}
