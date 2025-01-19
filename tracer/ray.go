@@ -11,20 +11,32 @@ type Ray struct {
 	Direction Tuple
 }
 
-var idGen = rand.New(rand.NewSource(69))
+var (
+	sphereIDGen       = rand.New(rand.NewSource(69))
+	intersectionIDGen = rand.New(rand.NewSource(420))
+)
 
 type Sphere struct {
 	id        int
-	transform Mat4
+	transform Mat[Size4]
 }
 
 type Intersect struct {
-	time   float64
+	id     int
 	object Sphere
+	time   float64
 }
 
-func NewIntersect(time float64, object Sphere) Intersect {
-	return Intersect{time, object}
+func NewIntersect(object Sphere, time float64) Intersect {
+	return Intersect{intersectionIDGen.Int(), object, time}
+}
+
+func NewIntersects(object Sphere, times ...float64) []Intersect {
+	xs := make([]Intersect, len(times))
+	for i, t := range times {
+		xs[i] = NewIntersect(object, t)
+	}
+	return xs
 }
 
 func NewRay(origin, direction Tuple) Ray {
@@ -36,12 +48,12 @@ func (r Ray) Position(time float64) Tuple {
 }
 
 func NewSphere() Sphere {
-	s := Sphere{idGen.Int(), I4}
+	s := Sphere{sphereIDGen.Int(), I4}
 	return s
 }
 
 func (s Sphere) GetIntersects(r Ray) []Intersect {
-	sphereToRay := r.Origin.Minus(NewPointTuple(0, 0, 0))
+	sphereToRay := r.Origin.Minus(NewPoint(0, 0, 0))
 	a := r.Direction.Dot(r.Direction)
 	b := 2 * r.Direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1
@@ -56,19 +68,27 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 	if t1 > t2 {
 		t1, t2 = t2, t1
 	}
-	return []Intersect{
-		{t1, s},
-		{t2, s},
-	}
+	return NewIntersects(s, t1, t2)
+}
+
+func (x Intersect) Equals(y Intersect) bool {
+	return x.id == y.id &&
+		x.object.id == y.object.id &&
+		math.Abs(x.time-y.time) < epsilon
+}
+
+func (x Intersect) Same(y Intersect) bool {
+	return x.object.id == y.object.id &&
+		math.Abs(x.time-y.time) < epsilon
 }
 
 func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
-		return NewIntersect(0, NewSphere()), false
+		return NewIntersect(NewSphere(), 0), false
 	}
 	// needed for slice sort funcs to sort Intersects
 	f := func(a, b Intersect) int {
-		if abs(a.time-b.time) < eps {
+		if math.Abs(a.time-b.time) < epsilon {
 			return 0
 		} else if a.time < b.time {
 			return -1
@@ -84,9 +104,9 @@ func Hit(xs []Intersect) (Intersect, bool) {
 			return x, true
 		}
 	}
-	return NewIntersect(0, NewSphere()), false
+	return NewIntersect(NewSphere(), 0), false
 }
 
-func (r Ray) Transform(m Mat4) Ray {
+func (r Ray) Transform(m Mat[Size4]) Ray {
 	return NewRay(m.TimesTuple(r.Origin), m.TimesTuple(r.Direction))
 }

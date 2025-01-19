@@ -1,15 +1,20 @@
 package tracer
 
-type Mat2 struct {
-	vals [2][2]float64
+import (
+	"fmt"
+	"math"
+)
+
+type Matrix[T ~int] interface {
+	At(i, j int) float64
+	Equals(other Matrix[T]) bool
+	Determinant() float64
+	CanInverse() bool
 }
 
-type Mat3 struct {
-	vals [3][3]float64
-}
-
-type Mat4 struct {
-	vals [4][4]float64
+type Mat[T ~int] struct {
+	vals [][]float64
+	size T
 }
 
 type MatVal struct {
@@ -18,65 +23,73 @@ type MatVal struct {
 	val float64
 }
 
-var I2 = NewMat2([]float64{1, 0, 0, 1})
-var I3 = NewMat3([]float64{1, 0, 0, 0, 1, 0, 0, 0, 1})
-var I4 = NewMat4([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1})
+type Size2 int
+type Size3 int
+type Size4 int
 
-var Z2 = NewMat2(make([]float64, 4))
-var Z3 = NewMat3(make([]float64, 9))
-var Z4 = NewMat4(make([]float64, 16))
+const (
+	_2 Size2 = 2
+	_3 Size3 = 3
+	_4 Size4 = 4
+)
+
+var I2 = NewMat[Size2]([]float64{1, 0, 0, 1})
+var I3 = NewMat[Size3]([]float64{1, 0, 0, 0, 1, 0, 0, 0, 1})
+var I4 = NewMat[Size4]([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1})
+
+var Z2 = NewMat[Size2](make([]float64, 4))
+var Z3 = NewMat[Size3](make([]float64, 9))
+var Z4 = NewMat[Size4](make([]float64, 16))
 
 func NewMatVal(i int, j int, val float64) MatVal {
 	return MatVal{i, j, val}
 }
 
-func NewMat2(a []float64) Mat2 {
-	if len(a) != 4 {
-		panic("Mat2 needs 4 elements.")
+func NewMat[T ~int](a []float64) Mat[T] {
+	var size T
+	switch any(size).(type) {
+	case Size2:
+		size = T(_2)
+	case Size3:
+		size = T(_3)
+	case Size4:
+		size = T(_4)
+	default:
+		panic("unsupported matrix size type")
 	}
-	return Mat2{vals: [2][2]float64{
-		{a[0], a[1]}, {a[2], a[3]}}}
+
+	expected := size * size
+	if len(a) != int(expected) {
+		panic(fmt.Sprintf("Mat%d needs %d elements", size, expected))
+	}
+
+	// Initialize the 2D slice
+	vals := make([][]float64, int(size))
+	for i := range vals {
+		vals[i] = make([]float64, int(size))
+	}
+
+	// Fill the values
+	for i := 0; i < int(size); i++ {
+		for j := 0; j < int(size); j++ {
+			vals[i][j] = a[i*int(size)+j]
+		}
+	}
+
+	return Mat[T]{
+		vals: vals,
+		size: size,
+	}
 }
 
-func NewMat3(a []float64) Mat3 {
-	if len(a) != 9 {
-		panic("Mat3 needs 9 elements.")
-	}
-	return Mat3{vals: [3][3]float64{
-		{a[0], a[1], a[2]},
-		{a[3], a[4], a[5]},
-		{a[6], a[7], a[8]},
-	}}
-}
-
-func NewMat4(a []float64) Mat4 {
-	if len(a) != 16 {
-		panic("Mat4 needs 16 elements.")
-	}
-	return Mat4{vals: [4][4]float64{
-		{a[0], a[1], a[2], a[3]},
-		{a[4], a[5], a[6], a[7]},
-		{a[8], a[9], a[10], a[11]},
-		{a[12], a[13], a[14], a[15]},
-	}}
-}
-
-func (m Mat4) At(i, j int) float64 {
+func (m Mat[T]) At(i, j int) float64 {
 	return m.vals[i][j]
 }
 
-func (m Mat3) At(i, j int) float64 {
-	return m.vals[i][j]
-}
-
-func (m Mat2) At(i, j int) float64 {
-	return m.vals[i][j]
-}
-
-func (m1 Mat4) Equals(m2 Mat4) bool {
+func (m1 Mat[T]) Equals(m2 Mat[T]) bool {
 	for i := range m1.vals {
 		for j := range m1.vals {
-			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
+			if math.Abs(m1.vals[i][j]-m2.vals[i][j]) > epsilon {
 				return false
 			}
 		}
@@ -84,167 +97,113 @@ func (m1 Mat4) Equals(m2 Mat4) bool {
 	return true
 }
 
-func (m1 Mat3) Equals(m2 Mat3) bool {
-	for i := range m1.vals {
-		for j := range m1.vals {
-			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
-				return false
-			}
-		}
-	}
-	return true
-}
-
-func (m1 Mat2) Equals(m2 Mat2) bool {
-	for i := range m1.vals {
-		for j := range m1.vals {
-			if abs(m1.vals[i][j]-m2.vals[i][j]) > eps {
-				return false
-			}
-		}
-	}
-	return true
-}
-
-func (a Mat4) Times(b Mat4) Mat4 {
-	result := make([]float64, 0)
-	for i := 0; i != 4; i++ {
-		for j := 0; j != 4; j++ {
+func (a Mat[T]) Times(b Mat[T]) Mat[T] {
+	size := a.size
+	result := make([]float64, size*size)
+	for i := 0; i < int(size); i++ {
+		for j := 0; j < int(size); j++ {
 			next := 0.0
-			for k := 0; k != 4; k++ {
+			for k := 0; k < int(size); k++ {
 				next += a.vals[i][k] * b.vals[k][j]
 			}
-			result = append(result, next)
+			result[i*int(size)+j] = next
 		}
 	}
-	return NewMat4(result)
+	return NewMat[T](result)
 }
 
-func (a Mat4) TimesTuple(b Tuple) Tuple {
-	result := make([]float64, 0)
+func (a Mat[T]) TimesTuple(b Tuple) Tuple {
+	size := a.size
+	if size != 4 {
+		panic("TimesTuple only works with 4x4 matrices")
+	}
+	result := make([]float64, 4)
 	bArr := b.AsArray()
-	for i := 0; i != 4; i++ {
+	for i := 0; i < 4; i++ {
 		next := 0.0
-		for k := 0; k != 4; k++ {
+		for k := 0; k < 4; k++ {
 			next += a.vals[i][k] * bArr[k]
 		}
-		result = append(result, next)
+		result[i] = next
 	}
 	return NewTuple(result[0], result[1], result[2], result[3])
 }
 
-func (a Mat4) Transpose() Mat4 {
-	av := a.vals
-	return NewMat4([]float64{
-		av[0][0], av[1][0], av[2][0], av[3][0],
-		av[0][1], av[1][1], av[2][1], av[3][1],
-		av[0][2], av[1][2], av[2][2], av[3][2],
-		av[0][3], av[1][3], av[2][3], av[3][3],
-	},
-	)
+func (a Mat[T]) Transpose() Mat[T] {
+	size := a.size
+	result := make([]float64, size*size)
+	for i := 0; i < int(size); i++ {
+		for j := 0; j < int(size); j++ {
+			result[j*int(size)+i] = a.vals[i][j]
+		}
+	}
+	return NewMat[T](result)
 }
 
-func (a Mat2) Determinant() float64 {
-	return a.vals[0][0]*a.vals[1][1] - a.vals[0][1]*a.vals[1][0]
-}
-
-func (a Mat3) SubMat(is, js int) Mat2 {
-	s := make([]float64, 0)
+func SubMat[T, U ~int](a Mat[T], is, js int) Mat[U] {
+	newSize := len(a.vals) - 1
+	s := make([]float64, newSize*newSize)
+	idx := 0
 	for i, row := range a.vals {
 		for j, val := range row {
 			if i != is && j != js {
-				s = append(s, val)
+				s[idx] = val
+				idx++
 			}
 		}
 	}
-	return NewMat2(s)
+	return NewMat[U](s)
 }
 
-func (a Mat4) SubMat(is, js int) Mat3 {
-	s := make([]float64, 0)
-	for i, row := range a.vals {
-		for j, val := range row {
-			if i != is && j != js {
-				s = append(s, val)
-			}
+func Minor[T ~int](a Mat[T], is, js int) float64 {
+	size := a.size
+	switch size {
+	case 3:
+		return SubMat[T, Size2](a, is, js).Determinant()
+	case 4:
+		return SubMat[T, Size3](a, is, js).Determinant()
+	default:
+		panic("Minor only supported for Mat3 and Mat4")
+	}
+}
+
+func Cofactor[T ~int](a Mat[T], is, js int) float64 {
+	if (is+js)%2 == 1 {
+		return -Minor(a, is, js)
+	}
+	return Minor(a, is, js)
+}
+
+func (a Mat[T]) Determinant() float64 {
+	size := a.size
+	switch size {
+	case 2:
+		return a.vals[0][0]*a.vals[1][1] - a.vals[0][1]*a.vals[1][0]
+	case 3, 4:
+		det, i := 0.0, 0
+		for j, val := range a.vals[i] {
+			det += val * Cofactor(a, i, j)
 		}
+		return det
+	default:
+		panic(fmt.Sprintf("Determinant not implemented for size %d", size))
 	}
-	return NewMat3(s)
+
 }
 
-func (a Mat3) Minor(is, js int) float64 {
-	return a.SubMat(is, js).Determinant()
+func (a Mat[T]) CanInverse() bool {
+	return math.Abs(a.Determinant()) > epsilon
 }
 
-func (a Mat4) Minor(is, js int) float64 {
-	return a.SubMat(is, js).Determinant()
-}
-
-func (a Mat3) Cofactor(is, js int) float64 {
-	if (is+js)%2 == 1 {
-		return -a.Minor(is, js)
-	}
-	return a.Minor(is, js)
-}
-
-func (a Mat4) Cofactor(is, js int) float64 {
-	if (is+js)%2 == 1 {
-		return -a.Minor(is, js)
-	}
-	return a.Minor(is, js)
-}
-
-func (a Mat3) Determinant() float64 {
-	det, i := 0.0, 0 // may need to extract i later?
-	for j, val := range a.vals[i] {
-		det += val * a.Cofactor(i, j)
-	}
-	return det
-}
-
-func (a Mat4) Determinant() float64 {
-	det, i := 0.0, 0 // may need to extract i later?
-	for j, val := range a.vals[i] {
-		det += val * a.Cofactor(i, j)
-	}
-	return det
-}
-
-func (a Mat3) CanInverse() bool {
-	if abs(a.Determinant()) > eps {
-		return true
-	}
-	return false
-}
-
-func (a Mat4) CanInverse() bool {
-	if abs(a.Determinant()) > eps {
-		return true
-	}
-	return false
-}
-
-func (a Mat3) Inverse() Mat3 {
+func (a Mat[T]) Inverse() Mat[T] {
 	if !a.CanInverse() {
 		panic("can't inverse this matrix")
 	}
-	inverse := NewMat3(make([]float64, 9))
+	size := a.size
+	inverse := NewMat[T](make([]float64, size*size))
 	for i, row := range a.vals {
 		for j := range row {
-			inverse.vals[j][i] = a.Cofactor(i, j) / a.Determinant()
-		}
-	}
-	return inverse
-}
-
-func (a Mat4) Inverse() Mat4 {
-	if !a.CanInverse() {
-		panic("can't inverse this matrix")
-	}
-	inverse := NewMat4(make([]float64, 16))
-	for i, row := range a.vals {
-		for j := range row {
-			inverse.vals[j][i] = a.Cofactor(i, j) / a.Determinant()
+			inverse.vals[j][i] = Cofactor(a, i, j) / a.Determinant()
 		}
 	}
 	return inverse
