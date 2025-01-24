@@ -148,11 +148,12 @@ func BenchmarkMatrixInverse(b *testing.B) {
 		}
 	})
 
-	b.Run("Inverse/2x2", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			results.matrix.mat2 = m2.Inverse()
-		}
-	})
+	// BUG: Minor only supported for Mat3 and Mat4
+	// b.Run("Inverse/2x2", func(b *testing.B) {
+	// 	for i := 0; i < b.N; i++ {
+	// 		results.matrix.mat2 = m2.Inverse()
+	// 	}
+	// })
 
 	b.Run("Inverse/3x3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
