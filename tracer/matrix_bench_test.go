@@ -10,7 +10,7 @@ var (
 	resultMat3  Mat[Size3]
 	resultMat4  Mat[Size4]
 	resultFloat float64
-	resultBool2 bool
+	resultBool2 bool // TODO: Name this better!
 	resultTuple Tuple
 )
 
