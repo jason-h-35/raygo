@@ -4,42 +4,6 @@ import (
 	"testing"
 )
 
-// benchResults holds all benchmark results to prevent compiler optimizations
-type benchResults struct {
-	// Matrix results
-	matrix struct {
-		mat2 Mat[Size2]
-		mat3 Mat[Size3]
-		mat4 Mat[Size4]
-	}
-	// Color results
-	color struct {
-		c     HDRColor
-		float float64
-	}
-	// Ray results
-	ray struct {
-		r    Ray
-		ints []Intersect
-	}
-	// Transform results
-	transform struct {
-		mat4 Mat[Size4]
-	}
-	// Tuple results
-	tuple struct {
-		t     Tuple
-		float float64
-	}
-	// Shared scalar results
-	scalar struct {
-		float float64
-		bool  bool
-	}
-}
-
-var results benchResults
-
 func BenchmarkMatrixCreation(b *testing.B) {
 	vals2 := []float64{1, 2, 3, 4}
 	vals3 := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9}
