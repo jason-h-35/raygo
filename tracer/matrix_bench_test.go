@@ -4,15 +4,41 @@ import (
 	"testing"
 )
 
-// Prevent compiler optimizations
-var (
-	resultMat2  Mat[Size2]
-	resultMat3  Mat[Size3]
-	resultMat4  Mat[Size4]
-	resultFloat float64
-	resultBool2 bool // TODO: Name this better!
-	resultTuple Tuple
-)
+// benchResults holds all benchmark results to prevent compiler optimizations
+type benchResults struct {
+	// Matrix results
+	matrix struct {
+		mat2 Mat[Size2]
+		mat3 Mat[Size3]
+		mat4 Mat[Size4]
+	}
+	// Color results
+	color struct {
+		c     HDRColor
+		float float64
+	}
+	// Ray results
+	ray struct {
+		r    Ray
+		ints []Intersect
+	}
+	// Transform results
+	transform struct {
+		mat4 Mat[Size4]
+	}
+	// Tuple results
+	tuple struct {
+		t     Tuple
+		float float64
+	}
+	// Shared scalar results
+	scalar struct {
+		float float64
+		bool  bool
+	}
+}
+
+var results benchResults
 
 func BenchmarkMatrixCreation(b *testing.B) {
 	vals2 := []float64{1, 2, 3, 4}
@@ -21,19 +47,19 @@ func BenchmarkMatrixCreation(b *testing.B) {
 
 	b.Run("NewMat2", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat2 = NewMat[Size2](vals2)
+			results.matrix.mat2 = NewMat[Size2](vals2)
 		}
 	})
 
 	b.Run("NewMat3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat3 = NewMat[Size3](vals3)
+			results.matrix.mat3 = NewMat[Size3](vals3)
 		}
 	})
 
 	b.Run("NewMat4", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat4 = NewMat[Size4](vals4)
+			results.matrix.mat4 = NewMat[Size4](vals4)
 		}
 	})
 }
@@ -46,37 +72,37 @@ func BenchmarkMatrixOperations(b *testing.B) {
 
 	b.Run("Times/2x2", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat2 = m2.Times(m2)
+			results.matrix.mat2 = m2.Times(m2)
 		}
 	})
 
 	b.Run("Times/3x3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat3 = m3.Times(m3)
+			results.matrix.mat3 = m3.Times(m3)
 		}
 	})
 
 	b.Run("Times/4x4", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat4 = m4.Times(m4)
+			results.matrix.mat4 = m4.Times(m4)
 		}
 	})
 
 	b.Run("TimesTuple", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultTuple = m4.TimesTuple(t)
+			results.tuple.t = m4.TimesTuple(t)
 		}
 	})
 
 	b.Run("Transpose/2x2", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat2 = m2.Transpose()
+			results.matrix.mat2 = m2.Transpose()
 		}
 	})
 
 	b.Run("Transpose/4x4", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat4 = m4.Transpose()
+			results.matrix.mat4 = m4.Transpose()
 		}
 	})
 }
@@ -88,19 +114,19 @@ func BenchmarkMatrixDeterminants(b *testing.B) {
 
 	b.Run("Determinant/2x2", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultFloat = m2.Determinant()
+			results.scalar.float = m2.Determinant()
 		}
 	})
 
 	b.Run("Determinant/3x3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultFloat = m3.Determinant()
+			results.scalar.float = m3.Determinant()
 		}
 	})
 
 	b.Run("Determinant/4x4", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultFloat = m4.Determinant()
+			results.scalar.float = m4.Determinant()
 		}
 	})
 }
@@ -118,25 +144,25 @@ func BenchmarkMatrixInverse(b *testing.B) {
 
 	b.Run("CanInverse/2x2", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultBool2 = m2.CanInverse()
+			results.scalar.bool = m2.CanInverse()
 		}
 	})
 
 	b.Run("Inverse/2x2", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat2 = m2.Inverse()
+			results.matrix.mat2 = m2.Inverse()
 		}
 	})
 
 	b.Run("Inverse/3x3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat3 = m3.Inverse()
+			results.matrix.mat3 = m3.Inverse()
 		}
 	})
 
 	b.Run("Inverse/4x4", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat4 = m4.Inverse()
+			results.matrix.mat4 = m4.Inverse()
 		}
 	})
 }
@@ -147,25 +173,25 @@ func BenchmarkMatrixSubOperations(b *testing.B) {
 
 	b.Run("SubMat/3x3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat2 = SubMat[Size3, Size2](m3, 0, 0)
+			results.matrix.mat2 = SubMat[Size3, Size2](m3, 0, 0)
 		}
 	})
 
 	b.Run("SubMat/4x4", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultMat3 = SubMat[Size4, Size3](m4, 0, 0)
+			results.matrix.mat3 = SubMat[Size4, Size3](m4, 0, 0)
 		}
 	})
 
 	b.Run("Minor/3x3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultFloat = Minor(m3, 0, 0)
+			results.scalar.float = Minor(m3, 0, 0)
 		}
 	})
 
 	b.Run("Cofactor/3x3", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultFloat = Cofactor(m3, 0, 0)
+			results.scalar.float = Cofactor(m3, 0, 0)
 		}
 	})
 }
