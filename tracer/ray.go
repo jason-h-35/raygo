@@ -9,7 +9,7 @@ import (
 // Ray represents a ray in 3D space with an origin point and a direction vector.
 type Ray struct {
 	origin   Tuple // The starting point of the ray
-	velocity Tuple // The direction the ray travels (should be normalized)
+	velocity Tuple // The direction and magnitude the ray travels
 }
 
 // Random number generators for creating unique IDs
