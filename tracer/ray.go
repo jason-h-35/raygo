@@ -6,31 +6,38 @@ import (
 	"slices"
 )
 
+// Ray represents a ray in 3D space with an origin point and a direction vector.
 type Ray struct {
-	Origin    Tuple
-	Direction Tuple
+	Origin    Tuple // The starting point of the ray
+	Direction Tuple // The direction the ray travels (should be normalized)
 }
 
+// Random number generators for creating unique IDs
 var (
 	sphereIDGen       = rand.New(rand.NewSource(69))
 	intersectionIDGen = rand.New(rand.NewSource(420))
 )
 
+// Sphere represents a sphere in 3D space.
 type Sphere struct {
-	id        int
-	transform Mat[Size4]
+	id        int        // Unique identifier for the sphere
+	transform Mat[Size4] // Transformation matrix for the sphere
 }
 
+// Intersect represents the intersection of a ray with an object.
 type Intersect struct {
-	id     int
-	object Sphere
-	time   float64
+	id     int     // Unique identifier for the intersection
+	object Sphere  // The object that was intersected
+	time   float64 // The time/distance along the ray where intersection occurred
 }
 
+// NewIntersect creates a new intersection with a unique ID.
 func NewIntersect(object Sphere, time float64) Intersect {
 	return Intersect{intersectionIDGen.Int(), object, time}
 }
 
+// NewIntersects creates multiple intersections for a single object.
+// Useful for objects like spheres that can have multiple intersection points.
 func NewIntersects(object Sphere, times ...float64) []Intersect {
 	xs := make([]Intersect, len(times))
 	for i, t := range times {
@@ -39,24 +46,31 @@ func NewIntersects(object Sphere, times ...float64) []Intersect {
 	return xs
 }
 
+// NewRay creates a new ray with the given origin point and direction vector.
 func NewRay(origin, direction Tuple) Ray {
 	return Ray{origin, direction}
 }
 
+// Position calculates a point along the ray at the given time/distance.
 func (r Ray) Position(time float64) Tuple {
 	return r.Origin.Plus(r.Direction.Times(time))
 }
 
+// NewSphere creates a new sphere with a unique ID and identity transformation.
 func NewSphere() Sphere {
 	s := Sphere{sphereIDGen.Int(), I4}
 	return s
 }
 
+// GetIntersects calculates all intersections between a ray and a sphere.
+// Returns an empty slice if no intersections exist.
+// For a sphere centered at the origin with radius 1, uses the quadratic formula:
+// t^2(d⋅d) + 2t(d⋅(o-c)) + (o-c)⋅(o-c) - r^2 = 0
 func (s Sphere) GetIntersects(r Ray) []Intersect {
 	sphereToRay := r.Origin.Minus(NewPoint(0, 0, 0))
 	a := r.Direction.Dot(r.Direction)
 	b := 2 * r.Direction.Dot(sphereToRay)
-	c := sphereToRay.Dot(sphereToRay) - 1
+	c := sphereToRay.Dot(sphereToRay) - 1 // radius is 1
 	discriminant := b*b - 4*a*c
 	if discriminant < 0 {
 		return []Intersect{}
@@ -71,33 +85,47 @@ func (s Sphere) GetIntersects(r Ray) []Intersect {
 	return NewIntersects(s, t1, t2)
 }
 
+// Equals checks if two intersections are exactly the same,
+// comparing IDs, object IDs, and intersection times.
 func (x Intersect) Equals(y Intersect) bool {
 	return x.id == y.id &&
 		x.object.id == y.object.id &&
 		math.Abs(x.time-y.time) < epsilon
 }
 
+// Same checks if two intersections represent the same physical intersection point,
+// ignoring the intersection ID but comparing object IDs and times.
 func (x Intersect) Same(y Intersect) bool {
 	return x.object.id == y.object.id &&
 		math.Abs(x.time-y.time) < epsilon
 }
 
+// CompareIntersectTime compares two Intersects by their time values
+// CompareIntersectTime compares two intersections by their time values.
+// Returns:
+//
+//	-1 if a occurs before b
+//	 0 if times are approximately equal
+//	 1 if a occurs after b
+func CompareIntersectTime(a, b Intersect) int {
+	if math.Abs(a.time-b.time) < epsilon {
+		return 0
+	} else if a.time < b.time {
+		return -1
+	} else {
+		return 1
+	}
+}
+
+// Hit finds the first non-negative intersection from a slice of intersections.
+// Returns the intersection and true if found, or a zero intersection and false if not found.
+// Ensures intersections are sorted by time before searching.
 func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
 		return NewIntersect(NewSphere(), 0), false
 	}
-	// needed for slice sort funcs to sort Intersects
-	f := func(a, b Intersect) int {
-		if math.Abs(a.time-b.time) < epsilon {
-			return 0
-		} else if a.time < b.time {
-			return -1
-		} else {
-			return 1
-		}
-	}
-	if !slices.IsSortedFunc(xs, f) {
-		slices.SortFunc(xs, f)
+	if !slices.IsSortedFunc(xs, CompareIntersectTime) {
+		slices.SortFunc(xs, CompareIntersectTime)
 	}
 	for _, x := range xs {
 		if x.time >= 0 {
@@ -107,6 +135,7 @@ func Hit(xs []Intersect) (Intersect, bool) {
 	return NewIntersect(NewSphere(), 0), false
 }
 
+// Transform applies a transformation matrix to both the origin and direction of a ray.
 func (r Ray) Transform(m Mat[Size4]) Ray {
 	return NewRay(m.TimesTuple(r.Origin), m.TimesTuple(r.Direction))
 }
