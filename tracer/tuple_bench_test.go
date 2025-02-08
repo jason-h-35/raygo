@@ -43,6 +43,12 @@ func BenchmarkTupleOperations(b *testing.B) {
 			result = v1.Times(2.5)
 		}
 	})
+
+	b.Run("Divide", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			result = v1.Divide(2.5)
+		}
+	})
 }
 
 func BenchmarkTupleVectorMath(b *testing.B) {
