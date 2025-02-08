@@ -11,10 +11,10 @@ func TestNewRay(t *testing.T) {
 	origin := NewPoint(1, 2, 3)
 	direction := NewVector(4, 5, 6)
 	r := NewRay(origin, direction)
-	if origin != r.Origin {
+	if origin != r.origin {
 		t.Errorf("ray origin not initialized properly")
 	}
-	if direction != r.Direction {
+	if direction != r.velocity {
 		t.Errorf("ray origin not initialized properly")
 	}
 }
@@ -161,18 +161,20 @@ func TestRayTransform(t *testing.T) {
 		m      Mat[Size4]
 		expect Ray
 	}{
+		// Translating a ray
 		{r, I4.Translate(3, 4, 5), NewRay(NewPoint(4, 6, 8), NewVector(0, 1, 0))},
+		// Scaling a ray
 		{r, I4.Scale(2, 3, 4), NewRay(NewPoint(2, 6, 12), NewVector(0, 3, 0))},
 	}
 	for _, row := range data {
 		result := row.r.Transform(row.m)
-		if !row.expect.Origin.Equals(result.Origin) {
+		if !row.expect.origin.Equals(result.origin) {
 
-			t.Errorf("expected ray origin to be %v but was %v instead", row.expect.Origin, result.Origin)
+			t.Errorf("expected ray origin to be %v but was %v instead", row.expect.origin, result.origin)
 		}
-		if !row.expect.Direction.Equals(result.Direction) {
+		if !row.expect.velocity.Equals(result.velocity) {
 
-			t.Errorf("expected ray direction to be %v but was %v instead", row.expect.Direction, result.Direction)
+			t.Errorf("expected ray direction to be %v but was %v instead", row.expect.velocity, result.velocity)
 		}
 	}
 }
