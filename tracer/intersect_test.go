@@ -107,7 +107,6 @@ func TestPosition(t *testing.T) {
 // Intersecting Rays with Spheres
 func TestSphereTable(t *testing.T) {
 	vec := NewVector(0, 0, 1)
-	sphere := NewSphere()
 	data := []struct {
 		r      Ray
 		s      Sphere
@@ -160,7 +159,7 @@ func TestNewIntersection(t *testing.T) {
 	}
 }
 
-func TestIntersectionSlice(t *testing.T) {
+func TestNewIntersects(t *testing.T) {
 	// Aggregating intersections
 	s := NewSphere(I4)
 	xs := NewIntersects(s, 1, 2)
@@ -175,7 +174,7 @@ func TestIntersectionSlice(t *testing.T) {
 	}
 }
 
-// Intersecting a scaled sphere with a ray 134
+// Intersect sets the object on the intersection
 func TestIntersectSetsObject(t *testing.T) {
 	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
 	s1 := NewSphere(I4)
