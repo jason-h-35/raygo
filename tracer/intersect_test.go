@@ -44,6 +44,7 @@ func TestPosition(t *testing.T) {
 	}
 }
 
+// Intersecting Rays with Spheres
 func TestSphereTable(t *testing.T) {
 	vec := NewVector(0, 0, 1)
 	sphere := NewSphere()
@@ -82,12 +83,15 @@ func TestSphereTable(t *testing.T) {
 	}
 }
 
+// An Intersection encapsulates t and object
 func TestNewIntersection(t *testing.T) {
-	// An intersection encapsulates t and object
 	s := NewSphere()
 	time := 3.5
 	i := NewIntersect(s, time)
-	if i.time != time {
+	if s.id != i.object.id {
+		t.Errorf("expected object id to be %v but was %v", s.id, i.object.id)
+	}
+	if time != i.time {
 		t.Errorf("expected intersect time to be %v but was %v", time, i.time)
 	}
 }
@@ -107,6 +111,7 @@ func TestIntersectionSlice(t *testing.T) {
 	}
 }
 
+// Intersecting a scaled sphere with a ray 134
 func TestIntersectSetsObject(t *testing.T) {
 	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
 	s1 := NewSphere()
