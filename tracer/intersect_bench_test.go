@@ -25,7 +25,7 @@ func BenchmarkRayCreation(b *testing.B) {
 
 	b.Run("NewSphere", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			resultSph = NewSphere()
+			resultSph = NewSphere(I4)
 		}
 	})
 }
@@ -49,7 +49,7 @@ func BenchmarkRayOperations(b *testing.B) {
 
 func BenchmarkIntersections(b *testing.B) {
 	ray := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
-	sphere := NewSphere()
+	sphere := NewSphere(I4)
 	xs := []Intersect{
 		NewIntersect(sphere, 1),
 		NewIntersect(sphere, 2),
@@ -81,7 +81,7 @@ func BenchmarkIntersections(b *testing.B) {
 }
 
 func BenchmarkIntersectComparisons(b *testing.B) {
-	sphere := NewSphere()
+	sphere := NewSphere(I4)
 	x1 := NewIntersect(sphere, 1)
 	x2 := NewIntersect(sphere, 1)
 
@@ -99,7 +99,7 @@ func BenchmarkIntersectComparisons(b *testing.B) {
 }
 
 func BenchmarkIntersectCreation(b *testing.B) {
-	sphere := NewSphere()
+	sphere := NewSphere(I4)
 	times := []float64{1, 2, 3, 4, 5}
 
 	b.Run("NewIntersect", func(b *testing.B) {

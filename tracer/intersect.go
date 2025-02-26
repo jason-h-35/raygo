@@ -121,7 +121,7 @@ func compareIntersectTime(a, b Intersect) int {
 // Ensures intersections are sorted by time before searching.
 func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
-		return NewIntersect(NewSphere(), 0), false
+		return NewIntersect(NewSphere(I4), 0), false
 	}
 	// TODO: Eventually it won't be viable to sort for every Hit calculation
 	if !slices.IsSortedFunc(xs, compareIntersectTime) {
@@ -132,7 +132,7 @@ func Hit(xs []Intersect) (Intersect, bool) {
 			return x, true
 		}
 	}
-	return NewIntersect(NewSphere(), 0), false
+	return NewIntersect(NewSphere(I4), 0), false
 }
 
 // Transform applies a transformation matrix to both the origin and direction of a ray.
