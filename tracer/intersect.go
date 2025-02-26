@@ -66,7 +66,8 @@ func NewSphere(transform Mat[Size4]) Sphere {
 // Returns an empty slice if no intersections exist.
 // For a sphere centered at the origin with radius 1, uses the quadratic formula:
 // t^2(d⋅d) + 2t(d⋅(o-c)) + (o-c)⋅(o-c) - r^2 = 0
-func (s Sphere) GetIntersects(r Ray) []Intersect {
+func (s Sphere) GetIntersects(r2 Ray) []Intersect {
+	r := r2.Transform(s.transform.Inverse())
 	sphereToRay := r.origin.Minus(NewPoint(0, 0, 0))
 	a := r.velocity.Dot(r.velocity)
 	b := 2 * r.velocity.Dot(sphereToRay)
