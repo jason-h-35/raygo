@@ -34,51 +34,6 @@ func TestNewSphere(t *testing.T) {
 	}
 }
 
-// Creating and querying a sphere
-func TestNewSphere(t *testing.T) {
-	s := NewSphere(I4)
-	// A sphere's default transformation
-	if !s.transform.Equals(I4) {
-		t.Errorf("sphere transform not initialized properly")
-	}
-	transform := I4.Translate(2, 3, 4)
-	s.transform = transform
-	// Changing a sphere's transformation
-	if !s.transform.Equals(transform) {
-		t.Errorf("sphere transform property not setting properly")
-	}
-}
-
-// Creating and querying a sphere
-func TestNewSphere(t *testing.T) {
-	s := NewSphere(I4)
-	// A sphere's default transformation
-	if !s.transform.Equals(I4) {
-		t.Errorf("sphere transform not initialized properly")
-	}
-	transform := I4.Translate(2, 3, 4)
-	s.transform = transform
-	// Changing a sphere's transformation
-	if !s.transform.Equals(transform) {
-		t.Errorf("sphere transform property not setting properly")
-	}
-}
-
-// Creating and querying a sphere
-func TestNewSphere(t *testing.T) {
-	s := NewSphere(I4)
-	// A sphere's default transformation
-	if !s.transform.Equals(I4) {
-		t.Errorf("sphere transform not initialized properly")
-	}
-	transform := I4.Translate(2, 3, 4)
-	s.transform = transform
-	// Changing a sphere's transformation
-	if !s.transform.Equals(transform) {
-		t.Errorf("sphere transform property not setting properly")
-	}
-}
-
 // Computing a point from a distance
 func TestPosition(t *testing.T) {
 	r := NewRay(
