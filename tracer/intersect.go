@@ -57,8 +57,8 @@ func (r Ray) Position(time float64) Tuple {
 }
 
 // NewSphere creates a new sphere with a unique ID and identity transformation.
-func NewSphere() Sphere {
-	s := Sphere{sphereIDGen.Int(), I4}
+func NewSphere(transform Mat[Size4]) Sphere {
+	s := Sphere{sphereIDGen.Int(), transform}
 	return s
 }
 
