@@ -11,11 +11,26 @@ func TestNewRay(t *testing.T) {
 	origin := NewPoint(1, 2, 3)
 	direction := NewVector(4, 5, 6)
 	r := NewRay(origin, direction)
-	if origin != r.Origin {
+	if origin != r.origin {
 		t.Errorf("ray origin not initialized properly")
 	}
-	if direction != r.Direction {
+	if direction != r.velocity {
 		t.Errorf("ray origin not initialized properly")
+	}
+}
+
+// Creating and querying a sphere
+func TestNewSphere(t *testing.T) {
+	s := NewSphere(I4)
+	// A sphere's default transformation
+	if !s.transform.Equals(I4) {
+		t.Errorf("sphere transform not initialized properly")
+	}
+	transform := I4.Translate(2, 3, 4)
+	s.transform = transform
+	// Changing a sphere's transformation
+	if !s.transform.Equals(transform) {
+		t.Errorf("sphere transform property not setting properly")
 	}
 }
 
@@ -44,24 +59,28 @@ func TestPosition(t *testing.T) {
 	}
 }
 
+// Intersecting Rays with Spheres
 func TestSphereTable(t *testing.T) {
 	vec := NewVector(0, 0, 1)
-	sphere := NewSphere()
 	data := []struct {
 		r      Ray
 		s      Sphere
 		expect []float64
 	}{
 		// A ray intersects a sphere at two points
-		{NewRay(NewPoint(0, 0, -5), vec), sphere, []float64{4, 6}},
+		{NewRay(NewPoint(0, 0, -5), vec), NewSphere(I4), []float64{4, 6}},
 		// A ray intersects a sphere at a tangent
-		{NewRay(NewPoint(0, 1, -5), vec), sphere, []float64{5, 5}},
+		{NewRay(NewPoint(0, 1, -5), vec), NewSphere(I4), []float64{5, 5}},
 		// A ray misses a sphere
-		{NewRay(NewPoint(0, 2, -5), vec), sphere, []float64{}},
+		{NewRay(NewPoint(0, 2, -5), vec), NewSphere(I4), []float64{}},
 		// A ray originates inside a sphere
-		{NewRay(NewPoint(0, 0, 0), vec), sphere, []float64{-1, 1}},
+		{NewRay(NewPoint(0, 0, 0), vec), NewSphere(I4), []float64{-1, 1}},
 		// A sphere is behind a ray
-		{NewRay(NewPoint(0, 0, 5), vec), sphere, []float64{-6, -4}},
+		{NewRay(NewPoint(0, 0, 5), vec), NewSphere(I4), []float64{-6, -4}},
+		// Intersecting a scaled sphere with a ray
+		{NewRay(NewPoint(0, 0, -5), vec), NewSphere(I4.Scale(2, 2, 2)), []float64{3, 7}},
+		// Intersecting a translated sphere with a ray
+		{NewRay(NewPoint(0, 0, -5), vec), NewSphere(I4.Translate(5, 0, 0)), []float64{}},
 	}
 	for _, row := range data {
 		result := row.s.GetIntersects(row.r)
@@ -82,19 +101,22 @@ func TestSphereTable(t *testing.T) {
 	}
 }
 
+// An Intersection encapsulates t and object
 func TestNewIntersection(t *testing.T) {
-	// An intersection encapsulates t and object
-	s := NewSphere()
+	s := NewSphere(I4)
 	time := 3.5
 	i := NewIntersect(s, time)
-	if i.time != time {
+	if s.id != i.object.id {
+		t.Errorf("expected object id to be %v but was %v", s.id, i.object.id)
+	}
+	if time != i.time {
 		t.Errorf("expected intersect time to be %v but was %v", time, i.time)
 	}
 }
 
-func TestIntersectionSlice(t *testing.T) {
+func TestNewIntersects(t *testing.T) {
 	// Aggregating intersections
-	s := NewSphere()
+	s := NewSphere(I4)
 	xs := NewIntersects(s, 1, 2)
 	if len(xs) != 2 {
 		t.Errorf("incorrect intersection slice len. expected 2, got %v", len(xs))
@@ -107,10 +129,11 @@ func TestIntersectionSlice(t *testing.T) {
 	}
 }
 
+// Intersect sets the object on the intersection
 func TestIntersectSetsObject(t *testing.T) {
 	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
-	s1 := NewSphere()
-	s2 := NewSphere()
+	s1 := NewSphere(I4)
+	s2 := NewSphere(I4)
 	xs := s1.GetIntersects(r)
 	if len(xs) != 2 {
 		t.Errorf("incorrect len. got %v", len(xs))
@@ -126,7 +149,7 @@ func TestIntersectSetsObject(t *testing.T) {
 }
 
 func TestHitTable(t *testing.T) {
-	s := NewSphere()
+	s := NewSphere(I4)
 	data := []struct {
 		name   string
 		xs     []Intersect
@@ -138,7 +161,7 @@ func TestHitTable(t *testing.T) {
 		// The hit, when some intersections have negative t
 		{"some negative t", NewIntersects(s, 1, -1), NewIntersect(s, 1), true},
 		// The hit, when all intersections have negative t. ok is checked and expect is not read
-		{"all negative t", NewIntersects(s, -1, -2), NewIntersect(NewSphere(), 200*rand.Float64()-100), false},
+		{"all negative t", NewIntersects(s, -1, -2), NewIntersect(NewSphere(I4), 200*rand.Float64()-100), false},
 		// The hit is always the lowest nonnegative intersection
 		{"sorting many t", NewIntersects(s, 5, 7, -3, 2), NewIntersect(s, 2), true},
 	}
@@ -161,18 +184,20 @@ func TestRayTransform(t *testing.T) {
 		m      Mat[Size4]
 		expect Ray
 	}{
+		// Translating a ray
 		{r, I4.Translate(3, 4, 5), NewRay(NewPoint(4, 6, 8), NewVector(0, 1, 0))},
+		// Scaling a ray
 		{r, I4.Scale(2, 3, 4), NewRay(NewPoint(2, 6, 12), NewVector(0, 3, 0))},
 	}
 	for _, row := range data {
 		result := row.r.Transform(row.m)
-		if !row.expect.Origin.Equals(result.Origin) {
+		if !row.expect.origin.Equals(result.origin) {
 
-			t.Errorf("expected ray origin to be %v but was %v instead", row.expect.Origin, result.Origin)
+			t.Errorf("expected ray origin to be %v but was %v instead", row.expect.origin, result.origin)
 		}
-		if !row.expect.Direction.Equals(result.Direction) {
+		if !row.expect.velocity.Equals(result.velocity) {
 
-			t.Errorf("expected ray direction to be %v but was %v instead", row.expect.Direction, result.Direction)
+			t.Errorf("expected ray direction to be %v but was %v instead", row.expect.velocity, result.velocity)
 		}
 	}
 }
