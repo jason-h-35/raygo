@@ -46,6 +46,14 @@ func NewIntersects(object Sphere, times ...float64) []Intersect {
 	return xs
 }
 
+func (ix Intersect) GetObject() Sphere {
+	return ix.object
+}
+
+func (ix Intersect) GetTime() float64 {
+	return ix.time
+}
+
 // NewRay creates a new ray with the given origin point and direction vector.
 func NewRay(origin, direction Tuple) Ray {
 	return Ray{origin, direction}
@@ -84,6 +92,14 @@ func (s Sphere) GetIntersects(r2 Ray) []Intersect {
 		t1, t2 = t2, t1
 	}
 	return NewIntersects(s, t1, t2)
+}
+
+func GetIntersectTimes(intersects []Intersect) []float64 {
+	times := make([]float64, len(intersects), len(intersects))
+	for i := 0; i < len(intersects); i++ {
+		times[i] = intersects[i].time
+	}
+	return times
 }
 
 // Equals checks if two intersections are exactly the same,
