@@ -30,6 +30,6 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          model: openai/gpt-5.2
+          model: openai/gpt-5.2-codex
           use_github_token: true
-          share: false
+          share: false # Don't change this. This would put our code changes on an opencode.ai share link
