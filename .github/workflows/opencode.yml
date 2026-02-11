@@ -33,3 +33,4 @@ jobs:
         with:
           model: openai/gpt-5.2
           use_github_token: true
+          share: false
