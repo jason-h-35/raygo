@@ -29,6 +29,7 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           model: openai/gpt-5.2
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          use_github_token: true
