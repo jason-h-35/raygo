@@ -3,7 +3,6 @@ package tracer
 import (
 	"math"
 	"math/rand"
-	"slices"
 )
 
 // Ray represents a ray in 3D space with an origin point and a direction vector.
@@ -117,39 +116,27 @@ func (x Intersect) Same(y Intersect) bool {
 		math.Abs(x.time-y.time) < epsilon
 }
 
-// compareIntersectTime compares two intersections by their time values.
-// Returns:
-//
-//	-1 if a occurs before b
-//	 0 if times are approximately equal
-//	 1 if a occurs after b
-func compareIntersectTime(a, b Intersect) int {
-	if math.Abs(a.time-b.time) < epsilon {
-		return 0
-	} else if a.time < b.time {
-		return -1
-	} else {
-		return 1
-	}
-}
-
 // Hit finds the first non-negative intersection from a slice of intersections.
 // Returns the intersection and true if found, or a zero intersection and false if not found.
-// Ensures intersections are sorted by time before searching.
 func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
 		return NewIntersect(NewSphere(I4), 0), false
 	}
-	// TODO: Eventually it won't be viable to sort for every Hit calculation
-	if !slices.IsSortedFunc(xs, compareIntersectTime) {
-		slices.SortFunc(xs, compareIntersectTime)
-	}
-	for _, x := range xs {
-		if x.time >= 0 {
-			return x, true
+	bestIndex := -1
+	bestTime := 0.0
+	for i, x := range xs {
+		if x.time < 0 {
+			continue
+		}
+		if bestIndex == -1 || x.time < bestTime-epsilon {
+			bestIndex = i
+			bestTime = x.time
 		}
 	}
-	return NewIntersect(NewSphere(I4), 0), false
+	if bestIndex == -1 {
+		return NewIntersect(NewSphere(I4), 0), false
+	}
+	return xs[bestIndex], true
 }
 
 // Transform applies a transformation matrix to both the origin and direction of a ray.
