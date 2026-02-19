@@ -1,6 +1,7 @@
 package tracer
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -10,6 +11,7 @@ type Matrix[T ~int] interface {
 	Equals(other Matrix[T]) bool
 	Determinant() float64
 	CanInverse() bool
+	Inverse() (Mat[T], error)
 }
 
 type Mat[T ~int] struct {
@@ -40,6 +42,8 @@ var I4 = NewMat[Size4]([]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
 var Z2 = NewMat[Size2](make([]float64, 4))
 var Z3 = NewMat[Size3](make([]float64, 9))
 var Z4 = NewMat[Size4](make([]float64, 16))
+
+var ErrMatrixNotInvertible = errors.New("matrix is not invertible")
 
 func NewMatVal(i int, j int, val float64) MatVal {
 	return MatVal{i, j, val}
@@ -195,10 +199,10 @@ func (a Mat[T]) CanInverse() bool {
 	return canInverseDeterminant(a.Determinant())
 }
 
-func (a Mat[T]) Inverse() Mat[T] {
+func (a Mat[T]) Inverse() (Mat[T], error) {
 	det := a.Determinant()
 	if !canInverseDeterminant(det) {
-		panic("can't inverse this matrix")
+		return Mat[T]{}, ErrMatrixNotInvertible
 	}
 	size := a.size
 
@@ -206,7 +210,7 @@ func (a Mat[T]) Inverse() Mat[T] {
 		return NewMat[T]([]float64{
 			a.vals[1][1] / det, -a.vals[0][1] / det,
 			-a.vals[1][0] / det, a.vals[0][0] / det,
-		})
+		}), nil
 	}
 
 	inverse := NewMat[T](make([]float64, size*size))
@@ -215,7 +219,7 @@ func (a Mat[T]) Inverse() Mat[T] {
 			inverse.vals[j][i] = Cofactor(a, i, j) / det
 		}
 	}
-	return inverse
+	return inverse, nil
 }
 
 func canInverseDeterminant(det float64) bool {

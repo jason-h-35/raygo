@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+func mustInverse[T ~int](t *testing.T, m Mat[T]) Mat[T] {
+	t.Helper()
+	inv, err := m.Inverse()
+	if err != nil {
+		t.Fatalf("Inverse() failed: %v", err)
+	}
+	return inv
+}
+
 func TestTransform(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -20,7 +29,7 @@ func TestTransform(t *testing.T) {
 		},
 		{
 			name:      "Inverse translation moves a point in the opposite direction",
-			transform: I4.Translate(5, -3, 2).Inverse(),
+			transform: mustInverse(t, I4.Translate(5, -3, 2)),
 			pt:        NewPoint(-3, 4, 5),
 			expect:    NewPoint(-8, 7, 3),
 		},
@@ -44,7 +53,7 @@ func TestTransform(t *testing.T) {
 		},
 		{
 			name:      "Inverse of scaling matrix",
-			transform: I4.Scale(2, 3, 4).Inverse(),
+			transform: mustInverse(t, I4.Scale(2, 3, 4)),
 			pt:        NewVector(-4, 6, 8),
 			expect:    NewVector(-2, 2, 2),
 		},
@@ -68,7 +77,7 @@ func TestTransform(t *testing.T) {
 		},
 		{
 			name:      "Inverse of X rotation rotates in opposite direction",
-			transform: I4.RotateX(math.Pi / 4.).Inverse(),
+			transform: mustInverse(t, I4.RotateX(math.Pi/4.)),
 			pt:        NewPoint(0, 1, 0),
 			expect:    NewPoint(0, math.Sqrt(2)/2., -math.Sqrt(2)/2.),
 		},
