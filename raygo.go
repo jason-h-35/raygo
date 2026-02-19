@@ -14,8 +14,12 @@ func main() {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			canvas.SetLinear(x, y, tracer.ColorGrey)
 			r := tracer.NewRay(tracer.NewPoint(float64(x), float64(y), 0), tracer.NewVector(0, 0, -1))
-			if _, ok := tracer.Hit(sphere.GetIntersects(r)); ok {
-				canvas.SetLinear(x, y, tracer.ColorRed)
+			intersects := sphere.GetIntersects(r)
+			for _, time := range tracer.GetIntersectTimes(intersects) {
+				if time > 0 {
+					canvas.SetLinear(x, y, tracer.ColorRed)
+					break
+				}
 			}
 		}
 	}
