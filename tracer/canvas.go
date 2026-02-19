@@ -49,9 +49,6 @@ func (c *Canvas) Bounds() image.Rectangle {
 	if len(c.image) == 0 {
 		return image.Rect(0, 0, 0, 0)
 	}
-	if len(c.image[0]) == 0 {
-		return image.Rect(0, 0, len(c.image), 0)
-	}
 	return image.Rect(0, 0, len(c.image), len(c.image[0]))
 }
 
