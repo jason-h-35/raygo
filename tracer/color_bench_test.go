@@ -1,8 +1,6 @@
 package tracer
 
-import (
-	"testing"
-)
+import "testing"
 
 func BenchmarkColorCreation(b *testing.B) {
 	b.Run("NewColorFromFloat64", func(b *testing.B) {
@@ -13,9 +11,9 @@ func BenchmarkColorCreation(b *testing.B) {
 }
 
 func BenchmarkColorOperations(b *testing.B) {
-	c1 := HDRColor{0x8000, 0x4000, 0x2000}
-	c2 := HDRColor{0x2000, 0x4000, 0x8000}
-	f := uint64(2)
+	c1 := LinearColor{0.8, 0.4, 0.2}
+	c2 := LinearColor{0.2, 0.4, 0.8}
+	f := float32(2)
 
 	b.Run("Plus", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
@@ -43,43 +41,44 @@ func BenchmarkColorOperations(b *testing.B) {
 }
 
 func BenchmarkColorConversions(b *testing.B) {
-	c := HDRColor{0x8000, 0x4000, 0x2000}
+	c := LinearColor{0.8, 0.4, 0.2}
 
 	b.Run("RGBA", func(be *testing.B) {
 		var r, g, b uint32
 		for i := 0; i < be.N; i++ {
 			r, g, b, _ = c.RGBA()
-			// Store in results to prevent optimization
-			results.color.c = HDRColor{uint64(r), uint64(g), uint64(b)}
+			results.scalar.float = float64(r + g + b)
 		}
 	})
 
 	b.Run("ToPPMRange", func(b *testing.B) {
+		var r, g, bl uint64
 		for i := 0; i < b.N; i++ {
-			results.color.c = c.ToPPMRange(255)
+			r, g, bl = c.ToPPMRange(255)
+			results.scalar.float = float64(r + g + bl)
 		}
 	})
 
 	b.Run("AsFloats", func(be *testing.B) {
-		var r, g, b float64
+		var r, g, bl float32
 		for i := 0; i < be.N; i++ {
-			r, g, b = c.AsFloats()
-			results.scalar.float = r + g + b // Store to prevent optimization
+			r, g, bl = c.AsFloats()
+			results.scalar.float = float64(r + g + bl)
 		}
 	})
 
 	b.Run("AsInts", func(be *testing.B) {
-		var r, g, b int
+		var r, g, bl int
 		for i := 0; i < be.N; i++ {
-			r, g, b = c.AsInts()
-			results.scalar.float = float64(r + g + b) // Store to prevent optimization
+			r, g, bl = c.AsInts()
+			results.scalar.float = float64(r + g + bl)
 		}
 	})
 }
 
 func BenchmarkColorComparisons(b *testing.B) {
-	c1 := HDRColor{0x8000, 0x4000, 0x2000}
-	c2 := HDRColor{0x2000, 0x4000, 0x8000}
+	c1 := LinearColor{0.8, 0.4, 0.2}
+	c2 := LinearColor{0.2, 0.4, 0.8}
 
 	b.Run("Equals", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
@@ -88,10 +87,10 @@ func BenchmarkColorComparisons(b *testing.B) {
 	})
 
 	b.Run("Distance", func(b *testing.B) {
-		var d uint64
+		var d float32
 		for i := 0; i < b.N; i++ {
 			d = c1.Distance(c2)
-			results.color.c.R = d // Store to prevent optimization
+			results.scalar.float = float64(d)
 		}
 	})
 }

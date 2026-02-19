@@ -1,6 +1,7 @@
 package tracer
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"slices"
@@ -75,7 +76,11 @@ func NewSphere(transform Mat[Size4]) Sphere {
 // For a sphere centered at the origin with radius 1, uses the quadratic formula:
 // t^2(d⋅d) + 2t(d⋅(o-c)) + (o-c)⋅(o-c) - r^2 = 0
 func (s Sphere) GetIntersects(r2 Ray) []Intersect {
-	r := r2.Transform(s.transform.Inverse())
+	inv, err := s.transform.Inverse()
+	if err != nil {
+		panic(fmt.Sprintf("Sphere.GetIntersects requires invertible transform: %v", err))
+	}
+	r := r2.Transform(inv)
 	sphereToRay := r.origin.Minus(NewPoint(0, 0, 0))
 	a := r.velocity.Dot(r.velocity)
 	b := 2 * r.velocity.Dot(sphereToRay)
@@ -95,7 +100,7 @@ func (s Sphere) GetIntersects(r2 Ray) []Intersect {
 }
 
 func GetIntersectTimes(intersects []Intersect) []float64 {
-	times := make([]float64, len(intersects), len(intersects))
+	times := make([]float64, len(intersects))
 	for i := 0; i < len(intersects); i++ {
 		times[i] = intersects[i].time
 	}
@@ -140,9 +145,10 @@ func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
 		return NewIntersect(NewSphere(I4), 0), false
 	}
-	// TODO: Eventually it won't be viable to sort for every Hit calculation
 	if !slices.IsSortedFunc(xs, compareIntersectTime) {
-		slices.SortFunc(xs, compareIntersectTime)
+		sorted := append([]Intersect(nil), xs...)
+		slices.SortFunc(sorted, compareIntersectTime)
+		xs = sorted
 	}
 	for _, x := range xs {
 		if x.time >= 0 {

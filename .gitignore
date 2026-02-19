@@ -23,3 +23,8 @@ go.work
 
 # executable
 raygo
+
+# Image outputs
+out.jpg
+out.png
+out.ppm

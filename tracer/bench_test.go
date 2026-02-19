@@ -15,7 +15,7 @@ type benchResults struct {
 	}
 	// Color results
 	color struct {
-		c     HDRColor
+		c     LinearColor
 		float float64
 	}
 	// Ray results

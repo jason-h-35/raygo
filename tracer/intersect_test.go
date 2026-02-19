@@ -201,3 +201,17 @@ func TestRayTransform(t *testing.T) {
 		}
 	}
 }
+
+func TestHitDoesNotMutateInputOrder(t *testing.T) {
+	s := NewSphere(I4)
+	xs := NewIntersects(s, 2, -1, 1)
+	before := append([]Intersect(nil), xs...)
+
+	_, _ = Hit(xs)
+
+	for i := range xs {
+		if !xs[i].Equals(before[i]) {
+			t.Fatalf("Hit mutated input slice at index %d: before=%v after=%v", i, before[i], xs[i])
+		}
+	}
+}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"image/jpeg"
 	"image/png"
 	"os"
 	"strconv"
@@ -11,36 +12,43 @@ import (
 )
 
 type Canvas struct {
-	image [][]HDRColor
+	image [][]LinearColor
 }
 
 func NewCanvas(xMax, yMax int) Canvas {
-	image := make([][]HDRColor, xMax)
+	image := make([][]LinearColor, xMax)
 	for i := range image {
-		image[i] = make([]HDRColor, yMax)
+		image[i] = make([]LinearColor, yMax)
 	}
 	return Canvas{image}
 }
 
 func (c *Canvas) At(x, y int) color.Color {
-	if !(image.Point{x, y}.In(c.Bounds())) {
-		return HDRColor{}
+	pixel := c.AtLinear(x, y)
+	r, g, b, a := pixel.RGBA()
+	return color.RGBA64{
+		R: uint16(r),
+		G: uint16(g),
+		B: uint16(b),
+		A: uint16(a),
 	}
-	return c.image[x][y]
 }
 
-func (c *Canvas) AtHDR(x, y int) HDRColor {
+func (c *Canvas) AtLinear(x, y int) LinearColor {
 	if !(image.Point{x, y}.In(c.Bounds())) {
-		return HDRColor{}
+		return LinearColor{}
 	}
 	return c.image[x][y]
 }
 
 func (c *Canvas) ColorModel() color.Model {
-	return color.RGBAModel
+	return color.RGBA64Model
 }
 
 func (c *Canvas) Bounds() image.Rectangle {
+	if len(c.image) == 0 {
+		return image.Rect(0, 0, 0, 0)
+	}
 	return image.Rect(0, 0, len(c.image), len(c.image[0]))
 }
 
@@ -50,11 +58,14 @@ func (c *Canvas) Set(x, y int, clr color.Color) {
 		return
 	}
 	r, g, b, _ := clr.RGBA()
-	// Convert from uint32 [0-65535] to float64 [0-1]
-	c.image[x][y] = HDRColor{uint64(r), uint64(g), uint64(b)}
+	c.image[x][y] = LinearColor{
+		R: float32(r) / 65535,
+		G: float32(g) / 65535,
+		B: float32(b) / 65535,
+	}
 }
 
-func (c *Canvas) SetColor(x, y int, clr HDRColor) {
+func (c *Canvas) SetLinear(x, y int, clr LinearColor) {
 	bounds := c.Bounds().Max
 	if x < 0 || x >= bounds.X || y < 0 || y >= bounds.Y {
 		return
@@ -75,10 +86,9 @@ func (c *Canvas) PPMStr(maxColorVal uint64) string {
 	lineLen := 0
 	for y := 0; y < bounds.Y; y++ {
 		for x := 0; x < bounds.X; x++ {
-			pixel := c.image[x][y].ToPPMRange(maxColorVal)
-			r, g, b := int(pixel.R), int(pixel.G), int(pixel.B)
-			for _, v := range []int{r, g, b} {
-				s := strconv.Itoa(v)
+			r, g, b := c.image[x][y].ToPPMRange(maxColorVal)
+			for _, v := range []uint64{r, g, b} {
+				s := strconv.FormatUint(v, 10)
 				// Add newline if this component would exceed line length
 				if lineLen > 0 && lineLen+len(s) >= maxLineLen {
 					builder.WriteString(lineSep)
@@ -101,13 +111,12 @@ func (c *Canvas) PPMStr(maxColorVal uint64) string {
 
 func (c *Canvas) PPMFile(maxColorVal uint64, writePath string) (int, error) {
 	ppmStr := c.PPMStr(maxColorVal)
-	file, fileErr := os.Create(writePath)
-	defer file.Close()
-	if fileErr != nil {
-		fmt.Println(fileErr)
-		return 0, fileErr
+	file, err := os.Create(writePath)
+	if err != nil {
+		return 0, err
 	}
-	return fmt.Fprintf(file, "%v", ppmStr)
+	defer file.Close()
+	return file.WriteString(ppmStr)
 }
 
 func (c *Canvas) PNGFile(writePath string) error {
@@ -119,6 +128,23 @@ func (c *Canvas) PNGFile(writePath string) error {
 
 	if err := png.Encode(file, c); err != nil {
 		return fmt.Errorf("failed to encode PNG: %w", err)
+	}
+	return nil
+}
+
+func (c *Canvas) JPEGFile(writePath string, quality int) error {
+	file, err := os.Create(writePath)
+	if err != nil {
+		return fmt.Errorf("failed to create JPEG file: %w", err)
+	}
+	defer file.Close()
+
+	if quality < 1 || quality > 100 {
+		quality = 95
+	}
+
+	if err := jpeg.Encode(file, c, &jpeg.Options{Quality: quality}); err != nil {
+		return fmt.Errorf("failed to encode JPEG: %w", err)
 	}
 	return nil
 }

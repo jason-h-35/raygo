@@ -230,7 +230,10 @@ func Test_Mat4Inverse(t *testing.T) {
 		NewMat[Size4]([]float64{-0.04074, -0.07778, 0.14444, -0.22222, -0.07778, 0.03333, 0.36667, -0.33333, -0.02901, -0.14630, -0.10926, 0.12963, 0.17778, 0.06667, -0.26667, 0.33333}),
 	}
 	for i := range mats {
-		result := mats[i].Inverse()
+		result, err := mats[i].Inverse()
+		if err != nil {
+			t.Fatalf("Inverse() failed for %v: %v", mats[i], err)
+		}
 		if !result.Equals(inverses[i]) {
 			t.Errorf("%v Inverse should be %v but was %v", mats[i], inverses[i], result)
 		}
@@ -241,9 +244,31 @@ func Test_Mat4InverseIdent(t *testing.T) {
 	a := NewMat[Size4]([]float64{3, -9, 7, 3, 3, -8, 2, -9, -4, 4, 4, 1, -6, 5, -1, 1})
 	b := NewMat[Size4]([]float64{8, 2, 2, 2, 3, -1, 7, 0, 7, 0, 5, 4, 6, -2, 0, 5})
 	c := a.Times(b)
-	bI := b.Inverse()
+	bI, err := b.Inverse()
+	if err != nil {
+		t.Fatalf("Inverse() failed for %v: %v", b, err)
+	}
 	result := c.Times(bI)
 	if !result.Equals(a) {
 		t.Errorf("A * B * B' should be A but instead was %v", result)
+	}
+}
+
+func Test_Mat2Inverse(t *testing.T) {
+	a := NewMat[Size2]([]float64{4, 7, 2, 6})
+	expect := NewMat[Size2]([]float64{0.6, -0.7, -0.2, 0.4})
+	result, err := a.Inverse()
+	if err != nil {
+		t.Fatalf("Inverse() failed for %v: %v", a, err)
+	}
+	if !result.Equals(expect) {
+		t.Errorf("%v Inverse should be %v but was %v", a, expect, result)
+	}
+}
+
+func Test_InverseReturnsErrorForSingularMatrix(t *testing.T) {
+	a := NewMat[Size4]([]float64{-4, 2, -2, -3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0})
+	if _, err := a.Inverse(); err == nil {
+		t.Fatalf("expected Inverse() to return error for singular matrix")
 	}
 }
