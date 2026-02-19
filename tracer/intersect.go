@@ -95,7 +95,7 @@ func (s Sphere) GetIntersects(r2 Ray) []Intersect {
 }
 
 func GetIntersectTimes(intersects []Intersect) []float64 {
-	times := make([]float64, len(intersects), len(intersects))
+	times := make([]float64, len(intersects))
 	for i := 0; i < len(intersects); i++ {
 		times[i] = intersects[i].time
 	}
@@ -140,9 +140,10 @@ func Hit(xs []Intersect) (Intersect, bool) {
 	if len(xs) == 0 {
 		return NewIntersect(NewSphere(I4), 0), false
 	}
-	// TODO: Eventually it won't be viable to sort for every Hit calculation
 	if !slices.IsSortedFunc(xs, compareIntersectTime) {
-		slices.SortFunc(xs, compareIntersectTime)
+		sorted := append([]Intersect(nil), xs...)
+		slices.SortFunc(sorted, compareIntersectTime)
+		xs = sorted
 	}
 	for _, x := range xs {
 		if x.time >= 0 {

@@ -192,19 +192,32 @@ func (a Mat[T]) Determinant() float64 {
 }
 
 func (a Mat[T]) CanInverse() bool {
-	return math.Abs(a.Determinant()) > epsilon
+	return canInverseDeterminant(a.Determinant())
 }
 
 func (a Mat[T]) Inverse() Mat[T] {
-	if !a.CanInverse() {
+	det := a.Determinant()
+	if !canInverseDeterminant(det) {
 		panic("can't inverse this matrix")
 	}
 	size := a.size
+
+	if size == 2 {
+		return NewMat[T]([]float64{
+			a.vals[1][1] / det, -a.vals[0][1] / det,
+			-a.vals[1][0] / det, a.vals[0][0] / det,
+		})
+	}
+
 	inverse := NewMat[T](make([]float64, size*size))
 	for i, row := range a.vals {
 		for j := range row {
-			inverse.vals[j][i] = Cofactor(a, i, j) / a.Determinant()
+			inverse.vals[j][i] = Cofactor(a, i, j) / det
 		}
 	}
 	return inverse
+}
+
+func canInverseDeterminant(det float64) bool {
+	return math.Abs(det) > epsilon
 }

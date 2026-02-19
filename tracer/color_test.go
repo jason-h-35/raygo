@@ -6,13 +6,12 @@ import (
 )
 
 func Test_Equals(t *testing.T) {
-	var x uint64 = 0x5555
-	var y uint64 = 21845 // same as 0x5555
-	c := HDRColor{x, x, x}
-	cEq := HDRColor{y, y, y}
-	cX := HDRColor{0, x, x}
-	cY := HDRColor{x, 0, x}
-	cZ := HDRColor{x, x, 0}
+	c := NewColorFromFloat64(0.333333, 0.2, 0.8)
+	cEq := NewColorFromFloat64(0.333334, 0.2, 0.8)
+	cX := NewColorFromFloat64(0.4, 0.2, 0.8)
+	cY := NewColorFromFloat64(0.333333, 0.4, 0.8)
+	cZ := NewColorFromFloat64(0.333333, 0.2, 0.4)
+
 	if !c.Equals(cEq) {
 		t.Errorf("%v should Equal %v", c, cEq)
 	}
@@ -49,7 +48,7 @@ func Test_Minus(t *testing.T) {
 
 func Test_Times(t *testing.T) {
 	c := NewColorFromFloat64(0.2, 0.3, 0.4)
-	var f uint64 = 2
+	f := float32(2)
 	expect := NewColorFromFloat64(0.4, 0.6, 0.8)
 	result := c.Times(f)
 	if d := expect.Distance(result); d > colorEps {
@@ -68,18 +67,15 @@ func Test_Hadamard(t *testing.T) {
 }
 
 func TestColorImplementsColorInterface(t *testing.T) {
-	// Static type assertion at compile time
-	var _ color.Color = HDRColor{} // Will fail to compile if Color doesn't implement color.Color
+	var _ color.Color = LinearColor{}
 
-	// Runtime behavior test
 	c := NewColorFromFloat64(0.5, 0.25, 0.75)
 	r, g, b, a := c.RGBA()
 
-	// Expected values: 0.5 * 65535 ≈ 32767, 0.25 * 65535 ≈ 16383, 0.75 * 65535 ≈ 49151
-	expectedR := uint32(32767)
-	expectedG := uint32(16383)
+	expectedR := uint32(32768)
+	expectedG := uint32(16384)
 	expectedB := uint32(49151)
-	expectedA := uint32(65535) // Full opacity
+	expectedA := uint32(65535)
 
 	if r != expectedR {
 		t.Errorf("Red channel incorrect. Got %d, want %d", r, expectedR)
@@ -92,5 +88,20 @@ func TestColorImplementsColorInterface(t *testing.T) {
 	}
 	if a != expectedA {
 		t.Errorf("Alpha channel incorrect. Got %d, want %d", a, expectedA)
+	}
+}
+
+func TestColorClampOnExport(t *testing.T) {
+	c := LinearColor{R: 1.5, G: -0.1, B: 0.5}
+	r, g, b, _ := c.RGBA()
+
+	if r != 65535 {
+		t.Errorf("expected red to clamp high, got %d", r)
+	}
+	if g != 0 {
+		t.Errorf("expected green to clamp low, got %d", g)
+	}
+	if b != 32768 {
+		t.Errorf("expected blue to map midpoint, got %d", b)
 	}
 }

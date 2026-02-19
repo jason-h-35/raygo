@@ -27,24 +27,24 @@ func BenchmarkCanvasCreation(b *testing.B) {
 
 func BenchmarkCanvasOperations(b *testing.B) {
 	canvas := NewCanvas(100, 100)
-	clr := HDRColor{0x8000, 0x4000, 0x2000}
+	clr := LinearColor{0.8, 0.4, 0.2}
 	rgbaClr := color.RGBA{128, 64, 32, 255}
 
 	b.Run("At/InBounds", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			results.color.c = canvas.AtHDR(50, 50)
+			results.color.c = canvas.AtLinear(50, 50)
 		}
 	})
 
 	b.Run("At/OutOfBounds", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			results.color.c = canvas.AtHDR(150, 150)
+			results.color.c = canvas.AtLinear(150, 150)
 		}
 	})
 
-	b.Run("Set/HDRColor", func(b *testing.B) {
+	b.Run("Set/LinearColor", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			canvas.SetColor(50, 50, clr)
+			canvas.SetLinear(50, 50, clr)
 		}
 	})
 
@@ -57,13 +57,12 @@ func BenchmarkCanvasOperations(b *testing.B) {
 
 func BenchmarkCanvasExport(b *testing.B) {
 	canvas := NewCanvas(100, 100)
-	// Fill canvas with some test data
 	for x := 0; x < 100; x++ {
 		for y := 0; y < 100; y++ {
-			canvas.SetColor(x, y, HDRColor{
-				R: uint64(x * 256),
-				G: uint64(y * 256),
-				B: uint64((x + y) * 128),
+			canvas.SetLinear(x, y, LinearColor{
+				R: float32(x) / 99,
+				G: float32(y) / 99,
+				B: float32(x+y) / 198,
 			})
 		}
 	}

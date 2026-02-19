@@ -247,3 +247,12 @@ func Test_Mat4InverseIdent(t *testing.T) {
 		t.Errorf("A * B * B' should be A but instead was %v", result)
 	}
 }
+
+func Test_Mat2Inverse(t *testing.T) {
+	a := NewMat[Size2]([]float64{4, 7, 2, 6})
+	expect := NewMat[Size2]([]float64{0.6, -0.7, -0.2, 0.4})
+	result := a.Inverse()
+	if !result.Equals(expect) {
+		t.Errorf("%v Inverse should be %v but was %v", a, expect, result)
+	}
+}

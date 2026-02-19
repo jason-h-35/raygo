@@ -2,7 +2,10 @@ package tracer
 
 import (
 	"image"
+	"image/color"
 	"image/draw"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -32,23 +35,23 @@ func Test_NewCanvas(t *testing.T) {
 func Test_WritePixel(t *testing.T) {
 	c := NewCanvas(10, 20)
 	red := NewColorFromFloat64(1, 0, 0)
-	c.SetColor(2, 3, red)
+	c.SetLinear(2, 3, red)
 	result := c.image[2][3]
-	if result != red {
+	if !result.Equals(red) {
 		t.Errorf("expected WritePixel pixel to be %v but was %v", red, result)
 	}
 }
 
 func Test_ReadPixel(t *testing.T) {
 	c := Canvas{
-		image: [][]HDRColor{
+		image: [][]LinearColor{
 			{ColorRed, ColorGreen},
 			{ColorBlue, ColorWhite},
 		},
 	}
 	for i := range c.image {
 		for j := range c.image[i] {
-			if c.AtHDR(i, j) != c.image[i][j] {
+			if !c.AtLinear(i, j).Equals(c.image[i][j]) {
 				t.Errorf("c.ReadPixel does not match c.image on c.image[%v][%v]", i, j)
 			}
 		}
@@ -58,29 +61,29 @@ func Test_ReadPixel(t *testing.T) {
 func Test_PPMStr(t *testing.T) {
 	c := NewCanvas(5, 3)
 	ppm := c.PPMStr(255)
-	// header test
 	header := "P3\n5 3\n255\n"
 	if !strings.HasPrefix(ppm, header) {
 		t.Errorf("PPM header does not match.\nExpected ppm:\n%v\nto begin with:\n%v\n", ppm, header)
 	}
-	// pixel data test
+
 	doubleRed := NewColorFromFloat64(1.5, 0, 0)
 	halfGreen := NewColorFromFloat64(0, 0.5, 0)
 	underBlue := NewColorFromFloat64(-0.5, 0, 1)
-	c.SetColor(0, 0, doubleRed)
-	c.SetColor(2, 1, halfGreen)
-	c.SetColor(4, 2, underBlue)
+	c.SetLinear(0, 0, doubleRed)
+	c.SetLinear(2, 1, halfGreen)
+	c.SetLinear(4, 2, underBlue)
 	ppm = c.PPMStr(255)
-	result := strings.ReplaceAll(strings.TrimPrefix(ppm, header), "\n", " ")
+	result := strings.Fields(strings.TrimPrefix(ppm, header))
 	expect := []string{
 		"255 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
-		"0 0 0 0 0 0 0 127 0 0 0 0 0 0 0",
+		"0 0 0 0 0 0 0 128 0 0 0 0 0 0 0",
 		"0 0 0 0 0 0 0 0 0 0 0 0 0 0 255",
 	}
-	if result == strings.Join(expect, " ") {
-		t.Errorf("Data portion of PPM seems incorrect.\nGot:\n%s\nWant:\n%s\n", result, expect)
+	want := strings.Fields(strings.Join(expect, "\n"))
+	if strings.Join(result, " ") != strings.Join(want, " ") {
+		t.Errorf("Data portion of PPM seems incorrect.\nGot:\n%v\nWant:\n%v\n", result, want)
 	}
-	// line length test
+
 	ppmLines := strings.Split(ppm, "\n")
 	maxLen := 70
 	for lineNum, line := range ppmLines {
@@ -89,22 +92,36 @@ func Test_PPMStr(t *testing.T) {
 				maxLen, len(line), lineNum, line)
 		}
 	}
-	// last char is newline test
+
 	lastChar := ppm[len(ppm)-1]
 	if lastChar != '\n' {
 		t.Errorf("Expected last char of PPM to be newline, but was %v instead.", lastChar)
 	}
 }
 
-// TestImageInterface verifies Canvas implements image.Image
+func TestZeroSizeCanvas(t *testing.T) {
+	c := NewCanvas(0, 0)
+	bounds := c.Bounds()
+	if bounds.Max.X != 0 || bounds.Max.Y != 0 {
+		t.Errorf("expected zero bounds, got %v", bounds)
+	}
+
+	if got := c.At(0, 0); got == nil {
+		t.Errorf("expected non-nil color for out-of-bounds read")
+	}
+
+	c.Set(0, 0, ColorWhite)
+	if ppm := c.PPMStr(255); ppm != "P3\n0 0\n255\n\n" {
+		t.Errorf("unexpected zero-sized PPM output: %q", ppm)
+	}
+}
+
 func TestImageInterface(t *testing.T) {
-	// Compile-time verification that Canvas implements image.Image
 	var _ image.Image = &Canvas{}
 
 	canvas := NewCanvas(100, 100)
 	bounds := canvas.Bounds()
 
-	// Test Bounds method
 	if bounds.Min.X != 0 || bounds.Min.Y != 0 {
 		t.Errorf("Expected bounds min (0,0), got (%d,%d)", bounds.Min.X, bounds.Min.Y)
 	}
@@ -112,56 +129,54 @@ func TestImageInterface(t *testing.T) {
 		t.Errorf("Expected bounds max (100,100), got (%d,%d)", bounds.Max.X, bounds.Max.Y)
 	}
 
-	// Test ColorModel method
-	if canvas.ColorModel() != canvas.ColorModel() {
-		t.Error("ColorModel() should return consistent results")
+	if canvas.ColorModel() != color.RGBA64Model {
+		t.Error("ColorModel() should return color.RGBA64Model")
 	}
 
-	// Test At method - should not panic on valid coordinates
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("At() panicked on valid coordinates: %v", r)
-		}
-	}()
 	_ = canvas.At(50, 50)
-
-	// Test At method with out of bounds - should not panic
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("At() panicked on out of bounds coordinates: %v", r)
-		}
-	}()
 	_ = canvas.At(-1, -1)
 	_ = canvas.At(1000, 1000)
 }
 
-// TestDrawImageInterface verifies Canvas implements draw.Image
 func TestDrawImageInterface(t *testing.T) {
-	// Compile-time verification that Canvas implements draw.Image
 	var _ draw.Image = &Canvas{}
 
 	canvas := NewCanvas(100, 100)
-	testColor := HDRColor{0xffff, 0, 0} // Red
+	testColor := ColorRed
 
-	// Test Set method within bounds
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("Set() panicked on valid coordinates: %v", r)
-		}
-	}()
 	canvas.Set(50, 50, testColor)
 
-	// Verify pixel was set
-	if got := canvas.At(50, 50); got != testColor {
+	if got := canvas.AtLinear(50, 50); !got.Equals(testColor) {
 		t.Errorf("Set() color mismatch: got %v, want %v", got, testColor)
 	}
 
-	// Test Set method out of bounds - should not panic
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("Set() panicked on out of bounds coordinates: %v", r)
-		}
-	}()
 	canvas.Set(-1, -1, testColor)
 	canvas.Set(1000, 1000, testColor)
+}
+
+func TestCanvasImageExports(t *testing.T) {
+	canvas := NewCanvas(10, 10)
+	canvas.SetLinear(5, 5, ColorRed)
+	outDir := t.TempDir()
+
+	if err := canvas.PNGFile(filepath.Join(outDir, "out.png")); err != nil {
+		t.Fatalf("PNGFile() failed: %v", err)
+	}
+	if err := canvas.JPEGFile(filepath.Join(outDir, "out.jpg"), 95); err != nil {
+		t.Fatalf("JPEGFile() failed: %v", err)
+	}
+	if _, err := canvas.PPMFile(255, filepath.Join(outDir, "out.ppm")); err != nil {
+		t.Fatalf("PPMFile() failed: %v", err)
+	}
+
+	for _, name := range []string{"out.png", "out.jpg", "out.ppm"} {
+		path := filepath.Join(outDir, name)
+		info, err := os.Stat(path)
+		if err != nil {
+			t.Fatalf("expected %s to exist: %v", name, err)
+		}
+		if info.Size() == 0 {
+			t.Fatalf("expected %s to be non-empty", name)
+		}
+	}
 }

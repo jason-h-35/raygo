@@ -3,27 +3,26 @@
 fmt:
 	go fmt ./...
 
-lint: fmt
-	go lint ./...
-
-vet: fmt
+vet:
 	go vet ./...
 
-cover: fmt
+test:
+	go test ./...
+
+check: vet test
+
+cover:
 	go test -v -cover -coverprofile=c.out ./...
 	go tool cover -html=c.out
 
-test: vet
-	go test ./...
-
-t: test
-
-build: vet
+build:
 	go build raygo.go
 
 b: build
 
-run: vet
+run:
 	go run raygo.go
 
 r: run
+
+t: test

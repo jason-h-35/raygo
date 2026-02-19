@@ -4,159 +4,103 @@ import (
 	"math"
 )
 
-type HDRColor struct{ R, G, B uint64 }
+type LinearColor struct{ R, G, B float32 }
 
-const colorEps = 3
+const colorEps = 1e-5
 
 var (
-	ColorBlack   = HDRColor{0x0000, 0x0000, 0x0000}
-	ColorGrey    = HDRColor{0x1000, 0x1000, 0x1000}
-	ColorBlue    = HDRColor{0x0000, 0x0000, 0xffff}
-	ColorGreen   = HDRColor{0x0000, 0xffff, 0x0000}
-	ColorCyan    = HDRColor{0x0000, 0xffff, 0xffff}
-	ColorRed     = HDRColor{0xffff, 0x0000, 0x0000}
-	ColorMagenta = HDRColor{0xffff, 0x0000, 0xffff}
-	ColorYellow  = HDRColor{0xffff, 0xffff, 0x0000}
-	ColorWhite   = HDRColor{0xffff, 0xffff, 0xffff}
+	ColorBlack   = LinearColor{0, 0, 0}
+	ColorGrey    = LinearColor{0.0625, 0.0625, 0.0625}
+	ColorBlue    = LinearColor{0, 0, 1}
+	ColorGreen   = LinearColor{0, 1, 0}
+	ColorCyan    = LinearColor{0, 1, 1}
+	ColorRed     = LinearColor{1, 0, 0}
+	ColorMagenta = LinearColor{1, 0, 1}
+	ColorYellow  = LinearColor{1, 1, 0}
+	ColorWhite   = LinearColor{1, 1, 1}
 )
 
-func NewColorFromFloat64(r, g, b float64) HDRColor {
-	return HDRColor{
-		uint64(max(r, 0) * 0xffff),
-		uint64(max(g, 0) * 0xffff),
-		uint64(max(b, 0) * 0xffff),
+func NewColorFromFloat64(r, g, b float64) LinearColor {
+	return LinearColor{
+		R: float32(max(r, 0)),
+		G: float32(max(g, 0)),
+		B: float32(max(b, 0)),
 	}
 }
 
-func (c HDRColor) RGBA() (r, g, b, a uint32) {
-	// Convert from uint64 to uint32 [0,65535]
-	r = uint32(min(c.R, 0xffff))
-	g = uint32(min(c.G, 0xffff))
-	b = uint32(min(c.B, 0xffff))
+func clamp01(v float32) float32 {
+	return min(max(v, 0), 1)
+}
+
+func linearToUint16(v float32) uint16 {
+	v = clamp01(v)
+	return uint16(math.Round(float64(v * 65535)))
+}
+
+func (c LinearColor) RGBA() (r, g, b, a uint32) {
+	r = uint32(linearToUint16(c.R))
+	g = uint32(linearToUint16(c.G))
+	b = uint32(linearToUint16(c.B))
 	a = 0xffff
 	return // r,g,b,a
 }
 
-func (c1 HDRColor) Equals(c2 HDRColor) bool {
-	return c1.Distance(c2) == 0
+func (c1 LinearColor) Equals(c2 LinearColor) bool {
+	return c1.Distance(c2) <= colorEps
 }
 
-func (c1 HDRColor) Distance(c2 HDRColor) uint64 {
-	var dr, dg, db uint64
-	if c1.R > c2.R {
-		dr = c1.R - c2.R
-	} else {
-		dr = c2.R - c1.R
-	}
-	if c1.G > c2.G {
-		dg = c1.G - c2.G
-	} else {
-		dg = c2.G - c1.G
-	}
-	if c1.B > c2.B {
-		db = c1.B - c2.B
-	} else {
-		db = c2.B - c1.B
-	}
+func (c1 LinearColor) Distance(c2 LinearColor) float32 {
+	dr := float32(math.Abs(float64(c1.R - c2.R)))
+	dg := float32(math.Abs(float64(c1.G - c2.G)))
+	db := float32(math.Abs(float64(c1.B - c2.B)))
 	return dr + dg + db
 }
 
-func (c1 HDRColor) Plus(c2 HDRColor) HDRColor {
-	var r, g, b uint64
-	if math.MaxUint64-c1.R < c2.R {
-		r = math.MaxUint64
-	} else {
-		r = c1.R + c2.R
+func (c1 LinearColor) Plus(c2 LinearColor) LinearColor {
+	return LinearColor{
+		R: c1.R + c2.R,
+		G: c1.G + c2.G,
+		B: c1.B + c2.B,
 	}
-	if math.MaxUint64-c1.G < c2.G {
-		g = math.MaxUint64
-	} else {
-		g = c1.G + c2.G
-	}
-	if math.MaxUint64-c1.B < c2.B {
-		b = math.MaxUint64
-	} else {
-		b = c1.B + c2.B
-	}
-	return HDRColor{r, g, b}
 }
 
-func (c1 HDRColor) Minus(c2 HDRColor) HDRColor {
-	var r, g, b uint64
-	if c1.R < c2.R {
-		r = 0
-	} else {
-		r = c1.R - c2.R
+func (c1 LinearColor) Minus(c2 LinearColor) LinearColor {
+	return LinearColor{
+		R: c1.R - c2.R,
+		G: c1.G - c2.G,
+		B: c1.B - c2.B,
 	}
-	if c1.G < c2.G {
-		g = 0
-	} else {
-		g = c1.G - c2.G
-	}
-	if c1.B < c2.B {
-		b = 0
-	} else {
-		b = c1.B - c2.B
-	}
-	return HDRColor{r, g, b}
 }
 
-func (c HDRColor) Times(f uint64) HDRColor {
-	var r, g, b uint64
-	if f != 0 && c.R > math.MaxUint64/f {
-		r = math.MaxUint64
-	} else {
-		r = c.R * f
+func (c LinearColor) Times(f float32) LinearColor {
+	return LinearColor{
+		R: c.R * f,
+		G: c.G * f,
+		B: c.B * f,
 	}
-	if f != 0 && c.G > math.MaxUint64/f {
-		g = math.MaxUint64
-	} else {
-		g = c.G * f
-	}
-	if f != 0 && c.B > math.MaxUint64/f {
-		b = math.MaxUint64
-	} else {
-		b = c.B * f
-	}
-	return HDRColor{r, g, b}
 }
 
-// Hadamard requires colors be mapped into the [0-1] floating point color space.
-// For large uint64, we may not be able to cast to float64, so check first.
-// These are then mapped back
-func (c1 HDRColor) Hadamard(c2 HDRColor) HDRColor {
-	const maxExactFloat = 1<<53 - 1
-	if c1.R > maxExactFloat || c2.R > maxExactFloat ||
-		c1.G > maxExactFloat || c2.G > maxExactFloat ||
-		c1.B > maxExactFloat || c2.B > maxExactFloat {
-		panic("HDRColor.Hadamard: color components too large for precise float64 conversion")
+func (c1 LinearColor) Hadamard(c2 LinearColor) LinearColor {
+	return LinearColor{
+		R: c1.R * c2.R,
+		G: c1.G * c2.G,
+		B: c1.B * c2.B,
 	}
-	fr := float64(c1.R) * float64(c2.R) / 0xffff
-	fg := float64(c1.G) * float64(c2.G) / 0xffff
-	fb := float64(c1.B) * float64(c2.B) / 0xffff
-	r := uint64(min(fr, math.MaxUint64))
-	g := uint64(min(fg, math.MaxUint64))
-	b := uint64(min(fb, math.MaxUint64))
-	return HDRColor{r, g, b}
 }
 
-func (c HDRColor) ToPPMRange(limit uint64) HDRColor {
-	const fullColor = uint64(0xffff)
-	// Clamp each component to 0xffff, mapping into RGBA space
-	r := min(c.R, fullColor)
-	g := min(c.G, fullColor)
-	b := min(c.B, fullColor)
-	// Now scale the clamped values to the target range
-	r = (r * limit) / fullColor
-	g = (g * limit) / fullColor
-	b = (b * limit) / fullColor
-	return HDRColor{r, g, b}
+func (c LinearColor) ToPPMRange(limit uint64) (uint64, uint64, uint64) {
+	scale := float64(limit)
+	r := uint64(math.Round(float64(clamp01(c.R)) * scale))
+	g := uint64(math.Round(float64(clamp01(c.G)) * scale))
+	b := uint64(math.Round(float64(clamp01(c.B)) * scale))
+	return r, g, b
 }
 
-func (c HDRColor) AsFloats() (float64, float64, float64) {
-	return float64(c.R), float64(c.G), float64(c.B)
+func (c LinearColor) AsFloats() (float32, float32, float32) {
+	return c.R, c.G, c.B
 }
 
-func (c HDRColor) AsInts() (int, int, int) {
-	return int(c.R), int(c.G), int(c.B)
+func (c LinearColor) AsInts() (int, int, int) {
+	r, g, b, _ := c.RGBA()
+	return int(r), int(g), int(b)
 }
